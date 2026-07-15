@@ -98,6 +98,8 @@
 - 盤面は固定表示(先手が常に手前)。回転演出はフェーズ2で必要なら検討
 - 補助機能(待った・棋譜ログ)はMVPに含める方向で実装し、使用感を見て調整
 
-## 9. 残確認事項
+## 9. 公開情報(2026-07-15)
 
-- リポジトリ名・公開URLの命名(他プロジェクトは `diapro`, `poker-decision-trainer` のようにスラッグを決めている)
+- リポジトリ: https://github.com/aratama-ship-it/shogi-taikyoku
+- 公開URL(GitHub Pages): https://aratama-ship-it.github.io/shogi-taikyoku/
+- MVP実装・検証・公開済み。ローカルプレビューは launch.json の `shogi-mockups`(/tmp/shogi-mockups にコピーして配信)
