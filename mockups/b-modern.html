@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>案B: モダンフラット</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+    background: #f4f1ea;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 12px; gap: 12px;
+  }
+  .title { color: #8a8578; font-size: 13px; letter-spacing: 3px; }
+  .status-bar {
+    display: flex; gap: 12px; align-items: center;
+    background: #fff; border-radius: 12px; padding: 8px 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    font-size: 13px; color: #55503f;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: #e0684a; }
+  .board {
+    display: grid;
+    grid-template-columns: repeat(9, min(9vw, 52px));
+    grid-template-rows: repeat(9, min(9.4vw, 54px));
+    background: #fdfaf2;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(60,50,20,.12);
+    gap: 2px;
+    padding: 8px;
+  }
+  .cell {
+    background: #efe9d8;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .cell.selected { background: #ffd98a; box-shadow: inset 0 0 0 2px #e8a93c; }
+  .cell.movable { background: #dcebd4; }
+  .cell.movable::after {
+    content: ""; position: absolute; width: 26%; height: 26%;
+    border-radius: 50%; background: #7fae6a;
+  }
+  .piece {
+    width: 84%; height: 84%;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+  }
+  .piece span { font-size: min(5vw, 26px); }
+  /* 先手=墨色、後手=朱色。回転させず色で区別 */
+  .piece.sente { background: #3c3a33; color: #fdfaf2; }
+  .piece.gote  { background: #c95f43; color: #fff8f2; }
+  .hand-row {
+    width: 100%; max-width: 520px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px; color: #8a8578;
+  }
+  .hand {
+    flex: 1; min-height: 44px;
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    display: flex; align-items: center; padding: 5px 10px; gap: 8px;
+  }
+  .hand-piece {
+    width: 34px; height: 34px; border-radius: 8px; position: relative;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 17px;
+  }
+  .hand.sente .hand-piece { background: #3c3a33; color: #fdfaf2; }
+  .hand.gote .hand-piece { background: #c95f43; color: #fff8f2; }
+  .hp-count {
+    position: absolute; right: -4px; top: -4px; font-size: 10px;
+    background: #e8a93c; color: #fff; border-radius: 50%;
+    width: 15px; height: 15px; display: flex; align-items: center; justify-content: center;
+  }
+</style>
+</head>
+<body>
+  <div class="title">案B モダンフラット(色で先後区別・盤面固定)</div>
+  <div class="hand-row"><span>後手</span><div id="hand-gote"></div></div>
+  <div class="status-bar"><span class="dot"></span><span>先手の番 ・ 34手目</span></div>
+  <div id="board-wrap"></div>
+  <div class="hand-row"><span>先手</span><div id="hand-sente"></div></div>
+<script src="common.js"></script>
+<script>
+  renderBoard(document.getElementById("board-wrap"), { demo: true });
+  renderHand(document.getElementById("hand-sente"), "sente", [["歩", 2], ["銀", 1]]);
+  renderHand(document.getElementById("hand-gote"), "gote", [["歩", 1]]);
+</script>
+</body>
+</html>

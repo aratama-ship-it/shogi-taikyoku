@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>将棋 - 対人対局</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1>将棋対局</h1>
+    <span id="move-count">対局開始</span>
+  </header>
+
+  <div class="hand-area gote-area">
+    <span class="hand-label">☖後手</span>
+    <div class="hand" id="hand-gote"></div>
+  </div>
+
+  <div class="turn-banner" id="turn-banner">▲ 先手の番</div>
+
+  <div class="board-wrap">
+    <div class="board" id="board"></div>
+  </div>
+
+  <div class="hand-area sente-area">
+    <span class="hand-label">☗先手</span>
+    <div class="hand" id="hand-sente"></div>
+  </div>
+
+  <div class="controls">
+    <button id="btn-undo">待った</button>
+    <button id="btn-resign">投了</button>
+    <button id="btn-new">新規対局</button>
+  </div>
+
+  <div class="kifu" id="kifu-log">(棋譜はここに表示されます)</div>
+
+  <!-- 成り確認 -->
+  <div class="overlay hidden" id="promo-overlay">
+    <div class="dialog">
+      <p>成りますか?</p>
+      <div class="dialog-buttons">
+        <button id="promo-yes" class="primary">成る</button>
+        <button id="promo-no">成らず</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 対局結果 -->
+  <div class="overlay hidden" id="result-overlay">
+    <div class="dialog">
+      <h2 id="result-title"></h2>
+      <p id="result-message"></p>
+      <div class="dialog-buttons">
+        <button id="result-new" class="primary">新規対局</button>
+        <button id="result-close">盤面を見る</button>
+      </div>
+    </div>
+  </div>
+
+<script src="app.js"></script>
+</body>
+</html>

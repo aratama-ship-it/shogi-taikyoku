@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>案A: 伝統木目調</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+    background: linear-gradient(135deg, #2b3a2e 0%, #1e2a21 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    gap: 10px;
+  }
+  .title { color: #d8cfa8; font-size: 14px; letter-spacing: 4px; }
+  .turn-banner {
+    color: #f0e6c8; background: rgba(0,0,0,.35);
+    padding: 4px 20px; border-radius: 20px; font-size: 13px;
+    border: 1px solid rgba(216,207,168,.3);
+  }
+  .board-wrap {
+    background: linear-gradient(160deg, #caa96a, #b8944f 60%, #c5a260);
+    padding: 14px;
+    border-radius: 6px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.5), inset 0 0 40px rgba(120,80,20,.25);
+  }
+  .board {
+    display: grid;
+    grid-template-columns: repeat(9, min(9vw, 52px));
+    grid-template-rows: repeat(9, min(9.6vw, 56px));
+    background:
+      repeating-linear-gradient(90deg, rgba(90,60,20,.12) 0 2px, transparent 2px 30px),
+      linear-gradient(150deg, #e8c98a, #dfba72);
+    border: 2px solid #4a3213;
+  }
+  .cell {
+    border: 1px solid #6b4d20;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .cell.selected { background: rgba(200,120,30,.45); }
+  .cell.movable::after {
+    content: ""; position: absolute; width: 30%; height: 30%;
+    border-radius: 50%; background: rgba(160,90,20,.5);
+  }
+  .piece {
+    width: 82%; height: 88%;
+    clip-path: polygon(50% 0%, 92% 22%, 100% 100%, 0% 100%, 8% 22%);
+    background: linear-gradient(170deg, #f5dfa8, #e0bd72 70%, #d4ad5e);
+    box-shadow: inset 0 -2px 3px rgba(90,50,10,.4);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .piece span {
+    font-size: min(5.4vw, 30px); font-weight: 600; color: #2a1808;
+    margin-top: 14%;
+    font-family: "Hiragino Mincho ProN", serif;
+  }
+  .piece.gote { transform: rotate(180deg); }
+  .hand-area {
+    width: 100%; max-width: 560px;
+    display: flex; align-items: center; gap: 10px;
+    color: #d8cfa8; font-size: 12px;
+  }
+  .hand {
+    flex: 1; min-height: 46px;
+    background: linear-gradient(160deg, #a8874a, #96763c);
+    border-radius: 4px; border: 1px solid #4a3213;
+    display: flex; align-items: center; padding: 4px 8px; gap: 6px;
+  }
+  .hand-piece {
+    width: 34px; height: 38px; position: relative;
+    clip-path: polygon(50% 0%, 92% 22%, 100% 100%, 0% 100%, 8% 22%);
+    background: linear-gradient(170deg, #f5dfa8, #d4ad5e);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hp-kanji { font-size: 18px; color: #2a1808; margin-top: 5px; }
+  .hp-count {
+    position: absolute; right: 1px; bottom: 1px; font-size: 10px;
+    background: #7a1f1f; color: #fff; border-radius: 50%;
+    width: 13px; height: 13px; display: flex; align-items: center; justify-content: center;
+  }
+</style>
+</head>
+<body>
+  <div class="title">― 案A 伝統木目調 ―</div>
+  <div class="hand-area"><span>☖後手</span><div id="hand-gote"></div></div>
+  <div class="turn-banner">▲ 先手の番です</div>
+  <div class="board-wrap" id="board-wrap"></div>
+  <div class="hand-area"><span>☗先手</span><div id="hand-sente"></div></div>
+<script src="common.js"></script>
+<script>
+  renderBoard(document.getElementById("board-wrap"), { demo: true });
+  renderHand(document.getElementById("hand-sente"), "sente", [["歩", 2], ["銀", 1]]);
+  renderHand(document.getElementById("hand-gote"), "gote", [["歩", 1]]);
+</script>
+</body>
+</html>
