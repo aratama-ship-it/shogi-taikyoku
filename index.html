@@ -1,64 +1,190 @@
-<!DOCTYPE html>
-<html lang="ja">
+<!doctype html>
+<html lang="ja" data-theme="washi" data-piece-style="hybrid">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>将棋 - 対人対局</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#173f36">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Tsume Shogi">
+  <meta name="description" content="A bilingual, offline-friendly shogi puzzle app for beginners.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Tsume Shogi — 詰将棋を一手ずつ">
+  <meta property="og:description" content="Learn to see checkmate, one move at a time. Japanese and English, built for iPhone and offline practice.">
+  <meta property="og:image" content="og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Tsume Shogi — 詰将棋を一手ずつ">
+  <meta name="twitter:description" content="A bilingual, offline-friendly shogi puzzle app for beginners.">
+  <meta name="twitter:image" content="og.png">
+  <title>Tsume Shogi — 詰将棋を一手ずつ</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="app-header">
-    <h1>将棋対局</h1>
-    <span id="move-count">対局開始</span>
-  </header>
+  <div class="app-shell">
+    <header class="topbar">
+      <button class="brand" id="brand-button" type="button" aria-label="Open puzzle list">
+        <span class="brand-mark" aria-hidden="true">詰</span>
+        <span class="brand-copy">
+          <strong>Tsume Shogi</strong>
+          <small data-i18n="brandTagline">一手ずつ、読めるようになる。</small>
+        </span>
+      </button>
+      <button class="icon-button" id="settings-button" type="button" data-i18n-aria="settings" aria-label="設定">
+        <span aria-hidden="true">Aa</span>
+      </button>
+    </header>
 
-  <div class="hand-area gote-area">
-    <span class="hand-label">☖後手</span>
-    <div class="hand" id="hand-gote"></div>
-  </div>
+    <main>
+      <section class="mission-card" aria-labelledby="puzzle-title">
+        <div class="mission-topline">
+          <span class="level-chip" id="puzzle-level">1手詰め</span>
+          <span class="puzzle-progress" id="puzzle-progress">1 / 6</span>
+        </div>
+        <h1 id="puzzle-title">金は、とどめの駒</h1>
+        <p id="puzzle-prompt">相手の玉がどこにも逃げられない一手を見つけよう。</p>
+      </section>
 
-  <div class="turn-banner" id="turn-banner">▲ 先手の番</div>
+      <section class="play-area" aria-label="Shogi puzzle board">
+        <div class="opponent-strip">
+          <div>
+            <span class="side-label" data-i18n="defender">玉方</span>
+            <strong data-i18n="escapeGoal">すべての逃げ道をふさぐ</strong>
+          </div>
+          <span class="turn-badge" data-i18n="yourTurn">あなたの手番</span>
+        </div>
 
-  <div class="board-wrap">
-    <div class="board" id="board"></div>
-  </div>
+        <div class="board-frame">
+          <div class="file-labels" id="file-labels" aria-hidden="true"></div>
+          <div class="board-row">
+            <div class="board" id="board" role="grid" aria-label="9 by 9 shogi board"></div>
+            <div class="rank-labels" id="rank-labels" aria-hidden="true"></div>
+          </div>
+        </div>
 
-  <div class="hand-area sente-area">
-    <span class="hand-label">☗先手</span>
-    <div class="hand" id="hand-sente"></div>
-  </div>
+        <div class="hand-zone">
+          <div class="hand-heading">
+            <span data-i18n="yourPieces">持ち駒</span>
+            <small data-i18n="tapPiece">駒を選び、盤に置きます</small>
+          </div>
+          <div class="hand" id="attacker-hand" aria-label="Pieces in hand"></div>
+        </div>
+      </section>
 
-  <div class="controls">
-    <button id="btn-undo">待った</button>
-    <button id="btn-resign">投了</button>
-    <button id="btn-new">新規対局</button>
-  </div>
+      <section class="feedback" id="feedback" aria-live="polite">
+        <span class="feedback-mark" id="feedback-mark" aria-hidden="true">○</span>
+        <div>
+          <strong id="feedback-title" data-i18n="findMate">詰みを見つけよう</strong>
+          <p id="feedback-message" data-i18n="startHint">盤上の駒か持ち駒をタップしてください。</p>
+        </div>
+      </section>
 
-  <div class="kifu" id="kifu-log">(棋譜はここに表示されます)</div>
-
-  <!-- 成り確認 -->
-  <div class="overlay hidden" id="promo-overlay">
-    <div class="dialog">
-      <p>成りますか?</p>
-      <div class="dialog-buttons">
-        <button id="promo-yes" class="primary">成る</button>
-        <button id="promo-no">成らず</button>
+      <div class="action-row">
+        <button class="secondary-button" id="reset-button" type="button">
+          <span aria-hidden="true">↺</span><span data-i18n="reset">やり直す</span>
+        </button>
+        <button class="secondary-button" id="hint-button" type="button">
+          <span aria-hidden="true">?</span><span data-i18n="hint">ヒント</span>
+        </button>
+        <button class="primary-button" id="next-button" type="button" disabled>
+          <span data-i18n="next">次の問題</span><span aria-hidden="true">→</span>
+        </button>
       </div>
-    </div>
+
+      <button class="learn-link" id="learn-button" type="button">
+        <span aria-hidden="true">◇</span>
+        <span data-i18n="pieceGuide">駒の名前と動きを見る</span>
+      </button>
+    </main>
   </div>
 
-  <!-- 対局結果 -->
-  <div class="overlay hidden" id="result-overlay">
-    <div class="dialog">
-      <h2 id="result-title"></h2>
-      <p id="result-message"></p>
-      <div class="dialog-buttons">
-        <button id="result-new" class="primary">新規対局</button>
-        <button id="result-close">盤面を見る</button>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="sheet-layer hidden" id="settings-layer" aria-hidden="true">
+    <button class="sheet-scrim" type="button" data-close-sheet aria-label="Close settings"></button>
+    <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <div class="sheet-handle" aria-hidden="true"></div>
+      <div class="sheet-header">
+        <div>
+          <span class="eyebrow">Tsume Shogi</span>
+          <h2 id="settings-title" data-i18n="settings">設定</h2>
+        </div>
+        <button class="close-button" type="button" data-close-sheet aria-label="Close">×</button>
       </div>
-    </div>
+
+      <div class="setting-group">
+        <h3 data-i18n="language">言語</h3>
+        <div class="segmented" id="language-options">
+          <button type="button" data-value="ja">日本語</button>
+          <button type="button" data-value="en">English</button>
+        </div>
+        <p data-i18n="languageNote">翻訳データを追加するだけで、対応言語を増やせる設計です。</p>
+      </div>
+
+      <div class="setting-group">
+        <h3 data-i18n="pieceStyle">駒の表示</h3>
+        <div class="option-grid" id="piece-style-options">
+          <button type="button" data-value="kanji"><span class="option-piece">金</span><b data-i18n="kanji">漢字</b></button>
+          <button type="button" data-value="latin"><span class="option-piece">G</span><b data-i18n="latin">ローマ字</b></button>
+          <button type="button" data-value="hybrid"><span class="option-piece hybrid-sample">金<small>G</small></span><b data-i18n="hybrid">併記</b></button>
+        </div>
+      </div>
+
+      <div class="setting-group">
+        <h3 data-i18n="appearance">盤面の雰囲気</h3>
+        <div class="theme-grid" id="theme-options">
+          <button type="button" data-value="washi"><span class="theme-swatch theme-washi"></span><b data-i18n="traditional">伝統</b></button>
+          <button type="button" data-value="paper"><span class="theme-swatch theme-paper"></span><b data-i18n="modern">モダン</b></button>
+          <button type="button" data-value="night"><span class="theme-swatch theme-night"></span><b data-i18n="night">夜</b></button>
+        </div>
+      </div>
+
+      <div class="offline-note">
+        <span aria-hidden="true">↓</span>
+        <div><strong data-i18n="offlineReady">オフライン対応</strong><p data-i18n="offlineCopy">ホーム画面に追加すると、通信のない場所でも練習できます。</p></div>
+      </div>
+    </section>
   </div>
 
-<script src="app.js"></script>
+  <div class="sheet-layer hidden" id="puzzles-layer" aria-hidden="true">
+    <button class="sheet-scrim" type="button" data-close-sheet aria-label="Close puzzle list"></button>
+    <section class="sheet tall-sheet" role="dialog" aria-modal="true" aria-labelledby="puzzles-title">
+      <div class="sheet-handle" aria-hidden="true"></div>
+      <div class="sheet-header">
+        <div><span class="eyebrow" data-i18n="collection">COLLECTION</span><h2 id="puzzles-title" data-i18n="choosePuzzle">問題を選ぶ</h2></div>
+        <button class="close-button" type="button" data-close-sheet aria-label="Close">×</button>
+      </div>
+      <div class="puzzle-list" id="puzzle-list"></div>
+    </section>
+  </div>
+
+  <div class="sheet-layer hidden" id="learn-layer" aria-hidden="true">
+    <button class="sheet-scrim" type="button" data-close-sheet aria-label="Close piece guide"></button>
+    <section class="sheet tall-sheet" role="dialog" aria-modal="true" aria-labelledby="learn-title">
+      <div class="sheet-handle" aria-hidden="true"></div>
+      <div class="sheet-header">
+        <div><span class="eyebrow" data-i18n="learn">LEARN</span><h2 id="learn-title" data-i18n="pieceGuide">駒の名前と動きを見る</h2></div>
+        <button class="close-button" type="button" data-close-sheet aria-label="Close">×</button>
+      </div>
+      <p class="guide-intro" data-i18n="guideIntro">▲が駒の向いている方向です。最初は名前より、動ける形を覚えれば大丈夫。</p>
+      <div class="piece-guide" id="piece-guide"></div>
+      <a class="rules-link" href="https://www.shogi.or.jp/match/taikyoku_rules/" target="_blank" rel="noreferrer" data-i18n="officialRules">日本将棋連盟の公式ルールを見る</a>
+    </section>
+  </div>
+
+  <div class="modal-layer hidden" id="promotion-layer" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="promotion-title">
+      <span class="modal-mark" aria-hidden="true">成</span>
+      <h2 id="promotion-title" data-i18n="promoteQuestion">成りますか？</h2>
+      <p data-i18n="promoteCopy">成ると駒の動きが変わります。</p>
+      <div class="modal-actions">
+        <button class="secondary-button" id="no-promote-button" type="button" data-i18n="doNotPromote">成らない</button>
+        <button class="primary-button" id="promote-button" type="button" data-i18n="promote">成る</button>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="app.mjs"></script>
 </body>
 </html>
