@@ -5,44 +5,89 @@ import {
   ATTACK,
   DEFENSE,
   applyMove,
+  chooseLongestDefense,
   generateLegalMoves,
   isInCheck,
   isMate,
-  mateInOneMoves,
+  minimumMatePlies,
   moveKey,
+  winningCheckingMoves,
 } from "../game-core.mjs";
 import { PUZZLES, puzzleState } from "../puzzles.mjs";
 
-test("every bundled puzzle starts legally and has exactly one mating destination", () => {
+function semanticKey(move) {
+  if (move.kind === "drop") return `${move.type}*${move.toRow},${move.toCol}`;
+  return `${move.fromRow},${move.fromCol}-${move.toRow},${move.toCol}`;
+}
+
+function hintFor(puzzle, attackerStep) {
+  if (puzzle.hints) return puzzle.hints[attackerStep];
+  return {
+    hand: puzzle.hintHand,
+    origin: puzzle.hintHand ? null : puzzle.hintSquare,
+    target: puzzle.hintTarget || puzzle.hintSquare,
+  };
+}
+
+function matchesHint(move, hint) {
+  if (move.toRow !== hint.target[0] || move.toCol !== hint.target[1]) return false;
+  if (hint.hand) return move.kind === "drop" && move.type === hint.hand;
+  return move.kind === "board"
+    && move.fromRow === hint.origin[0]
+    && move.fromCol === hint.origin[1];
+}
+
+test("every bundled puzzle has the declared minimum mate length and one first destination", () => {
   for (const puzzle of PUZZLES) {
     const state = puzzleState(puzzle);
     assert.equal(isInCheck(state, DEFENSE), false, `${puzzle.id} starts with the king in check`);
     assert.equal(isInCheck(state, ATTACK), false, `${puzzle.id} starts with the attacker king in check`);
+    assert.equal(minimumMatePlies(state, puzzle.plies), puzzle.plies, `${puzzle.id} is not mate in ${puzzle.plies}`);
 
-    const matingMoves = mateInOneMoves(state);
-    assert.ok(matingMoves.length >= 1, `${puzzle.id} has no mate in one`);
-    const destinations = new Set(matingMoves.map((move) => `${move.toRow},${move.toCol}`));
-    assert.equal(destinations.size, 1, `${puzzle.id} has multiple mating destinations: ${matingMoves.map(moveKey).join(", ")}`);
+    const winning = winningCheckingMoves(state, puzzle.plies);
+    assert.ok(winning.length > 0, `${puzzle.id} has no winning first move`);
+    assert.equal(
+      new Set(winning.map(semanticKey)).size,
+      1,
+      `${puzzle.id} has multiple first moves: ${winning.map(moveKey).join(", ")}`,
+    );
   }
 });
 
-test("the intended hint destination checkmates in every puzzle", () => {
+test("the staged hints identify a complete forced line in every puzzle", () => {
   for (const puzzle of PUZZLES) {
-    const state = puzzleState(puzzle);
-    const target = puzzle.hintTarget || puzzle.hintSquare;
-    const matching = generateLegalMoves(state, ATTACK).filter((move) => {
-      if (move.toRow !== target[0] || move.toCol !== target[1]) return false;
-      if (puzzle.hintHand) return move.kind === "drop" && move.type === puzzle.hintHand;
-      return move.kind === "board" && move.fromRow === puzzle.hintSquare[0] && move.fromCol === puzzle.hintSquare[1];
-    });
-    assert.ok(matching.length > 0, `${puzzle.id} hint does not identify a legal move`);
-    assert.ok(matching.some((move) => isMate(applyMove(state, move), DEFENSE)), `${puzzle.id} hint does not mate`);
+    let state = puzzleState(puzzle);
+    let remaining = puzzle.plies;
+    let attackerStep = 0;
+
+    while (remaining > 0) {
+      const hint = hintFor(puzzle, attackerStep);
+      const winning = winningCheckingMoves(state, remaining);
+      const hintedMoves = winning.filter((move) => matchesHint(move, hint));
+      assert.ok(hintedMoves.length > 0, `${puzzle.id} hint ${attackerStep + 1} does not identify a winning move`);
+
+      state = applyMove(state, hintedMoves[0]);
+      remaining -= 1;
+      if (isMate(state, DEFENSE)) {
+        assert.equal(remaining, 0, `${puzzle.id} mates before its declared length`);
+        break;
+      }
+
+      const defense = chooseLongestDefense(state, remaining);
+      assert.ok(defense, `${puzzle.id} has no automatic defense at ply ${puzzle.plies - remaining + 1}`);
+      state = applyMove(state, defense);
+      remaining -= 1;
+      attackerStep += 1;
+    }
   }
 });
 
-test("a non-mating legal move is not accepted as mate", () => {
-  const state = puzzleState(PUZZLES[0]);
-  const wrongMove = generateLegalMoves(state, ATTACK).find((move) => move.toRow !== 1 || move.toCol !== 4);
+test("a non-forcing legal move is rejected", () => {
+  const puzzle = PUZZLES.find((item) => item.plies === 3);
+  const state = puzzleState(puzzle);
+  const winningKeys = new Set(winningCheckingMoves(state, puzzle.plies).map(moveKey));
+  const wrongMove = generateLegalMoves(state, ATTACK).find((move) => !winningKeys.has(moveKey(move)));
   assert.ok(wrongMove, "fixture needs at least one legal wrong move");
-  assert.equal(isMate(applyMove(state, wrongMove), DEFENSE), false);
+  const next = applyMove(state, wrongMove);
+  assert.equal(isMate(next, DEFENSE), false);
 });

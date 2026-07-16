@@ -253,6 +253,82 @@ export function mateInOneMoves(state) {
   return generateLegalMoves(state, ATTACK).filter((move) => isMateInOneMove(state, move));
 }
 
+function stateKey(state, side, remainingPlies) {
+  const board = state.board.map((row) => row.map((item) => {
+    if (!item) return "_";
+    return `${item.side === ATTACK ? "a" : "d"}${item.promoted ? "+" : ""}${item.type}`;
+  }).join(",")).join("/");
+  const hands = [ATTACK, DEFENSE].map((owner) => PIECE_TYPES
+    .map((type) => `${type}${state.hands[owner]?.[type] || 0}`)
+    .join(""))
+    .join("/");
+  return `${side}:${remainingPlies}:${board}:${hands}`;
+}
+
+function forceMateSearch(state, side, remainingPlies, memo) {
+  if (isMate(state, DEFENSE)) return true;
+  if (remainingPlies <= 0) return false;
+
+  const key = stateKey(state, side, remainingPlies);
+  if (memo.has(key)) return memo.get(key);
+
+  let result;
+  if (side === ATTACK) {
+    const checks = generateLegalMoves(state, ATTACK).filter((move) => isCheckingMove(state, move));
+    result = checks.some((move) => forceMateSearch(applyMove(state, move), DEFENSE, remainingPlies - 1, memo));
+  } else {
+    if (!isInCheck(state, DEFENSE)) {
+      result = false;
+    } else {
+      const replies = generateLegalMoves(state, DEFENSE);
+      result = replies.length === 0 || replies.every((move) => (
+        forceMateSearch(applyMove(state, move), ATTACK, remainingPlies - 1, memo)
+      ));
+    }
+  }
+
+  memo.set(key, result);
+  return result;
+}
+
+export function canForceMate(state, side = ATTACK, remainingPlies = 1) {
+  return forceMateSearch(state, side, remainingPlies, new Map());
+}
+
+export function winningCheckingMoves(state, remainingPlies) {
+  if (remainingPlies <= 0) return [];
+  const memo = new Map();
+  return generateLegalMoves(state, ATTACK).filter((move) => {
+    const next = applyMove(state, move);
+    return isInCheck(next, DEFENSE)
+      && forceMateSearch(next, DEFENSE, remainingPlies - 1, memo);
+  });
+}
+
+export function minimumMatePlies(state, maximumPlies = 9) {
+  for (let plies = 1; plies <= maximumPlies; plies += 2) {
+    if (canForceMate(state, ATTACK, plies)) return plies;
+  }
+  return null;
+}
+
+export function chooseLongestDefense(state, remainingPlies) {
+  if (!isInCheck(state, DEFENSE)) return null;
+  const replies = generateLegalMoves(state, DEFENSE);
+  if (!replies.length) return null;
+
+  const ranked = replies.map((move) => {
+    const next = applyMove(state, move);
+    const distance = minimumMatePlies(next, Math.max(remainingPlies - 1, 0));
+    return { move, distance: distance ?? Number.POSITIVE_INFINITY };
+  });
+  ranked.sort((a, b) => {
+    if (a.distance !== b.distance) return b.distance - a.distance;
+    return moveKey(a.move).localeCompare(moveKey(b.move));
+  });
+  return ranked[0].move;
+}
+
 export function allRemainingDefensePieces(board, attackerHand = {}) {
   const remaining = { ...TOTAL_MATERIAL };
   for (const row of board) {

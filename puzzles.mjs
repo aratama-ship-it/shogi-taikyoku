@@ -6,6 +6,7 @@ const D = DEFENSE;
 export const PUZZLES = [
   {
     id: "gold-at-the-head",
+    plies: 1,
     title: { ja: "金は、とどめの駒", en: "Gold delivers the finish" },
     prompt: {
       ja: "相手の玉がどこにも逃げられない一手を見つけよう。",
@@ -34,6 +35,7 @@ export const PUZZLES = [
   },
   {
     id: "rook-at-the-edge",
+    plies: 1,
     title: { ja: "飛車で端を封じる", en: "Seal the edge with a rook" },
     prompt: {
       ja: "端の玉には、逃げ道が少ないという弱点があります。",
@@ -62,6 +64,7 @@ export const PUZZLES = [
   },
   {
     id: "bishop-diagonal",
+    plies: 1,
     title: { ja: "角の斜めを生かす", en: "Use the bishop's diagonal" },
     prompt: {
       ja: "角は離れた場所からでも、斜めに王手できます。",
@@ -92,6 +95,7 @@ export const PUZZLES = [
   },
   {
     id: "silver-at-the-head",
+    plies: 1,
     title: { ja: "銀の鋭い一手", en: "A sharp silver drop" },
     prompt: {
       ja: "銀が得意な、前方への攻めを使ってみましょう。",
@@ -122,6 +126,7 @@ export const PUZZLES = [
   },
   {
     id: "knight-jump",
+    plies: 1,
     title: { ja: "桂馬は飛び越える", en: "The knight jumps" },
     prompt: {
       ja: "合駒では止められない、桂馬の王手を探しましょう。",
@@ -153,6 +158,7 @@ export const PUZZLES = [
   },
   {
     id: "capture-with-rook",
+    plies: 1,
     title: { ja: "取って王手する", en: "Capture with check" },
     prompt: {
       ja: "盤上の飛車で守り駒を取り、玉に迫りましょう。",
@@ -180,6 +186,122 @@ export const PUZZLES = [
         { row: 6, col: 1, type: "N", side: A },
       ],
       hand: {},
+      defenseHand: "all",
+    },
+  },
+  {
+    id: "rook-sacrifice-gold-finish",
+    plies: 3,
+    title: { ja: "飛車を捨てて道を作る", en: "Sacrifice the rook" },
+    prompt: {
+      ja: "3手詰め。飛車を取らせた先に、金の決め手があります。",
+      en: "Mate in 3. Let the king take your rook, then finish with gold.",
+    },
+    hints: [
+      {
+        ja: "盤上の飛車で7一の歩を取り、玉を動かします。",
+        en: "Use the rook to capture the pawn on 7a and force the king to move.",
+        origin: [2, 3],
+        target: [0, 3],
+      },
+      {
+        ja: "玉が飛車を取ったら、7二へ金を打つ頭金です。",
+        en: "After the king captures, drop gold on 7b for a head-gold mate.",
+        hand: "G",
+        target: [1, 3],
+      },
+    ],
+    success: {
+      ja: "飛車を捨てて玉を呼び込み、最後は頭金。駒を取らせるのも大切な攻めです。",
+      en: "The rook sacrifice drew the king in, and the gold finished the mate.",
+    },
+    position: {
+      board: [
+        { row: 0, col: 3, type: "P", side: D },
+        { row: 0, col: 4, type: "K", side: D },
+        { row: 1, col: 4, type: "P", side: D },
+        { row: 1, col: 5, type: "S", side: D },
+        { row: 1, col: 6, type: "P", side: A },
+        { row: 2, col: 3, type: "R", side: A },
+        { row: 4, col: 6, type: "B", side: A },
+      ],
+      hand: { G: 1 },
+      defenseHand: "all",
+    },
+  },
+  {
+    id: "knight-relay",
+    plies: 3,
+    title: { ja: "二枚の桂馬をつなぐ", en: "A relay of two knights" },
+    prompt: {
+      ja: "3手詰め。一枚目の桂馬で玉を動かし、二枚目で仕留めます。",
+      en: "Mate in 3. The first knight drives the king; the second finishes.",
+    },
+    hints: [
+      {
+        ja: "持ち駒の桂馬を6三へ。飛び越える王手です。",
+        en: "Drop the knight on 6c for an unblockable jumping check.",
+        hand: "N",
+        target: [2, 3],
+      },
+      {
+        ja: "盤上の桂馬を7一へ進めます。行き所がないため、自動的に成ります。",
+        en: "Move the knight on the board to 7a. It must promote on the last rank.",
+        origin: [2, 1],
+        target: [0, 2],
+      },
+    ],
+    success: {
+      ja: "桂馬の連続王手！ 最後に成桂となり、横へ逃げる玉を捕まえました。",
+      en: "A knight relay! The second knight promoted and covered the king's final escape.",
+    },
+    position: {
+      board: [
+        { row: 0, col: 4, type: "K", side: D },
+        { row: 0, col: 5, type: "P", side: D },
+        { row: 1, col: 7, type: "R", side: A },
+        { row: 2, col: 1, type: "N", side: A },
+      ],
+      hand: { N: 1 },
+      defenseHand: "all",
+    },
+  },
+  {
+    id: "silver-then-bishop",
+    plies: 3,
+    title: { ja: "銀で追い、角で詰ます", en: "Drive with silver, mate with bishop" },
+    prompt: {
+      ja: "3手詰め。二種類の持ち駒を順番に使いましょう。",
+      en: "Mate in 3. Use two different pieces from your hand in sequence.",
+    },
+    hints: [
+      {
+        ja: "銀を8二へ打ち、斜めから王手します。",
+        en: "Drop the silver on 8b to check diagonally.",
+        hand: "S",
+        target: [1, 1],
+      },
+      {
+        ja: "玉が下がったら、8一へ角を打ちます。",
+        en: "After the king steps down, drop the bishop on 8a.",
+        hand: "B",
+        target: [0, 1],
+      },
+    ],
+    success: {
+      ja: "銀で玉を追い出し、角の斜めで詰み。持ち駒の連携ができました。",
+      en: "The silver drove the king out, and the bishop's diagonal completed the mate.",
+    },
+    position: {
+      board: [
+        { row: 0, col: 2, type: "K", side: D },
+        { row: 0, col: 3, type: "P", side: D },
+        { row: 1, col: 3, type: "G", side: D },
+        { row: 3, col: 0, type: "P", side: A },
+        { row: 3, col: 1, type: "R", side: A },
+        { row: 4, col: 2, type: "S", side: A },
+      ],
+      hand: { B: 1, S: 1 },
       defenseHand: "all",
     },
   },

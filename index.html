@@ -40,7 +40,7 @@
       <section class="mission-card" aria-labelledby="puzzle-title">
         <div class="mission-topline">
           <span class="level-chip" id="puzzle-level">1手詰め</span>
-          <span class="puzzle-progress" id="puzzle-progress">1 / 6</span>
+          <span class="puzzle-progress" id="puzzle-progress">1 / 9</span>
         </div>
         <h1 id="puzzle-title">金は、とどめの駒</h1>
         <p id="puzzle-prompt">相手の玉がどこにも逃げられない一手を見つけよう。</p>
@@ -52,7 +52,7 @@
             <span class="side-label" data-i18n="defender">玉方</span>
             <strong data-i18n="escapeGoal">すべての逃げ道をふさぐ</strong>
           </div>
-          <span class="turn-badge" data-i18n="yourTurn">あなたの手番</span>
+          <span class="turn-badge" id="turn-banner" data-i18n="yourTurn">あなたの手番</span>
         </div>
 
         <div class="board-frame">
@@ -70,6 +70,14 @@
           </div>
           <div class="hand" id="attacker-hand" aria-label="Pieces in hand"></div>
         </div>
+      </section>
+
+      <section class="sequence-card" aria-labelledby="sequence-title">
+        <div class="sequence-heading">
+          <span id="sequence-title" data-i18n="moveSequence">ここまでの手順</span>
+          <small id="move-count-label">0 / 1</small>
+        </div>
+        <div class="sequence-moves" id="move-sequence"></div>
       </section>
 
       <section class="feedback" id="feedback" aria-live="polite">

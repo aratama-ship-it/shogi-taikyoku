@@ -2,9 +2,12 @@ import {
   ATTACK,
   DEFENSE,
   applyMove,
+  chooseLongestDefense,
   generateLegalMoves,
   isInCheck,
   isMate,
+  moveKey,
+  winningCheckingMoves,
 } from "./game-core.mjs";
 import { PUZZLES, puzzleState } from "./puzzles.mjs";
 
@@ -49,6 +52,7 @@ const I18N = {
     doNotPromote: "成らない",
     promote: "成る",
     mateInOne: "1手詰め",
+    mateInThree: "3手詰め",
     beginner: "入門",
     chooseDestination: "行き先を選んでください",
     chooseDestinationCopy: "光っているマスへ動かせます。",
@@ -58,6 +62,13 @@ const I18N = {
     notMate: "もう一度読んでみよう",
     notCheckCopy: "その手では王手になっていません。玉に利いているか確認しましょう。",
     escapeCopy: "王手ですが、玉方に逃げ道か受ける手が残っています。",
+    goodCheck: "正しい王手です",
+    goodCheckCopy: "玉方が最も長く逃げる応手を指します。",
+    continueAttack: "次の王手を探そう",
+    continueAttackCopy: "玉方が応手しました。攻め方は続けて王手します。",
+    defenderThinking: "玉方が応手中",
+    moveSequence: "ここまでの手順",
+    sequenceEmpty: "正解の手順がここに並びます",
     solved: "正解・詰みです！",
     hintTitle: "小さなヒント",
     hintTargetTitle: "置く場所も見てみよう",
@@ -105,6 +116,7 @@ const I18N = {
     doNotPromote: "Do not promote",
     promote: "Promote",
     mateInOne: "Mate in 1",
+    mateInThree: "Mate in 3",
     beginner: "Beginner",
     chooseDestination: "Choose a destination",
     chooseDestinationCopy: "You can move to a highlighted square.",
@@ -114,6 +126,13 @@ const I18N = {
     notMate: "Read the position once more",
     notCheckCopy: "That move is not check. See whether the piece attacks the king.",
     escapeCopy: "It is check, but the defender can still escape or answer it.",
+    goodCheck: "That is the right check",
+    goodCheckCopy: "The defender will now choose the longest resistance.",
+    continueAttack: "Find the next check",
+    continueAttackCopy: "The defender has replied. Keep checking with your next move.",
+    defenderThinking: "Defender is replying",
+    moveSequence: "Moves so far",
+    sequenceEmpty: "The correct sequence will appear here",
     solved: "Correct — checkmate!",
     hintTitle: "A small hint",
     hintTargetTitle: "Now look at the destination",
@@ -151,6 +170,10 @@ let feedbackMode = "start";
 let hintStage = 0;
 let locked = false;
 let toastTimer = null;
+let defenseTimer = null;
+let playedPlies = 0;
+let attackerStep = 0;
+let moveHistory = [];
 
 function loadPreferences() {
   const fallbackLanguage = navigator.language?.toLowerCase().startsWith("ja") ? "ja" : "en";
@@ -174,6 +197,29 @@ function t(key) {
 
 function localText(value) {
   return value?.[preferences.language] || value?.en || value?.ja || "";
+}
+
+function mateLabel(puzzle) {
+  if (puzzle.plies === 1) return t("mateInOne");
+  if (puzzle.plies === 3) return t("mateInThree");
+  return preferences.language === "ja" ? `${puzzle.plies}手詰め` : `Mate in ${puzzle.plies}`;
+}
+
+function currentHint() {
+  const puzzle = PUZZLES[currentIndex];
+  if (puzzle.hints) return puzzle.hints[attackerStep];
+  return {
+    ja: puzzle.hint?.ja,
+    en: puzzle.hint?.en,
+    hand: puzzle.hintHand,
+    origin: puzzle.hintHand ? null : puzzle.hintSquare,
+    target: puzzle.hintTarget || puzzle.hintSquare,
+  };
+}
+
+function moveWithType(position, move) {
+  const type = move.kind === "drop" ? move.type : position.board[move.fromRow][move.fromCol]?.type;
+  return { ...move, type };
 }
 
 function applyPreferences() {
@@ -262,7 +308,7 @@ function coordinateName(row, col) {
 
 function renderBoard() {
   const board = $("#board");
-  const puzzle = PUZZLES[currentIndex];
+  const hint = currentHint();
   board.replaceChildren();
 
   for (let row = 0; row < 9; row += 1) {
@@ -276,8 +322,8 @@ function renderBoard() {
       const item = state.board[row][col];
       const moveTargets = selectedMoves.filter((move) => move.toRow === row && move.toCol === col);
       const isSelected = selected?.kind === "board" && selected.row === row && selected.col === col;
-      const hintOrigin = hintStage >= 1 && !puzzle.hintHand && puzzle.hintSquare?.[0] === row && puzzle.hintSquare?.[1] === col;
-      const hintTarget = hintStage >= 2 && (puzzle.hintTarget || puzzle.hintSquare)?.[0] === row && (puzzle.hintTarget || puzzle.hintSquare)?.[1] === col;
+      const hintOrigin = hintStage >= 1 && hint?.origin?.[0] === row && hint?.origin?.[1] === col;
+      const hintTarget = hintStage >= 2 && hint?.target?.[0] === row && hint?.target?.[1] === col;
 
       cell.classList.toggle("selected", isSelected);
       cell.classList.toggle("target", moveTargets.length > 0);
@@ -296,7 +342,7 @@ function renderBoard() {
 
 function renderHand() {
   const hand = $("#attacker-hand");
-  const puzzle = PUZZLES[currentIndex];
+  const hint = currentHint();
   hand.replaceChildren();
   let hasPiece = false;
 
@@ -308,7 +354,7 @@ function renderHand() {
     button.type = "button";
     button.className = "hand-piece";
     button.classList.toggle("selected", selected?.kind === "hand" && selected.type === type);
-    button.classList.toggle("hinted", hintStage >= 1 && puzzle.hintHand === type);
+    button.classList.toggle("hinted", hintStage >= 1 && hint?.hand === type);
     button.disabled = locked;
     const item = { type, side: ATTACK, promoted: false };
     button.appendChild(createPieceElement(item));
@@ -333,10 +379,11 @@ function renderHand() {
 
 function renderMission() {
   const puzzle = PUZZLES[currentIndex];
-  $("#puzzle-level").textContent = t("mateInOne");
+  $("#puzzle-level").textContent = mateLabel(puzzle);
   $("#puzzle-progress").textContent = `${currentIndex + 1} / ${PUZZLES.length}`;
   $("#puzzle-title").textContent = localText(puzzle.title);
   $("#puzzle-prompt").textContent = localText(puzzle.prompt);
+  $("#turn-banner").textContent = feedbackMode === "good-check" ? t("defenderThinking") : t("yourTurn");
 }
 
 function renderFeedback() {
@@ -362,10 +409,18 @@ function renderFeedback() {
     mark.textContent = "↺";
     title.textContent = t("notMate");
     message.textContent = t("escapeCopy");
+  } else if (feedbackMode === "good-check") {
+    mark.textContent = "✓";
+    title.textContent = t("goodCheck");
+    message.textContent = t("goodCheckCopy");
+  } else if (feedbackMode === "continue") {
+    mark.textContent = "→";
+    title.textContent = t("continueAttack");
+    message.textContent = t("continueAttackCopy");
   } else if (feedbackMode === "hint") {
     mark.textContent = "?";
     title.textContent = hintStage >= 2 ? t("hintTargetTitle") : t("hintTitle");
-    message.textContent = localText(puzzle.hint);
+    message.textContent = localText(currentHint());
   } else if (feedbackMode === "destination") {
     mark.textContent = "→";
     title.textContent = selected?.kind === "hand" ? t("chooseDrop") : t("chooseDestination");
@@ -395,7 +450,7 @@ function renderPuzzleList() {
     const title = document.createElement("strong");
     title.textContent = localText(puzzle.title);
     const status = document.createElement("small");
-    status.textContent = `${t("mateInOne")} · ${complete ? t("completed") : t("open")}`;
+    status.textContent = `${mateLabel(puzzle)} · ${complete ? t("completed") : t("open")}`;
     copy.append(title, status);
     const check = document.createElement("span");
     check.className = "puzzle-check";
@@ -406,6 +461,37 @@ function renderPuzzleList() {
       closeSheets();
     });
     list.appendChild(button);
+  });
+}
+
+function formatMove(entry) {
+  const mark = entry.side === ATTACK ? "▲" : "△";
+  const destination = coordinateName(entry.toRow, entry.toCol);
+  const info = PIECES[entry.type];
+  const name = preferences.language === "ja" ? (info.kanji || info.kanjiDefense) : info.latin;
+  const suffix = entry.kind === "drop"
+    ? (preferences.language === "ja" ? "打" : " drop")
+    : (entry.promote ? (preferences.language === "ja" ? "成" : "+") : "");
+  return `${mark}${destination} ${name}${suffix}`;
+}
+
+function renderSequence() {
+  const puzzle = PUZZLES[currentIndex];
+  const sequence = $("#move-sequence");
+  sequence.replaceChildren();
+  $("#move-count-label").textContent = `${playedPlies} / ${puzzle.plies}`;
+  if (!moveHistory.length) {
+    const empty = document.createElement("span");
+    empty.className = "sequence-empty";
+    empty.textContent = t("sequenceEmpty");
+    sequence.appendChild(empty);
+    return;
+  }
+  moveHistory.forEach((entry, index) => {
+    const chip = document.createElement("span");
+    chip.className = `move-chip ${entry.side}`;
+    chip.textContent = `${index + 1}. ${formatMove(entry)}`;
+    sequence.appendChild(chip);
   });
 }
 
@@ -440,6 +526,7 @@ function renderAll() {
   renderMission();
   renderBoard();
   renderHand();
+  renderSequence();
   renderFeedback();
   renderPuzzleList();
   renderPieceGuide();
@@ -501,24 +588,64 @@ function chooseMoveVariant(variants) {
 function commitMove(move) {
   closeModal("#promotion-layer");
   pendingPromotionMoves = [];
+  const puzzle = PUZZLES[currentIndex];
+  const remaining = puzzle.plies - playedPlies;
+  const winningKeys = new Set(winningCheckingMoves(state, remaining).map(moveKey));
+  const correct = winningKeys.has(moveKey(move));
+  const entry = moveWithType(state, move);
   state = applyMove(state, move);
+  moveHistory.push(entry);
+  playedPlies += 1;
   selected = null;
   selectedMoves = [];
   hintStage = 0;
   locked = true;
 
-  if (isMate(state, DEFENSE)) {
+  if (correct && isMate(state, DEFENSE)) {
     feedbackMode = "success";
-    const id = PUZZLES[currentIndex].id;
+    const id = puzzle.id;
     if (!preferences.completed.includes(id)) preferences.completed.push(id);
     savePreferences();
+  } else if (correct) {
+    feedbackMode = "good-check";
+    renderAll();
+    scheduleDefense(puzzle.plies - playedPlies);
+    return;
   } else {
     feedbackMode = isInCheck(state, DEFENSE) ? "escape" : "not-check";
   }
   renderAll();
 }
 
+function scheduleDefense(remainingPlies) {
+  clearTimeout(defenseTimer);
+  defenseTimer = setTimeout(() => {
+    defenseTimer = null;
+    const reply = chooseLongestDefense(state, remainingPlies);
+    if (!reply) {
+      feedbackMode = "escape";
+      locked = true;
+      renderAll();
+      return;
+    }
+
+    moveHistory.push(moveWithType(state, reply));
+    state = applyMove(state, reply);
+    playedPlies += 1;
+    attackerStep += 1;
+    selected = null;
+    selectedMoves = [];
+    hintStage = 0;
+    legalMoves = generateLegalMoves(state, ATTACK);
+    locked = false;
+    feedbackMode = "continue";
+    renderAll();
+  }, 680);
+}
+
 function resetPuzzle(showMessage = true) {
+  clearTimeout(defenseTimer);
+  defenseTimer = null;
   state = puzzleState(PUZZLES[currentIndex]);
   legalMoves = generateLegalMoves(state, ATTACK);
   selected = null;
@@ -527,6 +654,9 @@ function resetPuzzle(showMessage = true) {
   feedbackMode = "start";
   hintStage = 0;
   locked = false;
+  playedPlies = 0;
+  attackerStep = 0;
+  moveHistory = [];
   closeModal("#promotion-layer");
   renderAll();
   if (showMessage) showToast(t("resetDone"));
@@ -541,6 +671,7 @@ function loadPuzzle(index) {
 
 function showHint() {
   if (feedbackMode === "success") return;
+  if (defenseTimer) return;
   if (locked) resetPuzzle(false);
   hintStage = Math.min(hintStage + 1, 2);
   feedbackMode = "hint";
