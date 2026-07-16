@@ -971,6 +971,7 @@ html[data-piece-style="latin"] .piece-sub { display: none; }
 }
 
 .puzzle-filters button:first-child { grid-column: 1 / -1; }
+.puzzle-filters button:last-child { grid-column: 1 / -1; }
 
 .puzzle-filters button.active {
   border-color: var(--accent);

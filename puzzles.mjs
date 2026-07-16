@@ -464,6 +464,72 @@ const BASE_PUZZLES = [
       defenseHand: "all",
     },
   },
+  {
+    id: "double-knight-silver-bishop-gold-relay",
+    plies: 9,
+    title: { ja: "二枚の桂を捨てて仕留める", en: "Sacrifice two knights, then finish" },
+    prompt: {
+      ja: "9手詰め。二枚の桂馬で玉を二度呼び、銀・角・金へつなぎましょう。",
+      en: "Mate in 9. Draw the king twice with two knights, then continue with silver, bishop, and gold.",
+    },
+    hints: [
+      {
+        ja: "4四の桂馬を3二へ動かして成り、玉に取らせます。",
+        en: "Move the knight from 4d to 3b, promote it, and let the king capture.",
+        origin: [3, 5],
+        target: [1, 6],
+      },
+      {
+        ja: "続いて4三の桂馬を3一へ動かして成り、もう一度玉に取らせます。",
+        en: "Then move the knight from 4c to 3a, promote it, and let the king capture again.",
+        origin: [2, 5],
+        target: [0, 6],
+      },
+      {
+        ja: "玉が3一へ来たら、3二へ銀を打って下へ呼びます。",
+        en: "When the king reaches 3a, drop the silver on 3b to draw it downward.",
+        hand: "S",
+        target: [1, 6],
+      },
+      {
+        ja: "玉が3二へ来たら、2三へ角を打って押し戻します。",
+        en: "When the king reaches 3b, drop the bishop on 2c to drive it back.",
+        hand: "B",
+        target: [2, 7],
+      },
+      {
+        ja: "戻った玉へ3二金。持ち駒をすべて使い切ります。",
+        en: "Finish with gold on 3b, using every piece from your hand.",
+        hand: "G",
+        target: [1, 6],
+      },
+    ],
+    responses: [
+      { origin: [2, 6], target: [1, 6] },
+      { origin: [1, 6], target: [0, 6] },
+      { origin: [0, 6], target: [1, 6] },
+      { origin: [1, 6], target: [0, 6] },
+    ],
+    success: {
+      ja: "二枚の桂馬を順に捨て、銀・角・金のリレーで詰み。攻方の持ち駒も残りません。",
+      en: "Two knight sacrifices drew the king in, and the silver-bishop-gold relay finished with no hand piece left.",
+    },
+    position: {
+      board: [
+        { row: 0, col: 4, type: "G", side: D },
+        { row: 0, col: 8, type: "S", side: D },
+        { row: 1, col: 8, type: "N", side: D },
+        { row: 2, col: 6, type: "K", side: D },
+        { row: 2, col: 5, type: "N", side: A },
+        { row: 3, col: 5, type: "N", side: A },
+        { row: 3, col: 8, type: "G", side: A },
+        { row: 5, col: 5, type: "L", side: A },
+        { row: 5, col: 6, type: "P", side: A },
+      ],
+      hand: { S: 1, B: 1, G: 1 },
+      defenseHand: "all",
+    },
+  },
 ];
 
 const PIECE_NAMES = {
@@ -592,6 +658,9 @@ const PRACTICE_PUZZLES = [
   practiceVariant("knight-silver-bishop-gold-relay", 7, { mirror: true, shift: 3 }),
   practiceVariant("knight-silver-bishop-gold-relay", 8, { extraBoard: [{ row: 7, col: 0, type: "P", side: D }] }),
   practiceVariant("knight-silver-bishop-gold-relay", 9, { extraBoard: [{ row: 7, col: 8, type: "P", side: D }] }),
+
+  practiceVariant("double-knight-silver-bishop-gold-relay", 1, { shift: -1 }),
+  practiceVariant("double-knight-silver-bishop-gold-relay", 2, { mirror: true }),
 ];
 
 export const PUZZLES = [...BASE_PUZZLES, ...PRACTICE_PUZZLES];

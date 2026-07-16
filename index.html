@@ -40,7 +40,7 @@
       <section class="mission-card" aria-labelledby="puzzle-title">
         <div class="mission-topline">
           <span class="level-chip" id="puzzle-level">1手詰め</span>
-          <span class="puzzle-progress" id="puzzle-progress">1 / 41</span>
+          <span class="puzzle-progress" id="puzzle-progress">1 / 44</span>
         </div>
         <h1 id="puzzle-title">金は、とどめの駒</h1>
         <p id="puzzle-prompt">相手の玉がどこにも逃げられない一手を見つけよう。</p>
@@ -48,7 +48,7 @@
 
       <button class="puzzle-picker-button" id="puzzle-picker-button" type="button">
         <span class="picker-mark" aria-hidden="true">問</span>
-        <span class="picker-copy"><strong data-i18n="choosePuzzle">問題を選ぶ</strong><small data-i18n="pickerSummary">1手・3手・5手・7手から選択</small></span>
+        <span class="picker-copy"><strong data-i18n="choosePuzzle">問題を選ぶ</strong><small data-i18n="pickerSummary">1手・3手・5手・7手・9手から選択</small></span>
         <span class="picker-arrow" aria-hidden="true">›</span>
       </button>
 
@@ -171,11 +171,12 @@
       </div>
       <p class="filter-copy" data-i18n="filterByMoves">手数から問題を選べます。</p>
       <div class="puzzle-filters" id="puzzle-filters" role="group" data-i18n-aria="filterByMoves" aria-label="手数から問題を選べます。">
-        <button class="active" type="button" data-plies="all" aria-pressed="true"><strong>すべて</strong><small>41問</small></button>
+        <button class="active" type="button" data-plies="all" aria-pressed="true"><strong>すべて</strong><small>44問</small></button>
         <button type="button" data-plies="1" aria-pressed="false"><strong>1手詰め</strong><small>6問</small></button>
         <button type="button" data-plies="3" aria-pressed="false"><strong>3手詰め</strong><small>10問</small></button>
         <button type="button" data-plies="5" aria-pressed="false"><strong>5手詰め</strong><small>15問</small></button>
         <button type="button" data-plies="7" aria-pressed="false"><strong>7手詰め</strong><small>10問</small></button>
+        <button type="button" data-plies="9" aria-pressed="false"><strong>9手詰め</strong><small>3問</small></button>
       </div>
       <div class="puzzle-list" id="puzzle-list"></div>
     </section>

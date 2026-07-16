@@ -15,9 +15,13 @@ import {
 } from "../game-core.mjs";
 import { PUZZLES, puzzleState } from "../puzzles.mjs";
 
-const SOLVER_PUZZLES = process.env.FULL_PUZZLE_TEST === "1"
+const ALL_SOLVER_PUZZLES = process.env.FULL_PUZZLE_TEST === "1"
   ? PUZZLES
   : PUZZLES.filter((puzzle) => !puzzle.derivedFrom);
+const REQUESTED_PLIES = Number(process.env.PUZZLE_PLIES || 0);
+const SOLVER_PUZZLES = REQUESTED_PLIES
+  ? ALL_SOLVER_PUZZLES.filter((puzzle) => puzzle.plies === REQUESTED_PLIES)
+  : ALL_SOLVER_PUZZLES;
 
 function semanticKey(move) {
   if (move.kind === "drop") return `${move.type}*${move.toRow},${move.toCol}`;
@@ -43,8 +47,8 @@ function matchesHint(move, hint) {
 
 test("the bundle contains the requested number of puzzles for each mate length", () => {
   assert.deepEqual(
-    Object.fromEntries([1, 3, 5, 7].map((plies) => [plies, PUZZLES.filter((puzzle) => puzzle.plies === plies).length])),
-    { 1: 6, 3: 10, 5: 15, 7: 10 },
+    Object.fromEntries([1, 3, 5, 7, 9].map((plies) => [plies, PUZZLES.filter((puzzle) => puzzle.plies === plies).length])),
+    { 1: 6, 3: 10, 5: 15, 7: 10, 9: 3 },
   );
   assert.equal(new Set(PUZZLES.map((puzzle) => puzzle.id)).size, PUZZLES.length, "puzzle ids must be unique");
 });
