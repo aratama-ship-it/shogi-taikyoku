@@ -907,10 +907,61 @@ html[data-piece-style="latin"] .piece-sub { display: none; }
 .offline-note strong { font-size: 12px; }
 .offline-note p { margin-top: 3px; }
 
+.filter-copy {
+  margin: -8px 0 10px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.puzzle-filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+  margin-bottom: 14px;
+}
+
+.puzzle-filters button {
+  min-height: 54px;
+  display: grid;
+  align-content: center;
+  gap: 3px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--surface-muted);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.puzzle-filters button.active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 11%, var(--surface));
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.puzzle-filters strong { font-size: 12px; }
+.puzzle-filters small { color: var(--muted); font-size: 9px; }
+
 .puzzle-list {
   display: grid;
   gap: 9px;
 }
+
+.puzzle-empty {
+  min-height: 112px;
+  display: grid;
+  place-content: center;
+  gap: 5px;
+  padding: 18px;
+  border: 1px dashed var(--line);
+  border-radius: 15px;
+  background: var(--surface-muted);
+  text-align: center;
+}
+
+.puzzle-empty strong { font-size: 13px; }
+.puzzle-empty p { color: var(--muted); font-size: 10px; }
 
 .puzzle-list-item {
   width: 100%;

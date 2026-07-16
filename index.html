@@ -163,6 +163,13 @@
         <div><span class="eyebrow" data-i18n="collection">COLLECTION</span><h2 id="puzzles-title" data-i18n="choosePuzzle">問題を選ぶ</h2></div>
         <button class="close-button" type="button" data-close-sheet aria-label="Close">×</button>
       </div>
+      <p class="filter-copy" data-i18n="filterByMoves">手数から問題を選べます。</p>
+      <div class="puzzle-filters" id="puzzle-filters" role="group" data-i18n-aria="filterByMoves" aria-label="手数から問題を選べます。">
+        <button class="active" type="button" data-plies="all" aria-pressed="true"><strong>すべて</strong><small>9問</small></button>
+        <button type="button" data-plies="1" aria-pressed="false"><strong>1手詰め</strong><small>6問</small></button>
+        <button type="button" data-plies="3" aria-pressed="false"><strong>3手詰め</strong><small>3問</small></button>
+        <button type="button" data-plies="5" aria-pressed="false"><strong>5手詰め</strong><small>準備中</small></button>
+      </div>
       <div class="puzzle-list" id="puzzle-list"></div>
     </section>
   </div>

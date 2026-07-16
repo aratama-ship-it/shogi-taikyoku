@@ -44,6 +44,10 @@ const I18N = {
     offlineCopy: "ホーム画面に追加すると、通信のない場所でも練習できます。",
     collection: "COLLECTION",
     choosePuzzle: "問題を選ぶ",
+    filterByMoves: "手数から問題を選べます。",
+    allPuzzles: "すべて",
+    comingSoon: "準備中",
+    noPuzzlesYet: "この手数の問題は、これから追加します。",
     learn: "LEARN",
     guideIntro: "▲が駒の向いている方向です。最初は名前より、動ける形を覚えれば大丈夫。",
     officialRules: "日本将棋連盟の公式ルールを見る",
@@ -108,6 +112,10 @@ const I18N = {
     offlineCopy: "Add it to your Home Screen to practise without a connection.",
     collection: "COLLECTION",
     choosePuzzle: "Choose a puzzle",
+    filterByMoves: "Choose puzzles by mate length.",
+    allPuzzles: "All puzzles",
+    comingSoon: "Coming soon",
+    noPuzzlesYet: "Puzzles of this length will be added here.",
     learn: "LEARN",
     guideIntro: "▲ shows the direction each piece faces. Learn the movement shape first; the names can follow.",
     officialRules: "Read the official Japan Shogi Association rules",
@@ -174,6 +182,7 @@ let defenseTimer = null;
 let playedPlies = 0;
 let attackerStep = 0;
 let moveHistory = [];
+let puzzleFilter = "all";
 
 function loadPreferences() {
   const fallbackLanguage = navigator.language?.toLowerCase().startsWith("ja") ? "ja" : "en";
@@ -203,6 +212,17 @@ function mateLabel(puzzle) {
   if (puzzle.plies === 1) return t("mateInOne");
   if (puzzle.plies === 3) return t("mateInThree");
   return preferences.language === "ja" ? `${puzzle.plies}手詰め` : `Mate in ${puzzle.plies}`;
+}
+
+function puzzleCountLabel(count) {
+  if (preferences.language === "ja") return `${count}問`;
+  return `${count} ${count === 1 ? "puzzle" : "puzzles"}`;
+}
+
+function filteredPuzzleEntries() {
+  return PUZZLES
+    .map((puzzle, index) => ({ puzzle, index }))
+    .filter(({ puzzle }) => puzzleFilter === "all" || puzzle.plies === Number(puzzleFilter));
 }
 
 function currentHint() {
@@ -379,8 +399,12 @@ function renderHand() {
 
 function renderMission() {
   const puzzle = PUZZLES[currentIndex];
+  const filtered = filteredPuzzleEntries();
+  const filteredPosition = filtered.findIndex(({ index }) => index === currentIndex);
   $("#puzzle-level").textContent = mateLabel(puzzle);
-  $("#puzzle-progress").textContent = `${currentIndex + 1} / ${PUZZLES.length}`;
+  $("#puzzle-progress").textContent = filteredPosition >= 0
+    ? `${filteredPosition + 1} / ${filtered.length}`
+    : `${currentIndex + 1} / ${PUZZLES.length}`;
   $("#puzzle-title").textContent = localText(puzzle.title);
   $("#puzzle-prompt").textContent = localText(puzzle.prompt);
   $("#turn-banner").textContent = feedbackMode === "good-check" ? t("defenderThinking") : t("yourTurn");
@@ -432,10 +456,39 @@ function renderFeedback() {
   }
 }
 
+function renderPuzzleFilters() {
+  document.querySelectorAll("#puzzle-filters [data-plies]").forEach((button) => {
+    const value = button.dataset.plies;
+    const count = value === "all"
+      ? PUZZLES.length
+      : PUZZLES.filter((puzzle) => puzzle.plies === Number(value)).length;
+    const active = value === puzzleFilter;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+    button.querySelector("strong").textContent = value === "all"
+      ? t("allPuzzles")
+      : mateLabel({ plies: Number(value) });
+    button.querySelector("small").textContent = count > 0 ? puzzleCountLabel(count) : t("comingSoon");
+  });
+}
+
 function renderPuzzleList() {
   const list = $("#puzzle-list");
   list.replaceChildren();
-  PUZZLES.forEach((puzzle, index) => {
+  const entries = filteredPuzzleEntries();
+  if (!entries.length) {
+    const empty = document.createElement("div");
+    empty.className = "puzzle-empty";
+    const title = document.createElement("strong");
+    title.textContent = `${mateLabel({ plies: Number(puzzleFilter) })} · ${t("comingSoon")}`;
+    const copy = document.createElement("p");
+    copy.textContent = t("noPuzzlesYet");
+    empty.append(title, copy);
+    list.appendChild(empty);
+    return;
+  }
+
+  entries.forEach(({ puzzle, index }) => {
     const complete = preferences.completed.includes(puzzle.id);
     const button = document.createElement("button");
     button.type = "button";
@@ -528,6 +581,7 @@ function renderAll() {
   renderHand();
   renderSequence();
   renderFeedback();
+  renderPuzzleFilters();
   renderPuzzleList();
   renderPieceGuide();
   $("#next-button").disabled = feedbackMode !== "success";
@@ -669,6 +723,13 @@ function loadPuzzle(index) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+function nextPuzzleIndex() {
+  const filtered = filteredPuzzleEntries();
+  if (!filtered.length) return (currentIndex + 1) % PUZZLES.length;
+  const position = filtered.findIndex(({ index }) => index === currentIndex);
+  return filtered[position >= 0 ? (position + 1) % filtered.length : 0].index;
+}
+
 function showHint() {
   if (feedbackMode === "success") return;
   if (defenseTimer) return;
@@ -737,8 +798,17 @@ function bindEvents() {
   $("#learn-button").addEventListener("click", () => openSheet("#learn-layer"));
   $("#reset-button").addEventListener("click", () => resetPuzzle(true));
   $("#hint-button").addEventListener("click", showHint);
-  $("#next-button").addEventListener("click", () => loadPuzzle(currentIndex + 1));
+  $("#next-button").addEventListener("click", () => loadPuzzle(nextPuzzleIndex()));
   document.querySelectorAll("[data-close-sheet]").forEach((button) => button.addEventListener("click", closeSheets));
+
+  document.querySelectorAll("#puzzle-filters [data-plies]").forEach((button) => {
+    button.addEventListener("click", () => {
+      puzzleFilter = button.dataset.plies;
+      renderPuzzleFilters();
+      renderPuzzleList();
+      renderMission();
+    });
+  });
 
   bindOptionGroup("#language-options", "language");
   bindOptionGroup("#piece-style-options", "pieceStyle");
