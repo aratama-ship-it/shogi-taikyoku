@@ -54,7 +54,7 @@ test("every bundled puzzle has the declared minimum mate length and one first de
   }
 });
 
-test("the staged hints identify a complete forced line in every puzzle", () => {
+test("the staged hints identify a complete no-surplus forced line in every puzzle", () => {
   for (const puzzle of PUZZLES) {
     let state = puzzleState(puzzle);
     let remaining = puzzle.plies;
@@ -70,6 +70,8 @@ test("the staged hints identify a complete forced line in every puzzle", () => {
       remaining -= 1;
       if (isMate(state, DEFENSE)) {
         assert.equal(remaining, 0, `${puzzle.id} mates before its declared length`);
+        const surplus = Object.values(state.hands[ATTACK] || {}).reduce((sum, count) => sum + count, 0);
+        assert.equal(surplus, 0, `${puzzle.id} leaves attacking pieces in hand`);
         break;
       }
 

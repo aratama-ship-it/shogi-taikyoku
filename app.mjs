@@ -6,8 +6,7 @@ import {
   generateLegalMoves,
   isInCheck,
   isMate,
-  moveKey,
-  winningCheckingMoves,
+  isWinningCheckingMove,
 } from "./game-core.mjs";
 import { PUZZLES, puzzleState } from "./puzzles.mjs";
 
@@ -44,6 +43,7 @@ const I18N = {
     offlineCopy: "ホーム画面に追加すると、通信のない場所でも練習できます。",
     collection: "COLLECTION",
     choosePuzzle: "問題を選ぶ",
+    pickerSummary: "1手・3手・5手から選択",
     filterByMoves: "手数から問題を選べます。",
     allPuzzles: "すべて",
     comingSoon: "準備中",
@@ -112,6 +112,7 @@ const I18N = {
     offlineCopy: "Add it to your Home Screen to practise without a connection.",
     collection: "COLLECTION",
     choosePuzzle: "Choose a puzzle",
+    pickerSummary: "Choose mate in 1, 3, or 5",
     filterByMoves: "Choose puzzles by mate length.",
     allPuzzles: "All puzzles",
     comingSoon: "Coming soon",
@@ -644,8 +645,7 @@ function commitMove(move) {
   pendingPromotionMoves = [];
   const puzzle = PUZZLES[currentIndex];
   const remaining = puzzle.plies - playedPlies;
-  const winningKeys = new Set(winningCheckingMoves(state, remaining).map(moveKey));
-  const correct = winningKeys.has(moveKey(move));
+  const correct = isWinningCheckingMove(state, move, remaining);
   const entry = moveWithType(state, move);
   state = applyMove(state, move);
   moveHistory.push(entry);
@@ -795,6 +795,7 @@ function bindOptionGroup(selector, preferenceKey, onChange) {
 function bindEvents() {
   $("#settings-button").addEventListener("click", () => openSheet("#settings-layer"));
   $("#brand-button").addEventListener("click", () => openSheet("#puzzles-layer"));
+  $("#puzzle-picker-button").addEventListener("click", () => openSheet("#puzzles-layer"));
   $("#learn-button").addEventListener("click", () => openSheet("#learn-layer"));
   $("#reset-button").addEventListener("click", () => resetPuzzle(true));
   $("#hint-button").addEventListener("click", showHint);

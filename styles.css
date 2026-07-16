@@ -218,6 +218,42 @@ a:focus-visible {
   line-height: 1.55;
 }
 
+.puzzle-picker-button {
+  width: 100%;
+  min-height: 54px;
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  margin: 9px 0;
+  padding: 8px 12px;
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--line));
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+  color: var(--ink);
+  text-align: left;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+}
+
+.picker-mark {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--accent);
+  color: white;
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.picker-copy { display: grid; gap: 2px; }
+.picker-copy strong { font-size: 12px; }
+.picker-copy small { color: var(--muted); font-size: 9px; }
+.picker-arrow { color: var(--accent); font-size: 24px; line-height: 1; }
+
 .play-area {
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, .36);

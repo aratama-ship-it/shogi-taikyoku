@@ -159,20 +159,20 @@ export const PUZZLES = [
   {
     id: "capture-with-rook",
     plies: 1,
-    title: { ja: "取って王手する", en: "Capture with check" },
+    title: { ja: "飛車を近づけて詰ます", en: "Bring the rook close" },
     prompt: {
-      ja: "盤上の飛車で守り駒を取り、玉に迫りましょう。",
-      en: "Use the rook on the board to capture a defender and close in on the king.",
+      ja: "盤上の飛車を、玉が受けられない距離まで近づけましょう。",
+      en: "Bring the rook close enough that the king has no defense.",
     },
     hint: {
-      ja: "飛車で9五の駒を取ります。後ろの桂馬が助けてくれます。",
-      en: "Capture the piece on 9e with the rook. The knight behind it provides support.",
+      ja: "飛車を9五へ進めます。後ろの桂馬が助けてくれます。",
+      en: "Move the rook to 9e. The knight behind it provides support.",
     },
     success: {
-      ja: "飛車で取って詰み！ 桂馬の利きが飛車を守っています。",
-      en: "Capture and mate! The knight protects the rook on its final square.",
+      ja: "飛車を近づけて詰み！ 桂馬の利きが飛車を守っています。",
+      en: "Rook mate! The knight protects the rook on its final square.",
     },
-    hintSquare: [6, 0],
+    hintSquare: [4, 2],
     hintTarget: [4, 0],
     position: {
       board: [
@@ -180,9 +180,7 @@ export const PUZZLES = [
         { row: 2, col: 1, type: "P", side: D },
         { row: 3, col: 0, type: "K", side: D },
         { row: 3, col: 1, type: "L", side: D },
-        { row: 4, col: 0, type: "P", side: D },
-        { row: 4, col: 1, type: "N", side: D },
-        { row: 6, col: 0, type: "R", side: A },
+        { row: 4, col: 2, type: "R", side: A },
         { row: 6, col: 1, type: "N", side: A },
       ],
       hand: {},
@@ -199,8 +197,8 @@ export const PUZZLES = [
     },
     hints: [
       {
-        ja: "盤上の飛車で7一の歩を取り、玉を動かします。",
-        en: "Use the rook to capture the pawn on 7a and force the king to move.",
+        ja: "盤上の飛車を7一へ進め、玉を動かします。",
+        en: "Move the rook to 7a and force the king to move.",
         origin: [2, 3],
         target: [0, 3],
       },
@@ -217,7 +215,6 @@ export const PUZZLES = [
     },
     position: {
       board: [
-        { row: 0, col: 3, type: "P", side: D },
         { row: 0, col: 4, type: "K", side: D },
         { row: 1, col: 4, type: "P", side: D },
         { row: 1, col: 5, type: "S", side: D },
@@ -302,6 +299,99 @@ export const PUZZLES = [
         { row: 4, col: 2, type: "S", side: A },
       ],
       hand: { B: 1, S: 1 },
+      defenseHand: "all",
+    },
+  },
+  {
+    id: "rook-silver-gold-relay",
+    plies: 5,
+    title: { ja: "飛車を捨て、銀で追う", en: "Sacrifice, chase, and finish" },
+    prompt: {
+      ja: "5手詰め。飛車・銀・金を、使う順番まで読んでみましょう。",
+      en: "Mate in 5. Work out the right order for rook, silver, and gold.",
+    },
+    hints: [
+      {
+        ja: "まず8二へ飛車を打ち、玉に取らせます。",
+        en: "First drop the rook on 8b and let the king capture it.",
+        hand: "R",
+        target: [1, 1],
+      },
+      {
+        ja: "玉が8二へ来たら、7三へ銀を打って追います。",
+        en: "When the king reaches 8b, drop the silver on 7c to drive it away.",
+        hand: "S",
+        target: [2, 2],
+      },
+      {
+        ja: "最後は8二へ金。三枚の持ち駒をすべて使います。",
+        en: "Finish with gold on 8b, using every piece from your hand.",
+        hand: "G",
+        target: [1, 1],
+      },
+    ],
+    success: {
+      ja: "飛車を捨てて玉を呼び、銀で追って頭金。持ち駒を余さない5手詰めです。",
+      en: "The rook sacrifice drew the king in, the silver drove it out, and the gold finished with no piece left in hand.",
+    },
+    position: {
+      board: [
+        { row: 0, col: 1, type: "K", side: D },
+        { row: 0, col: 2, type: "P", side: D },
+        { row: 1, col: 0, type: "P", side: D },
+        { row: 1, col: 4, type: "P", side: D },
+        { row: 2, col: 0, type: "L", side: A },
+        { row: 3, col: 2, type: "L", side: A },
+        { row: 6, col: 0, type: "P", side: A },
+        { row: 6, col: 1, type: "B", side: A },
+      ],
+      hand: { R: 1, S: 1, G: 1 },
+      defenseHand: "all",
+    },
+  },
+  {
+    id: "silver-bishop-gold-relay",
+    plies: 5,
+    title: { ja: "銀・角・金のリレー", en: "Silver, bishop, gold relay" },
+    prompt: {
+      ja: "5手詰め。三種類の持ち駒で、玉を往復させます。",
+      en: "Mate in 5. Use three different pieces to send the king out and back.",
+    },
+    hints: [
+      {
+        ja: "3二へ銀を打ち、玉を下へ呼びます。",
+        en: "Drop the silver on 3b to draw the king downward.",
+        hand: "S",
+        target: [1, 6],
+      },
+      {
+        ja: "玉が3二へ来たら、2三へ角を打ちます。",
+        en: "When the king reaches 3b, drop the bishop on 2c.",
+        hand: "B",
+        target: [2, 7],
+      },
+      {
+        ja: "戻った玉へ3二金。これで持ち駒も残りません。",
+        en: "After the king returns, drop gold on 3b. No piece remains in hand.",
+        hand: "G",
+        target: [1, 6],
+      },
+    ],
+    success: {
+      ja: "銀を取らせ、角で追い戻して金で詰み。三枚を使い切るきれいな手順です。",
+      en: "The king took the silver, the bishop drove it back, and the gold completed a clean mate with every hand piece used.",
+    },
+    position: {
+      board: [
+        { row: 0, col: 4, type: "G", side: D },
+        { row: 0, col: 6, type: "K", side: D },
+        { row: 0, col: 8, type: "S", side: D },
+        { row: 1, col: 8, type: "N", side: D },
+        { row: 3, col: 8, type: "G", side: A },
+        { row: 5, col: 5, type: "L", side: A },
+        { row: 5, col: 6, type: "P", side: A },
+      ],
+      hand: { S: 1, B: 1, G: 1 },
       defenseHand: "all",
     },
   },
