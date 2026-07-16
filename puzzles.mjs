@@ -3,7 +3,7 @@ import { ATTACK, DEFENSE, stateFromPosition } from "./game-core.mjs";
 const A = ATTACK;
 const D = DEFENSE;
 
-export const PUZZLES = [
+const BASE_PUZZLES = [
   {
     id: "gold-at-the-head",
     plies: 1,
@@ -209,6 +209,7 @@ export const PUZZLES = [
         target: [1, 3],
       },
     ],
+    responses: [{ origin: [0, 4], target: [0, 3] }],
     success: {
       ja: "飛車を捨てて玉を呼び込み、最後は頭金。駒を取らせるのも大切な攻めです。",
       en: "The rook sacrifice drew the king in, and the gold finished the mate.",
@@ -248,6 +249,7 @@ export const PUZZLES = [
         target: [0, 2],
       },
     ],
+    responses: [{ origin: [0, 4], target: [0, 3] }],
     success: {
       ja: "桂馬の連続王手！ 最後に成桂となり、横へ逃げる玉を捕まえました。",
       en: "A knight relay! The second knight promoted and covered the king's final escape.",
@@ -285,6 +287,7 @@ export const PUZZLES = [
         target: [0, 1],
       },
     ],
+    responses: [{ origin: [0, 2], target: [1, 2] }],
     success: {
       ja: "銀で玉を追い出し、角の斜めで詰み。持ち駒の連携ができました。",
       en: "The silver drove the king out, and the bishop's diagonal completed the mate.",
@@ -329,6 +332,10 @@ export const PUZZLES = [
         hand: "G",
         target: [1, 1],
       },
+    ],
+    responses: [
+      { origin: [0, 1], target: [1, 1] },
+      { origin: [1, 1], target: [0, 0] },
     ],
     success: {
       ja: "飛車を捨てて玉を呼び、銀で追って頭金。持ち駒を余さない5手詰めです。",
@@ -377,6 +384,10 @@ export const PUZZLES = [
         target: [1, 6],
       },
     ],
+    responses: [
+      { origin: [0, 6], target: [1, 6] },
+      { origin: [1, 6], target: [0, 6] },
+    ],
     success: {
       ja: "銀を取らせ、角で追い戻して金で詰み。三枚を使い切るきれいな手順です。",
       en: "The king took the silver, the bishop drove it back, and the gold completed a clean mate with every hand piece used.",
@@ -395,7 +406,195 @@ export const PUZZLES = [
       defenseHand: "all",
     },
   },
+  {
+    id: "knight-silver-bishop-gold-relay",
+    plies: 7,
+    title: { ja: "桂を捨て、三枚で仕留める", en: "Sacrifice the knight, then finish" },
+    prompt: {
+      ja: "7手詰め。盤上の桂馬で玉を呼び、銀・角・金を順番に使いましょう。",
+      en: "Mate in 7. Draw the king with the knight, then use silver, bishop, and gold in order.",
+    },
+    hints: [
+      {
+        ja: "4三の桂馬を3一へ動かして成り、玉に取らせます。",
+        en: "Move the knight from 4c to 3a, promote it, and let the king capture.",
+        origin: [2, 5],
+        target: [0, 6],
+      },
+      {
+        ja: "玉が3一へ来たら、3二へ銀を打って下へ呼びます。",
+        en: "When the king reaches 3a, drop the silver on 3b to draw it downward.",
+        hand: "S",
+        target: [1, 6],
+      },
+      {
+        ja: "玉が3二へ来たら、2三へ角を打って押し戻します。",
+        en: "When the king reaches 3b, drop the bishop on 2c to drive it back.",
+        hand: "B",
+        target: [2, 7],
+      },
+      {
+        ja: "戻った玉へ3二金。持ち駒をすべて使い切ります。",
+        en: "Finish with gold on 3b, using every piece from your hand.",
+        hand: "G",
+        target: [1, 6],
+      },
+    ],
+    responses: [
+      { origin: [1, 6], target: [0, 6] },
+      { origin: [0, 6], target: [1, 6] },
+      { origin: [1, 6], target: [0, 6] },
+    ],
+    success: {
+      ja: "桂馬を捨てて玉を呼び、銀・角・金のリレーで詰み。持ち駒も残りません。",
+      en: "The knight sacrifice drew the king in, and the silver-bishop-gold relay finished with no hand piece left.",
+    },
+    position: {
+      board: [
+        { row: 0, col: 4, type: "G", side: D },
+        { row: 0, col: 8, type: "S", side: D },
+        { row: 1, col: 8, type: "N", side: D },
+        { row: 1, col: 6, type: "K", side: D },
+        { row: 2, col: 5, type: "N", side: A },
+        { row: 3, col: 8, type: "G", side: A },
+        { row: 5, col: 5, type: "L", side: A },
+        { row: 5, col: 6, type: "P", side: A },
+      ],
+      hand: { S: 1, B: 1, G: 1 },
+      defenseHand: "all",
+    },
+  },
 ];
+
+const PIECE_NAMES = {
+  R: { ja: "飛車", en: "rook" },
+  B: { ja: "角", en: "bishop" },
+  G: { ja: "金", en: "gold" },
+  S: { ja: "銀", en: "silver" },
+  N: { ja: "桂馬", en: "knight" },
+  L: { ja: "香車", en: "lance" },
+  P: { ja: "歩", en: "pawn" },
+};
+const JA_RANKS = ["一", "二", "三", "四", "五", "六", "七", "八", "九"];
+
+function transformCol(col, mirror, shift) {
+  return (mirror ? 8 - col : col) + shift;
+}
+
+function transformSquare(square, mirror, shift) {
+  return [square[0], transformCol(square[1], mirror, shift)];
+}
+
+function squareLabel([row, col], language) {
+  const file = 9 - col;
+  return language === "ja" ? `${file}${JA_RANKS[row]}` : `${file}${String.fromCharCode(97 + row)}`;
+}
+
+function variantHint(seed, hint, mirror, shift) {
+  const target = transformSquare(hint.target, mirror, shift);
+  if (hint.hand) {
+    const name = PIECE_NAMES[hint.hand];
+    return {
+      ja: `持ち駒の${name.ja}を${squareLabel(target, "ja")}へ打って王手します。`,
+      en: `Drop the ${name.en} on ${squareLabel(target, "en")} to give check.`,
+      hand: hint.hand,
+      target,
+    };
+  }
+
+  const origin = transformSquare(hint.origin, mirror, shift);
+  const piece = seed.position.board.find((item) => item.row === hint.origin[0] && item.col === hint.origin[1]);
+  const name = PIECE_NAMES[piece?.type] || { ja: "駒", en: "piece" };
+  return {
+    ja: `${squareLabel(origin, "ja")}の${name.ja}を${squareLabel(target, "ja")}へ動かして王手します。`,
+    en: `Move the ${name.en} from ${squareLabel(origin, "en")} to ${squareLabel(target, "en")} to give check.`,
+    origin,
+    target,
+  };
+}
+
+function practiceVariant(seedId, sequence, { mirror = false, shift = 0, extraBoard = [] } = {}) {
+  const seed = BASE_PUZZLES.find((puzzle) => puzzle.id === seedId);
+  const suffix = String(sequence).padStart(2, "0");
+  const sourceHints = seed.hints || [{
+    hand: seed.hintHand,
+    origin: seed.hintHand ? null : seed.hintSquare,
+    target: seed.hintTarget || seed.hintSquare,
+  }];
+  const hints = sourceHints.map((hint) => variantHint(seed, hint, mirror, shift));
+
+  return {
+    id: `${seed.id}-practice-${suffix}`,
+    plies: seed.plies,
+    title: {
+      ja: `${seed.title.ja}・反復${sequence}`,
+      en: `${seed.title.en} — Practice ${sequence}`,
+    },
+    prompt: {
+      ja: `${seed.plies}手詰め。同じ詰み筋を、盤の別の場所でも見つけましょう。`,
+      en: `Mate in ${seed.plies}. Find the same mating pattern in a different part of the board.`,
+    },
+    hints,
+    responses: (seed.responses || []).map((response) => ({
+      ...response,
+      origin: transformSquare(response.origin, mirror, shift),
+      target: transformSquare(response.target, mirror, shift),
+    })),
+    success: {
+      ja: "同じ詰み筋を別の位置でも発見できました。攻方の持ち駒も残りません。",
+      en: "You found the same mating pattern in a new position, with no attacking piece left in hand.",
+    },
+    position: {
+      board: [
+        ...seed.position.board.map((item) => ({
+          ...item,
+          col: transformCol(item.col, mirror, shift),
+        })),
+        ...extraBoard.map((item) => ({ ...item })),
+      ],
+      hand: { ...seed.position.hand },
+      defenseHand: seed.position.defenseHand,
+    },
+    derivedFrom: seed.id,
+    transform: { mirror, shift, extraBoard: extraBoard.map((item) => ({ ...item })) },
+  };
+}
+
+const PRACTICE_PUZZLES = [
+  practiceVariant("rook-sacrifice-gold-finish", 1, { shift: -2 }),
+  practiceVariant("rook-sacrifice-gold-finish", 2, { shift: -1 }),
+  practiceVariant("rook-sacrifice-gold-finish", 3, { shift: 1 }),
+  practiceVariant("rook-sacrifice-gold-finish", 4, { shift: 2 }),
+  practiceVariant("knight-relay", 1, { shift: -1 }),
+  practiceVariant("knight-relay", 2, { shift: 1 }),
+  practiceVariant("silver-then-bishop", 1, { shift: 1 }),
+
+  practiceVariant("rook-silver-gold-relay", 1, { mirror: true }),
+  practiceVariant("silver-bishop-gold-relay", 1, { shift: -1 }),
+  practiceVariant("silver-bishop-gold-relay", 2, { shift: -2 }),
+  practiceVariant("silver-bishop-gold-relay", 3, { shift: -3 }),
+  practiceVariant("silver-bishop-gold-relay", 4, { shift: -4 }),
+  practiceVariant("silver-bishop-gold-relay", 5, { mirror: true }),
+  practiceVariant("silver-bishop-gold-relay", 6, { mirror: true, shift: 1 }),
+  practiceVariant("silver-bishop-gold-relay", 7, { mirror: true, shift: 2 }),
+  practiceVariant("silver-bishop-gold-relay", 8, { mirror: true, shift: 3 }),
+  practiceVariant("silver-bishop-gold-relay", 9, { mirror: true, shift: 4 }),
+  practiceVariant("silver-bishop-gold-relay", 10, { extraBoard: [{ row: 7, col: 0, type: "P", side: D }] }),
+  practiceVariant("silver-bishop-gold-relay", 11, { extraBoard: [{ row: 7, col: 4, type: "P", side: D }] }),
+  practiceVariant("silver-bishop-gold-relay", 12, { extraBoard: [{ row: 7, col: 8, type: "P", side: D }] }),
+
+  practiceVariant("knight-silver-bishop-gold-relay", 1, { shift: -1 }),
+  practiceVariant("knight-silver-bishop-gold-relay", 2, { shift: -2 }),
+  practiceVariant("knight-silver-bishop-gold-relay", 3, { shift: -3 }),
+  practiceVariant("knight-silver-bishop-gold-relay", 4, { mirror: true }),
+  practiceVariant("knight-silver-bishop-gold-relay", 5, { mirror: true, shift: 1 }),
+  practiceVariant("knight-silver-bishop-gold-relay", 6, { mirror: true, shift: 2 }),
+  practiceVariant("knight-silver-bishop-gold-relay", 7, { mirror: true, shift: 3 }),
+  practiceVariant("knight-silver-bishop-gold-relay", 8, { extraBoard: [{ row: 7, col: 0, type: "P", side: D }] }),
+  practiceVariant("knight-silver-bishop-gold-relay", 9, { extraBoard: [{ row: 7, col: 8, type: "P", side: D }] }),
+];
+
+export const PUZZLES = [...BASE_PUZZLES, ...PRACTICE_PUZZLES];
 
 export function puzzleState(puzzle) {
   return stateFromPosition(puzzle.position);

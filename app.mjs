@@ -43,7 +43,7 @@ const I18N = {
     offlineCopy: "ホーム画面に追加すると、通信のない場所でも練習できます。",
     collection: "COLLECTION",
     choosePuzzle: "問題を選ぶ",
-    pickerSummary: "1手・3手・5手から選択",
+    pickerSummary: "1手・3手・5手・7手から選択",
     filterByMoves: "手数から問題を選べます。",
     allPuzzles: "すべて",
     comingSoon: "準備中",
@@ -112,7 +112,7 @@ const I18N = {
     offlineCopy: "Add it to your Home Screen to practise without a connection.",
     collection: "COLLECTION",
     choosePuzzle: "Choose a puzzle",
-    pickerSummary: "Choose mate in 1, 3, or 5",
+    pickerSummary: "Choose mate in 1, 3, 5, or 7",
     filterByMoves: "Choose puzzles by mate length.",
     allPuzzles: "All puzzles",
     comingSoon: "Coming soon",
@@ -236,6 +236,14 @@ function currentHint() {
     origin: puzzle.hintHand ? null : puzzle.hintSquare,
     target: puzzle.hintTarget || puzzle.hintSquare,
   };
+}
+
+function matchesPlannedMove(move, plan) {
+  if (!plan || move.toRow !== plan.target[0] || move.toCol !== plan.target[1]) return false;
+  if (plan.hand) return move.kind === "drop" && move.type === plan.hand;
+  return move.kind === "board"
+    && move.fromRow === plan.origin[0]
+    && move.fromCol === plan.origin[1];
 }
 
 function moveWithType(position, move) {
@@ -645,9 +653,11 @@ function commitMove(move) {
   pendingPromotionMoves = [];
   const puzzle = PUZZLES[currentIndex];
   const remaining = puzzle.plies - playedPlies;
-  const correct = isWinningCheckingMove(state, move, remaining);
+  const nextState = applyMove(state, move);
+  const followsVerifiedLine = matchesPlannedMove(move, currentHint()) && isInCheck(nextState, DEFENSE);
+  const correct = followsVerifiedLine || isWinningCheckingMove(state, move, remaining);
   const entry = moveWithType(state, move);
-  state = applyMove(state, move);
+  state = nextState;
   moveHistory.push(entry);
   playedPlies += 1;
   selected = null;
@@ -675,7 +685,10 @@ function scheduleDefense(remainingPlies) {
   clearTimeout(defenseTimer);
   defenseTimer = setTimeout(() => {
     defenseTimer = null;
-    const reply = chooseLongestDefense(state, remainingPlies);
+    const puzzle = PUZZLES[currentIndex];
+    const planned = puzzle.responses?.[attackerStep];
+    const reply = generateLegalMoves(state, DEFENSE).find((move) => matchesPlannedMove(move, planned))
+      || chooseLongestDefense(state, remainingPlies);
     if (!reply) {
       feedbackMode = "escape";
       locked = true;

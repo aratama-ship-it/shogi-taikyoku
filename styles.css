@@ -970,6 +970,8 @@ html[data-piece-style="latin"] .piece-sub { display: none; }
   cursor: pointer;
 }
 
+.puzzle-filters button:first-child { grid-column: 1 / -1; }
+
 .puzzle-filters button.active {
   border-color: var(--accent);
   background: color-mix(in srgb, var(--accent) 11%, var(--surface));

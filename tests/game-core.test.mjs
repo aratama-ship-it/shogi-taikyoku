@@ -15,6 +15,10 @@ import {
 } from "../game-core.mjs";
 import { PUZZLES, puzzleState } from "../puzzles.mjs";
 
+const SOLVER_PUZZLES = process.env.FULL_PUZZLE_TEST === "1"
+  ? PUZZLES
+  : PUZZLES.filter((puzzle) => !puzzle.derivedFrom);
+
 function semanticKey(move) {
   if (move.kind === "drop") return `${move.type}*${move.toRow},${move.toCol}`;
   return `${move.fromRow},${move.fromCol}-${move.toRow},${move.toCol}`;
@@ -37,8 +41,46 @@ function matchesHint(move, hint) {
     && move.fromCol === hint.origin[1];
 }
 
-test("every bundled puzzle has the declared minimum mate length and one first destination", () => {
-  for (const puzzle of PUZZLES) {
+test("the bundle contains the requested number of puzzles for each mate length", () => {
+  assert.deepEqual(
+    Object.fromEntries([1, 3, 5, 7].map((plies) => [plies, PUZZLES.filter((puzzle) => puzzle.plies === plies).length])),
+    { 1: 6, 3: 10, 5: 15, 7: 10 },
+  );
+  assert.equal(new Set(PUZZLES.map((puzzle) => puzzle.id)).size, PUZZLES.length, "puzzle ids must be unique");
+});
+
+test("practice variants match their declared source transformation", () => {
+  const byId = new Map(PUZZLES.map((puzzle) => [puzzle.id, puzzle]));
+  for (const puzzle of PUZZLES.filter((item) => item.derivedFrom)) {
+    const source = byId.get(puzzle.derivedFrom);
+    assert.ok(source, `${puzzle.id} has no source puzzle`);
+    const { mirror, shift, extraBoard } = puzzle.transform;
+    const mapCol = (col) => (mirror ? 8 - col : col) + shift;
+    const expectedBoard = [
+      ...source.position.board.map((item) => ({ ...item, col: mapCol(item.col) })),
+      ...(extraBoard || []),
+    ];
+    assert.deepEqual(puzzle.position.board, expectedBoard, `${puzzle.id} board does not match its source`);
+    assert.deepEqual(puzzle.position.hand, source.position.hand, `${puzzle.id} hand does not match its source`);
+    for (const item of puzzle.position.board) {
+      assert.ok(item.row >= 0 && item.row < 9 && item.col >= 0 && item.col < 9, `${puzzle.id} has an off-board piece`);
+    }
+    source.hints.forEach((hint, index) => {
+      const variant = puzzle.hints[index];
+      assert.deepEqual(variant.target, [hint.target[0], mapCol(hint.target[1])], `${puzzle.id} hint target differs`);
+      if (hint.origin) assert.deepEqual(variant.origin, [hint.origin[0], mapCol(hint.origin[1])], `${puzzle.id} hint origin differs`);
+      if (hint.hand) assert.equal(variant.hand, hint.hand, `${puzzle.id} hint hand differs`);
+    });
+    source.responses.forEach((response, index) => {
+      const variant = puzzle.responses[index];
+      assert.deepEqual(variant.origin, [response.origin[0], mapCol(response.origin[1])], `${puzzle.id} response origin differs`);
+      assert.deepEqual(variant.target, [response.target[0], mapCol(response.target[1])], `${puzzle.id} response target differs`);
+    });
+  }
+});
+
+test("solver-checked puzzles have the declared minimum mate length and one first destination", () => {
+  for (const puzzle of SOLVER_PUZZLES) {
     const state = puzzleState(puzzle);
     assert.equal(isInCheck(state, DEFENSE), false, `${puzzle.id} starts with the king in check`);
     assert.equal(isInCheck(state, ATTACK), false, `${puzzle.id} starts with the attacker king in check`);
@@ -54,8 +96,8 @@ test("every bundled puzzle has the declared minimum mate length and one first de
   }
 });
 
-test("the staged hints identify a complete no-surplus forced line in every puzzle", () => {
-  for (const puzzle of PUZZLES) {
+test("the staged hints identify a complete no-surplus forced line in solver-checked puzzles", () => {
+  for (const puzzle of SOLVER_PUZZLES) {
     let state = puzzleState(puzzle);
     let remaining = puzzle.plies;
     let attackerStep = 0;
