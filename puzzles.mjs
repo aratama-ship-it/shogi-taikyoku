@@ -196,6 +196,7 @@ const BASE_PUZZLES = [
     },
     hintSquare: [2, 4],
     hintTarget: [1, 4],
+    hintPromote: true,
     position: {
       board: [
         { row: 0, col: 4, type: "K", side: D },
@@ -224,6 +225,7 @@ const BASE_PUZZLES = [
     },
     hintSquare: [2, 6],
     hintTarget: [1, 7],
+    hintPromote: true,
     position: {
       board: [
         { row: 0, col: 6, type: "K", side: D },
@@ -292,6 +294,7 @@ const BASE_PUZZLES = [
         en: "Move the knight on the board to 7a. It must promote on the last rank.",
         origin: [2, 1],
         target: [0, 2],
+        promote: true,
       },
     ],
     responses: [{ origin: [0, 4], target: [0, 3] }],
@@ -678,6 +681,7 @@ const BASE_PUZZLES = [
         en: "Move the knight from 4c to 3a, promote it, and let the king capture.",
         origin: [2, 5],
         target: [0, 6],
+        promote: true,
       },
       {
         ja: "玉が3一へ来たら、3二へ銀を打って下へ呼びます。",
@@ -890,12 +894,14 @@ const BASE_PUZZLES = [
         en: "Move the knight from 4d to 3b, promote it, and let the king capture.",
         origin: [3, 5],
         target: [1, 6],
+        promote: true,
       },
       {
         ja: "続いて4三の桂馬を3一へ動かして成り、もう一度玉に取らせます。",
         en: "Then move the knight from 4c to 3a, promote it, and let the king capture again.",
         origin: [2, 5],
         target: [0, 6],
+        promote: true,
       },
       {
         ja: "玉が3一へ来たら、3二へ銀を打って下へ呼びます。",
@@ -1180,6 +1186,7 @@ function practiceVariant(seedId, sequence, { mirror = false, shift = 0, extraBoa
     hand: seed.hintHand,
     origin: seed.hintHand ? null : seed.hintSquare,
     target: seed.hintTarget || seed.hintSquare,
+    promote: seed.hintPromote,
   }];
   const hints = sourceHints.map((hint) => variantHint(seed, hint, mirror, shift));
 

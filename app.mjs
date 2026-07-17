@@ -9,6 +9,7 @@ import {
   isMate,
   isWinningCheckingMove,
 } from "./game-core.mjs";
+import { buildAnswerLine } from "./answer-line.mjs";
 import { PUZZLES, puzzleState } from "./puzzles.mjs";
 
 const STORAGE_KEY = "tsume-shogi-preferences-v1";
@@ -28,7 +29,17 @@ const I18N = {
     startHint: "盤上の駒か持ち駒をタップしてください。",
     reset: "やり直す",
     hint: "ヒント",
+    showAnswer: "答えを見る",
     next: "次の問題",
+    answerConfirmTitle: "答えを表示しますか？",
+    answerConfirmCopy: "正解手順を盤面で再生します。この問題はクリア扱いになりません。",
+    answerCancel: "まだ考える",
+    answerReveal: "答えを見る",
+    answerPlayingTitle: "正解手順を再生中",
+    answerPlayingCopy: "攻方と玉方の手を、順番に表示しています。",
+    answerShownTitle: "これが正解手順です",
+    answerRetryCopy: "「やり直す」で初形からもう一度挑戦できます。",
+    answerUnavailable: "正解手順を表示できませんでした。",
     pieceGuide: "駒の名前と動きを見る",
     language: "言語",
     languageNote: "翻訳データを追加するだけで、対応言語を増やせる設計です。",
@@ -118,7 +129,17 @@ const I18N = {
     startHint: "Tap a piece on the board or in your hand.",
     reset: "Reset",
     hint: "Hint",
+    showAnswer: "Show answer",
     next: "Next puzzle",
+    answerConfirmTitle: "Show the answer?",
+    answerConfirmCopy: "The solution will play on the board. This puzzle will not be marked as completed.",
+    answerCancel: "Keep thinking",
+    answerReveal: "Show answer",
+    answerPlayingTitle: "Playing the solution",
+    answerPlayingCopy: "The attacking and defending moves are being shown in order.",
+    answerShownTitle: "This is the solution",
+    answerRetryCopy: "Choose Reset to try again from the starting position.",
+    answerUnavailable: "The solution could not be displayed.",
     pieceGuide: "Learn the pieces and their moves",
     language: "Language",
     languageNote: "The translation registry is ready for more languages later.",
@@ -208,7 +229,17 @@ const I18N = {
     startHint: "Touchez une pièce sur le plateau ou en main.",
     reset: "Recommencer",
     hint: "Indice",
+    showAnswer: "Voir la solution",
     next: "Problème suivant",
+    answerConfirmTitle: "Afficher la solution ?",
+    answerConfirmCopy: "La solution sera jouée sur le plateau. Ce problème ne sera pas marqué comme terminé.",
+    answerCancel: "Continuer à chercher",
+    answerReveal: "Voir la solution",
+    answerPlayingTitle: "Lecture de la solution",
+    answerPlayingCopy: "Les coups de l'attaquant et du défenseur s'affichent dans l'ordre.",
+    answerShownTitle: "Voici la solution",
+    answerRetryCopy: "Choisissez Recommencer pour réessayer depuis la position initiale.",
+    answerUnavailable: "Impossible d'afficher la solution.",
     pieceGuide: "Découvrir les pièces et leurs déplacements",
     language: "Langue",
     languageNote: "Il suffit d'ajouter un dictionnaire de traduction pour prendre en charge une nouvelle langue.",
@@ -298,7 +329,17 @@ const I18N = {
     startHint: "Toca una pieza del tablero o de tu mano.",
     reset: "Reiniciar",
     hint: "Pista",
+    showAnswer: "Ver respuesta",
     next: "Siguiente problema",
+    answerConfirmTitle: "¿Mostrar la respuesta?",
+    answerConfirmCopy: "La solución se reproducirá en el tablero. El problema no contará como completado.",
+    answerCancel: "Seguir pensando",
+    answerReveal: "Ver respuesta",
+    answerPlayingTitle: "Reproduciendo la solución",
+    answerPlayingCopy: "Las jugadas del atacante y del defensor se muestran en orden.",
+    answerShownTitle: "Esta es la solución",
+    answerRetryCopy: "Pulsa Reiniciar para intentarlo de nuevo desde la posición inicial.",
+    answerUnavailable: "No se pudo mostrar la solución.",
     pieceGuide: "Conoce las piezas y sus movimientos",
     language: "Idioma",
     languageNote: "Basta con añadir un diccionario de traducción para sumar más idiomas.",
@@ -465,6 +506,9 @@ let hintStage = 0;
 let locked = false;
 let toastTimer = null;
 let defenseTimer = null;
+let answerTimer = null;
+let answerLine = [];
+let answerCursor = 0;
 let playedPlies = 0;
 let attackerStep = 0;
 let onVerifiedLine = true;
@@ -528,6 +572,7 @@ function currentHint() {
     hand: puzzle.hintHand,
     origin: puzzle.hintHand ? null : puzzle.hintSquare,
     target: puzzle.hintTarget || puzzle.hintSquare,
+    promote: puzzle.hintPromote,
   };
 }
 
@@ -773,6 +818,14 @@ function renderFeedback() {
     mark.textContent = "→";
     title.textContent = t("continueAttack");
     message.textContent = t("continueAttackCopy");
+  } else if (feedbackMode === "answer-playing") {
+    mark.textContent = "…";
+    title.textContent = t("answerPlayingTitle");
+    message.textContent = t("answerPlayingCopy");
+  } else if (feedbackMode === "answer-complete") {
+    mark.textContent = "答";
+    title.textContent = t("answerShownTitle");
+    message.textContent = `${localText(puzzle.success)} ${t("answerRetryCopy")}`;
   } else if (feedbackMode === "hint") {
     mark.textContent = "?";
     if (hintStage <= 1) {
@@ -922,7 +975,9 @@ function renderAll() {
   renderPuzzleFilters();
   renderPuzzleList();
   renderPieceGuide();
-  $("#next-button").disabled = feedbackMode !== "success";
+  $("#next-button").disabled = !["success", "answer-complete"].includes(feedbackMode);
+  $("#answer-button").disabled = ["success", "answer-playing", "answer-complete"].includes(feedbackMode);
+  $("#hint-button").disabled = feedbackMode === "answer-playing";
 }
 
 function selectBoardPiece(row, col) {
@@ -971,7 +1026,7 @@ function chooseMoveVariant(variants) {
   const unpromoted = variants.find((move) => !move.promote);
   if (promoted && unpromoted) {
     pendingPromotionMoves = variants;
-    openModal("#promotion-layer");
+    openModal("#promotion-layer", "#promote-button");
     return;
   }
   commitMove(variants[0]);
@@ -1075,9 +1130,61 @@ function scheduleDefense(remainingPlies) {
   }, 680);
 }
 
+function playNextAnswerMove() {
+  answerTimer = null;
+  const move = answerLine[answerCursor];
+  if (!move) {
+    feedbackMode = "answer-complete";
+    locked = true;
+    renderAll();
+    return;
+  }
+
+  moveHistory.push(move);
+  state = applyMove(state, move);
+  playedPlies += 1;
+  if (move.side === DEFENSE) attackerStep += 1;
+  answerCursor += 1;
+  selected = null;
+  selectedMoves = [];
+  hintStage = 0;
+  locked = true;
+
+  if (answerCursor >= answerLine.length) {
+    feedbackMode = "answer-complete";
+    renderAll();
+    return;
+  }
+
+  feedbackMode = "answer-playing";
+  renderAll();
+  answerTimer = setTimeout(playNextAnswerMove, 620);
+}
+
+function revealAnswer() {
+  closeModal("#answer-layer");
+  const line = buildAnswerLine(PUZZLES[currentIndex]);
+  if (!line) {
+    showToast(t("answerUnavailable"));
+    return;
+  }
+
+  resetPuzzle(false);
+  answerLine = line;
+  answerCursor = 0;
+  feedbackMode = "answer-playing";
+  locked = true;
+  renderAll();
+  answerTimer = setTimeout(playNextAnswerMove, 260);
+}
+
 function resetPuzzle(showMessage = true) {
   clearTimeout(defenseTimer);
   defenseTimer = null;
+  clearTimeout(answerTimer);
+  answerTimer = null;
+  answerLine = [];
+  answerCursor = 0;
   state = puzzleState(PUZZLES[currentIndex]);
   legalMoves = generateLegalMoves(state, ATTACK);
   selected = null;
@@ -1091,6 +1198,7 @@ function resetPuzzle(showMessage = true) {
   onVerifiedLine = true;
   moveHistory = [];
   closeModal("#promotion-layer");
+  closeModal("#answer-layer");
   renderAll();
   if (showMessage) showToast(t("resetDone"));
 }
@@ -1149,11 +1257,11 @@ function closeSheets() {
   document.body.style.overflow = "";
 }
 
-function openModal(selector) {
+function openModal(selector, focusSelector) {
   const layer = $(selector);
   layer.classList.remove("hidden");
   layer.setAttribute("aria-hidden", "false");
-  $("#promote-button").focus();
+  $(focusSelector)?.focus();
 }
 
 function closeModal(selector) {
@@ -1188,6 +1296,9 @@ function bindEvents() {
   $("#learn-button").addEventListener("click", () => openSheet("#learn-layer"));
   $("#reset-button").addEventListener("click", () => resetPuzzle(true));
   $("#hint-button").addEventListener("click", showHint);
+  $("#answer-button").addEventListener("click", () => openModal("#answer-layer", "#cancel-answer-button"));
+  $("#cancel-answer-button").addEventListener("click", () => closeModal("#answer-layer"));
+  $("#confirm-answer-button").addEventListener("click", revealAnswer);
   $("#next-button").addEventListener("click", () => loadPuzzle(nextPuzzleIndex()));
   document.querySelectorAll("[data-close-sheet]").forEach((button) => button.addEventListener("click", closeSheets));
 
@@ -1221,6 +1332,7 @@ function bindEvents() {
         pendingPromotionMoves = [];
         closeModal("#promotion-layer");
       }
+      closeModal("#answer-layer");
     }
   });
 }

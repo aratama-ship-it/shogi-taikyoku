@@ -659,7 +659,7 @@ html[data-piece-style="latin"] .piece-sub { display: none; }
 
 .action-row {
   display: grid;
-  grid-template-columns: auto auto 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
   margin-top: 10px;
 }
@@ -689,6 +689,11 @@ html[data-piece-style="latin"] .piece-sub { display: none; }
   opacity: .45;
   filter: grayscale(.4);
   box-shadow: none;
+}
+
+.secondary-button:disabled {
+  cursor: default;
+  opacity: .45;
 }
 
 .secondary-button {

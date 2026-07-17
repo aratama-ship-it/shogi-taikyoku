@@ -101,6 +101,9 @@
         <button class="secondary-button" id="hint-button" type="button">
           <span aria-hidden="true">?</span><span data-i18n="hint">ヒント</span>
         </button>
+        <button class="secondary-button" id="answer-button" type="button">
+          <span aria-hidden="true">目</span><span data-i18n="showAnswer">答えを見る</span>
+        </button>
         <button class="primary-button" id="next-button" type="button" disabled>
           <span data-i18n="next">次の問題</span><span aria-hidden="true">→</span>
         </button>
@@ -221,6 +224,18 @@
       <div class="modal-actions">
         <button class="secondary-button" id="no-promote-button" type="button" data-i18n="doNotPromote">成らない</button>
         <button class="primary-button" id="promote-button" type="button" data-i18n="promote">成る</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal-layer hidden" id="answer-layer" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="answer-title">
+      <span class="modal-mark answer-modal-mark" aria-hidden="true">答</span>
+      <h2 id="answer-title" data-i18n="answerConfirmTitle">答えを表示しますか？</h2>
+      <p data-i18n="answerConfirmCopy">正解手順を盤面で再生します。この問題はクリア扱いになりません。</p>
+      <div class="modal-actions">
+        <button class="secondary-button" id="cancel-answer-button" type="button" data-i18n="answerCancel">まだ考える</button>
+        <button class="primary-button" id="confirm-answer-button" type="button" data-i18n="answerReveal">答えを見る</button>
       </div>
     </section>
   </div>

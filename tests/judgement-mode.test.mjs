@@ -13,6 +13,14 @@ test("settings expose both judgement modes", () => {
   assert.match(indexSource, /data-value="end"/);
 });
 
+test("the play controls expose a confirmed answer reveal", () => {
+  assert.match(indexSource, /id="answer-button"/);
+  assert.match(indexSource, /id="answer-layer"/);
+  assert.match(indexSource, /id="confirm-answer-button"/);
+  assert.match(appSource, /buildAnswerLine\(PUZZLES\[currentIndex\]\)/);
+  assert.match(appSource, /feedbackMode = "answer-complete"/);
+});
+
 test("play-through remains the default and immediate mode checks the forced line", () => {
   assert.match(appSource, /judgementMode: "end"/);
   assert.match(appSource, /preferences\.judgementMode === "immediate"/);

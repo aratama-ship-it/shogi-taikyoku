@@ -9,6 +9,7 @@ for (const file of [
   "index.html",
   "styles.css",
   "app.mjs",
+  "answer-line.mjs",
   "game-core.mjs",
   "puzzles.mjs",
   "puzzle-i18n.mjs",
