@@ -13,6 +13,7 @@ for (const file of [
   "game-core.mjs",
   "puzzles.mjs",
   "puzzle-i18n.mjs",
+  "random-puzzle.mjs",
   "manifest.webmanifest",
   "sw.js",
   "og.png",

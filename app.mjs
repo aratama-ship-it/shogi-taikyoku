@@ -11,6 +11,7 @@ import {
 } from "./game-core.mjs";
 import { buildAnswerLine } from "./answer-line.mjs";
 import { PUZZLES, puzzleState } from "./puzzles.mjs";
+import { pickRandomPuzzleIndex } from "./random-puzzle.mjs";
 
 const STORAGE_KEY = "tsume-shogi-preferences-v1";
 const RANKS_JA = ["一", "二", "三", "四", "五", "六", "七", "八", "九"];
@@ -63,6 +64,10 @@ const I18N = {
     collection: "COLLECTION",
     choosePuzzle: "問題を選ぶ",
     choosePuzzleCompact: "問題を選ぶ",
+    randomPuzzle: "ランダム出題",
+    randomAvoidRepeat: "現在とは違う問題を選びます",
+    randomSingle: "この手数の問題は1問です",
+    randomChosen: "ランダムに問題を選びました",
     pickerSummary: "1手・3手・5手・7手・9手から選択",
     filterByMoves: "手数から問題を選べます。",
     allPuzzles: "すべて",
@@ -165,6 +170,10 @@ const I18N = {
     collection: "COLLECTION",
     choosePuzzle: "Choose a puzzle",
     choosePuzzleCompact: "Choose",
+    randomPuzzle: "Random puzzle",
+    randomAvoidRepeat: "Chooses a different puzzle from the current one",
+    randomSingle: "There is one puzzle in this category",
+    randomChosen: "A random puzzle was selected",
     pickerSummary: "Choose mate in 1, 3, 5, 7, or 9",
     filterByMoves: "Choose puzzles by mate length.",
     allPuzzles: "All puzzles",
@@ -267,6 +276,10 @@ const I18N = {
     collection: "COLLECTION",
     choosePuzzle: "Choisir un problème",
     choosePuzzleCompact: "Choisir",
+    randomPuzzle: "Problème aléatoire",
+    randomAvoidRepeat: "Choisit un autre problème que celui en cours",
+    randomSingle: "Cette catégorie contient un seul problème",
+    randomChosen: "Un problème aléatoire a été choisi",
     pickerSummary: "Mat en 1, 3, 5, 7 ou 9 coups",
     filterByMoves: "Choisissez les problèmes par longueur du mat.",
     allPuzzles: "Tous les problèmes",
@@ -369,6 +382,10 @@ const I18N = {
     collection: "COLECCIÓN",
     choosePuzzle: "Elegir un problema",
     choosePuzzleCompact: "Elegir",
+    randomPuzzle: "Problema aleatorio",
+    randomAvoidRepeat: "Elige un problema distinto del actual",
+    randomSingle: "Esta categoría contiene un solo problema",
+    randomChosen: "Se eligió un problema al azar",
     pickerSummary: "Mate en 1, 3, 5, 7 o 9",
     filterByMoves: "Elige los problemas por longitud del mate.",
     allPuzzles: "Todos los problemas",
@@ -871,6 +888,17 @@ function renderPuzzleFilters() {
   });
 }
 
+function renderRandomPuzzleButton() {
+  const entries = filteredPuzzleEntries();
+  const category = puzzleFilter === "all"
+    ? t("allPuzzles")
+    : mateLabel({ plies: Number(puzzleFilter) });
+  const button = $("#random-puzzle-button");
+  $("#random-puzzle-title").textContent = `${category} · ${t("randomPuzzle")}`;
+  $("#random-puzzle-copy").textContent = `${puzzleCountLabel(entries.length)} · ${t(entries.length > 1 ? "randomAvoidRepeat" : "randomSingle")}`;
+  button.disabled = entries.length === 0;
+}
+
 function renderPuzzleList() {
   const list = $("#puzzle-list");
   list.replaceChildren();
@@ -981,6 +1009,7 @@ function renderAll() {
   renderSequence();
   renderFeedback();
   renderPuzzleFilters();
+  renderRandomPuzzleButton();
   renderPuzzleList();
   renderPieceGuide();
   $("#next-button").disabled = !["success", "answer-complete"].includes(feedbackMode);
@@ -1225,6 +1254,14 @@ function nextPuzzleIndex() {
   return filtered[position >= 0 ? (position + 1) % filtered.length : 0].index;
 }
 
+function chooseRandomPuzzle() {
+  const index = pickRandomPuzzleIndex(filteredPuzzleEntries(), currentIndex);
+  if (index === null) return;
+  loadPuzzle(index);
+  closeSheets();
+  showToast(t("randomChosen"));
+}
+
 function showHint() {
   if (feedbackMode === "success") return;
   if (defenseTimer) return;
@@ -1308,12 +1345,14 @@ function bindEvents() {
   $("#cancel-answer-button").addEventListener("click", () => closeModal("#answer-layer"));
   $("#confirm-answer-button").addEventListener("click", revealAnswer);
   $("#next-button").addEventListener("click", () => loadPuzzle(nextPuzzleIndex()));
+  $("#random-puzzle-button").addEventListener("click", chooseRandomPuzzle);
   document.querySelectorAll("[data-close-sheet]").forEach((button) => button.addEventListener("click", closeSheets));
 
   document.querySelectorAll("#puzzle-filters [data-plies]").forEach((button) => {
     button.addEventListener("click", () => {
       puzzleFilter = button.dataset.plies;
       renderPuzzleFilters();
+      renderRandomPuzzleButton();
       renderPuzzleList();
       renderMission();
     });

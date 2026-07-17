@@ -1029,7 +1029,7 @@ html[data-piece-style="latin"] .piece-sub { display: none; }
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 7px;
-  margin-bottom: 14px;
+  margin-bottom: 8px;
 }
 
 .puzzle-filters button {
@@ -1057,6 +1057,64 @@ html[data-piece-style="latin"] .piece-sub { display: none; }
 
 .puzzle-filters strong { font-size: 12px; }
 .puzzle-filters small { color: var(--muted); font-size: 9px; }
+
+.random-puzzle-button {
+  width: 100%;
+  min-height: 60px;
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+  padding: 8px 11px;
+  border: 1px solid color-mix(in srgb, var(--accent) 58%, var(--line));
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.random-puzzle-button:disabled {
+  cursor: default;
+  opacity: .45;
+}
+
+.random-puzzle-mark {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: var(--accent);
+  color: white;
+  font-size: 19px;
+  font-weight: 900;
+}
+
+.random-puzzle-copy {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.random-puzzle-copy strong {
+  font-size: 12px;
+}
+
+.random-puzzle-copy small {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.random-puzzle-arrow {
+  color: var(--accent-strong);
+  font-size: 18px;
+  font-weight: 900;
+}
 
 .puzzle-list {
   display: grid;
