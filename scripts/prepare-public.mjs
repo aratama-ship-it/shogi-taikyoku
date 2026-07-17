@@ -8,6 +8,9 @@ await mkdir(output, { recursive: true });
 for (const file of [
   "index.html",
   "styles.css",
+  "legal.css",
+  "privacy.html",
+  "support.html",
   "app.mjs",
   "answer-line.mjs",
   "game-core.mjs",

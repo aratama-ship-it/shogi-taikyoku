@@ -1,11 +1,12 @@
 # Tsume Shogi — プロジェクトメモ
 
-更新日: 2026-07-17（問題を64問に拡充、盤上移動・持ち駒なし5手詰めを重点追加）
+更新日: 2026-07-17（問題64問、手数別ランダム出題、App Store向けiOSコンテナを追加）
 
 ## プロダクト方針
 
 - iPhone縦持ちを第一対象にした、ブラウザで遊べる詰将棋学習アプリ。
 - PWAとしてホーム画面へ追加でき、初回読み込み後はオフラインでも起動できる。
+- App Store版はCapacitor 8のネイティブコンテナに同じ問題データと判定エンジンを同梱し、iOS 15以降でオフライン動作させる。
 - 対応言語は日本語・英語・フランス語・スペイン語（2026-07-17に仏西を追加）。翻訳辞書を追加すれば言語を増やせる構造。
   - UI文言: `app.mjs` の `I18N`・`PIECES`。問題文: `puzzle-i18n.mjs`（基本問題のfr/es）。反復問題の文章は自動生成。
   - 全問題が4言語を持つことは `tests/game-core.test.mjs` の言語完全性テストで保証。
@@ -104,6 +105,9 @@
 - `puzzles.mjs`: オリジナル問題データ
 - `puzzle-i18n.mjs`: 基本問題のフランス語・スペイン語テキスト
 - `manifest.webmanifest`, `sw.js`: インストール・オフライン対応
+- `capacitor.config.ts`, `ios/`: App Store向けiOSコンテナ（Bundle IDは正式登録前に要確認）
+- `privacy.html`, `support.html`, `legal.css`: App Storeとアプリ内から参照する公開文書
+- `APP_STORE_PREPARATION.md`: App Store Connect用文案、審査メモ、提出チェックリスト
 - `tests/game-core.test.mjs`: 問題と判定エンジンの自動検証
 - `scripts/search-puzzles.mjs`: 新問題の候補をエンジン検証付きで探索する作問支援ツール
 
@@ -113,4 +117,4 @@
 2. 中国語、韓国語などの翻訳追加（フランス語・スペイン語は対応済み）
 3. チェス風記号やイラスト駒など、新しい駒セット
 4. 毎日の問題、連続学習記録、難易度別コース
-5. 実機フィードバック後、Capacitor等でiOSアプリとして包装するか、SwiftUI版へ移植するかを判断
+5. App Store Connectの登録情報を確定し、実機・TestFlightで確認して審査へ提出
