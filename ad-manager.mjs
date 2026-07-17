@@ -10,17 +10,26 @@ const EVENTS = Object.freeze({
   dismissed: "interstitialAdDismissed",
   failedToLoad: "interstitialAdFailedToLoad",
   failedToShow: "interstitialAdFailedToShow",
+  bannerSizeChanged: "bannerAdSizeChanged",
+  bannerFailedToLoad: "bannerAdFailedToLoad",
 });
 
 const GOOGLE_IOS_INTERSTITIAL_DEMO_ID = "ca-app-pub-3940256099942544/4411468910";
+const GOOGLE_IOS_BANNER_DEMO_ID = "ca-app-pub-3940256099942544/2435281174";
 
 export function validateAdConfig(config = AD_CONFIG) {
-  const usesGoogleDemoId = config.interstitialAdId === GOOGLE_IOS_INTERSTITIAL_DEMO_ID;
-  if (config.testMode && !usesGoogleDemoId) {
-    throw new Error("Test mode must use Google's iOS interstitial demo ad unit ID.");
-  }
-  if (!config.testMode && usesGoogleDemoId) {
-    throw new Error("Production mode requires a production AdMob interstitial ad unit ID.");
+  const adUnits = [
+    ["interstitial", config.interstitialAdId, GOOGLE_IOS_INTERSTITIAL_DEMO_ID],
+    ["banner", config.bannerAdId, GOOGLE_IOS_BANNER_DEMO_ID],
+  ];
+  for (const [format, adId, demoId] of adUnits) {
+    const usesGoogleDemoId = adId === demoId;
+    if (config.testMode && !usesGoogleDemoId) {
+      throw new Error(`Test mode must use Google's iOS ${format} demo ad unit ID.`);
+    }
+    if (!config.testMode && usesGoogleDemoId) {
+      throw new Error(`Production mode requires a production AdMob ${format} ad unit ID.`);
+    }
   }
   return true;
 }
@@ -38,11 +47,13 @@ export function createAdManager({ preferences, savePreferences, onStateChange = 
   let canRequestAds = false;
   let privacyOptionsRequired = false;
   let preparing = null;
+  let bannerRequested = false;
+  let bannerHeight = 0;
 
   preferences.adProgress = normalizeAdProgress(preferences.adProgress);
 
   function notify() {
-    onStateChange({ ready, canRequestAds, privacyOptionsRequired });
+    onStateChange({ ready, canRequestAds, privacyOptionsRequired, bannerHeight });
   }
 
   function adOptions() {
@@ -50,6 +61,45 @@ export function createAdManager({ preferences, savePreferences, onStateChange = 
       adId: AD_CONFIG.interstitialAdId,
       npa: AD_CONFIG.nonPersonalizedAds,
     };
+  }
+
+  function bannerOptions() {
+    return {
+      adId: AD_CONFIG.bannerAdId,
+      adSize: AD_CONFIG.bannerAdSize,
+      position: AD_CONFIG.bannerPosition,
+      margin: AD_CONFIG.bannerMargin,
+      npa: AD_CONFIG.nonPersonalizedAds,
+    };
+  }
+
+  function updateBannerHeight(value) {
+    bannerHeight = Math.max(0, Number(value) || 0);
+    notify();
+  }
+
+  async function showBanner() {
+    if (!AD_CONFIG.bannerEnabled || !plugin || !canRequestAds || bannerRequested) return false;
+    bannerRequested = true;
+    try {
+      await plugin.showBanner(bannerOptions());
+      return true;
+    } catch {
+      bannerRequested = false;
+      updateBannerHeight(0);
+      return false;
+    }
+  }
+
+  async function removeBanner() {
+    if (!plugin || !bannerRequested) return;
+    bannerRequested = false;
+    updateBannerHeight(0);
+    try {
+      await plugin.removeBanner();
+    } catch {
+      // The banner is already gone; keep the web layout unreserved.
+    }
   }
 
   async function prepare() {
@@ -74,7 +124,8 @@ export function createAdManager({ preferences, savePreferences, onStateChange = 
     canRequestAds = Boolean(info.canRequestAds);
     privacyOptionsRequired = info.privacyOptionsRequirementStatus === "REQUIRED";
     notify();
-    if (canRequestAds) await prepare();
+    if (canRequestAds) await Promise.all([prepare(), showBanner()]);
+    else await removeBanner();
   }
 
   async function initialize() {
@@ -101,11 +152,20 @@ export function createAdManager({ preferences, savePreferences, onStateChange = 
           notify();
           prepare();
         }),
+        plugin.addListener(EVENTS.bannerSizeChanged, (size) => {
+          updateBannerHeight(size?.height);
+        }),
+        plugin.addListener(EVENTS.bannerFailedToLoad, () => {
+          bannerRequested = false;
+          updateBannerHeight(0);
+        }),
       ]);
       await updateConsent();
     } catch {
       canRequestAds = false;
       ready = false;
+      bannerRequested = false;
+      bannerHeight = 0;
       notify();
     }
   }
@@ -115,6 +175,7 @@ export function createAdManager({ preferences, savePreferences, onStateChange = 
     savePreferences();
     notify();
     prepare();
+    showBanner();
   }
 
   function willShowOnNext() {

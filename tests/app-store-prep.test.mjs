@@ -29,13 +29,21 @@ test("privacy and support documents ship in the public bundle", async () => {
 });
 
 test("the iOS project uses test AdMob identifiers and documents the production replacement gate", async () => {
-  const [plist, preparation, packageJson] = await Promise.all([
+  const [plist, preparation, packageJson, adConfig, app, styles] = await Promise.all([
     read("ios/App/App/Info.plist"),
     read("APP_STORE_PREPARATION.md"),
     read("package.json"),
+    read("ad-config.mjs"),
+    read("app.mjs"),
+    read("styles.css"),
   ]);
   assert.match(plist, /ca-app-pub-3940256099942544~1458002511/);
   assert.match(plist, /cstr6suwn9\.skadnetwork/);
+  assert.match(adConfig, /ca-app-pub-3940256099942544\/2435281174/);
+  assert.match(adConfig, /bannerAdSize:\s*"ADAPTIVE_BANNER"/);
+  assert.match(adConfig, /bannerPosition:\s*"TOP_CENTER"/);
+  assert.match(app, /--native-banner-offset/);
+  assert.match(styles, /var\(--native-banner-offset\)/);
   assert.match(preparation, /そのまま公開しない/);
   assert.match(packageJson, /@capacitor-community\/admob/);
 });

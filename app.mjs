@@ -82,7 +82,7 @@ const I18N = {
     privacyPolicy: "プライバシーポリシー",
     support: "サポート",
     advertising: "広告について",
-    advertisingNote: "無料提供のため、数問クリアした区切りで広告が表示されることがあります。対局中には表示しません。",
+    advertisingNote: "無料提供のため、最上部のバナーと、数問クリアした区切りで広告が表示されることがあります。全画面広告は対局中には表示しません。",
     privacyChoices: "広告のプライバシー設定",
     promoteQuestion: "成りますか？",
     promoteCopy: "成ると駒の動きが変わります。",
@@ -195,7 +195,7 @@ const I18N = {
     privacyPolicy: "Privacy policy",
     support: "Support",
     advertising: "About advertising",
-    advertisingNote: "To keep the app free, an ad may appear after several completed puzzles. Ads never interrupt a puzzle.",
+    advertisingNote: "To keep the app free, a banner may appear at the top and a full-screen ad may appear after several completed puzzles. Full-screen ads never interrupt a puzzle.",
     privacyChoices: "Ad privacy choices",
     promoteQuestion: "Promote this piece?",
     promoteCopy: "Promotion changes how the piece moves.",
@@ -308,7 +308,7 @@ const I18N = {
     privacyPolicy: "Politique de confidentialité",
     support: "Assistance",
     advertising: "À propos de la publicité",
-    advertisingNote: "Pour garder l'application gratuite, une publicité peut apparaître après plusieurs problèmes terminés, jamais pendant un problème.",
+    advertisingNote: "Pour garder l'application gratuite, une bannière peut apparaître en haut et une publicité plein écran après plusieurs problèmes terminés. Celle-ci n'interrompt jamais un problème.",
     privacyChoices: "Choix de confidentialité publicitaire",
     promoteQuestion: "Promouvoir cette pièce ?",
     promoteCopy: "La promotion change le déplacement de la pièce.",
@@ -421,7 +421,7 @@ const I18N = {
     privacyPolicy: "Política de privacidad",
     support: "Asistencia",
     advertising: "Acerca de la publicidad",
-    advertisingNote: "Para mantener la aplicación gratuita, puede aparecer un anuncio después de varios problemas completados, nunca durante un problema.",
+    advertisingNote: "Para mantener la aplicación gratuita, puede aparecer un banner arriba y un anuncio a pantalla completa después de varios problemas. Este nunca interrumpe un problema.",
     privacyChoices: "Opciones de privacidad de anuncios",
     promoteQuestion: "¿Promover esta pieza?",
     promoteCopy: "La promoción cambia cómo se mueve la pieza.",
@@ -1445,7 +1445,11 @@ function registerServiceWorker() {
 adManager = createAdManager({
   preferences,
   savePreferences,
-  onStateChange: () => renderAll(),
+  onStateChange: ({ bannerHeight = 0 }) => {
+    const bannerOffset = bannerHeight > 0 ? Math.ceil(bannerHeight) + 6 : 0;
+    document.documentElement.style.setProperty("--native-banner-offset", `${bannerOffset}px`);
+    renderAll();
+  },
 });
 bindEvents();
 renderAll();

@@ -6,8 +6,9 @@
 
 - Capacitor 8でWeb版をiOSのネイティブコンテナに同梱する。
 - 対象はiPhone・iOS 15以降。縦向き表示とし、問題、翻訳、判定エンジンを同梱して通常のプレイはオフラインで完結する。
-- 無料版としてGoogle AdMobのインタースティシャル広告を使用する。アカウント、独自のアクセス解析、課金SDKは使用しない。
-- 広告は4問正解後、「次の問題」へ進む区切りでのみ候補となり、表示後10分間は再表示しない。対局中、不正解時、答え再生時、起動直後には表示しない。
+- 無料版としてGoogle AdMobのアダプティブバナー広告とインタースティシャル広告を使用する。アカウント、独自のアクセス解析、課金SDKは使用しない。
+- バナー広告はiOS版の最上部、セーフエリア内に表示する。読み込めた実寸分だけWeb画面に余白を加え、広告未取得・オフライン・同意未完了時は余白を置かない。
+- インタースティシャル広告は4問正解後、「次の問題」へ進む区切りでのみ候補となり、表示後10分間は再表示しない。対局中、不正解時、答え再生時、起動直後には表示しない。
 - 非パーソナライズ広告を要求し、ATT許可は要求しない。地域ごとの同意はGoogle User Messaging Platformで取得する。
 - 仮Bundle ID: `com.jugglerarata.tsumeshogi`。App Store Connectへ登録する前に、所有ドメインやブランド名と合わせて最終決定する。
 
@@ -62,7 +63,7 @@
 >
 > 日本語・英語・フランス語・スペイン語、漢字・ローマ字・併記の駒表示に対応。問題と判定機能をアプリに収録しているため、通常の練習はオフラインで行えます。
 >
-> 本アプリは広告によって無料で提供されます。広告は複数の問題を正解した後、次の問題へ進む区切りで表示される場合があります。
+> 本アプリは広告によって無料で提供されます。画面上部にバナー広告が表示される場合があり、複数の問題を正解した後は、次の問題へ進む区切りで全画面広告が表示される場合があります。
 
 ### English
 
@@ -79,7 +80,7 @@ Description draft:
 >
 > The interface supports Japanese, English, French, and Spanish, with Kanji, letter, or combined piece labels. Puzzles and judging logic are included in the app, so normal practice works offline.
 >
-> The app is free with ads. An ad may appear at the transition to the next puzzle after several successful solves.
+> The app is free with ads. A banner may appear at the top, and a full-screen ad may appear at the transition to the next puzzle after several successful solves.
 
 ## 審査メモ案
 
@@ -89,7 +90,7 @@ Description draft:
 4. 「ヒント」は3段階、「答えを見る」は確認後に正解手順を再生する。
 5. ログイン、購入、特別な審査用アカウントは不要。
 6. 通信を切った状態でも通常の問題演習が可能。
-7. テスト時は、4問正解後の「広告のあと次へ」からGoogleのテスト広告を表示する。広告が取得できない場合も次の問題へ進める。
+7. テスト時は最上部にGoogleのアダプティブ・テストバナーを表示し、4問正解後の「広告のあと次へ」から全画面テスト広告を表示する。広告が取得できない場合も問題演習を続けられる。
 
 ## オーナーが決める項目
 
@@ -106,7 +107,7 @@ Description draft:
 - Apple Developer Programの名義と署名チームが未設定。個人登録では原則として個人の法的氏名、法人登録では法人名が販売者名になる。
 - 販売価格、配信地域、年齢レーティングの回答はオーナー判断が必要。
 - プライバシー／サポートページはファイル作成済みだが、公開サイトにはまだ反映していない。
-- AdMobの本番アプリID／インタースティシャル広告ユニットIDが未発行。現在はGoogle公式のサンプルIDのみを使用しているため、そのまま公開しない。
+- AdMobの本番アプリID／バナー広告ユニットID／インタースティシャル広告ユニットIDが未発行。現在はGoogle公式のサンプルIDのみを使用しているため、そのまま公開しない。
 - AdMob管理画面でGDPR等のPrivacy & messagingを設定し、アプリ単位でも頻度上限を設定する。
 
 ## 依存関係監査（2026-07-18）
@@ -117,7 +118,7 @@ Description draft:
 
 ## 実施済み検証（2026-07-18）
 
-- Node通常テスト: 25件合格（広告頻度、同意状態、ブラウザ無効化、本番／デモID混在防止を含む）
+- Node通常テスト: 25件合格（バナー位置・実寸余白、広告頻度、同意状態、ブラウザ無効化、本番／デモID混在防止を含む）
 - Webプロダクションビルド: 合格
 - AdMob 8.0.0を含むCapacitor同期: 合格
 - Xcode 26.6・iOS 26.5 Simulator SDK・署名なしDebugビルド: 合格（Google Mobile Ads／User Messaging Platformをリンク）
@@ -137,7 +138,7 @@ Description draft:
 - [ ] 日本語・英語のストア用スクリーンショットを作る
 - [ ] 年齢レーティング質問票に回答する
 - [ ] App Privacyとプライバシーポリシーを最終照合する
-- [ ] AdMobでアプリとインタースティシャル広告ユニットを作り、サンプルIDを本番IDへ差し替える
+- [ ] AdMobでアプリ、バナー、インタースティシャルの広告ユニットを作り、サンプルIDを本番IDへ差し替える
 - [ ] AdMobのPrivacy & messagingと頻度上限を設定する
 - [ ] 不適切な広告の報告方法を、広告画面内のAdChoicesに加えてサポートページでも案内する
 - [ ] TestFlightで外部または内部テストを行う

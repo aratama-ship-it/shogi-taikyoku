@@ -8,6 +8,7 @@ test("ad configuration cannot mix demo IDs with production mode", () => {
     () => validateAdConfig({
       testMode: false,
       interstitialAdId: "ca-app-pub-3940256099942544/4411468910",
+      bannerAdId: "ca-app-pub-3940256099942544/2435281174",
     }),
     /production AdMob interstitial/,
   );
@@ -15,13 +16,22 @@ test("ad configuration cannot mix demo IDs with production mode", () => {
     () => validateAdConfig({
       testMode: true,
       interstitialAdId: "ca-app-pub-1234567890123456/1234567890",
+      bannerAdId: "ca-app-pub-3940256099942544/2435281174",
     }),
     /demo ad unit ID/,
   );
+  assert.throws(
+    () => validateAdConfig({
+      testMode: false,
+      interstitialAdId: "ca-app-pub-1234567890123456/1234567890",
+      bannerAdId: "ca-app-pub-3940256099942544/2435281174",
+    }),
+    /production AdMob banner/,
+  );
 });
 
-test("native AdMob preloads a non-personalized test ad and shows only after four solves", async (context) => {
-  const calls = { initialize: [], prepare: [], show: 0 };
+test("native AdMob loads a top adaptive banner and shows an interstitial only after four solves", async (context) => {
+  const calls = { initialize: [], prepare: [], banners: [], show: 0 };
   const listeners = new Map();
   const plugin = {
     async initialize(options) { calls.initialize.push(options); },
@@ -33,6 +43,8 @@ test("native AdMob preloads a non-personalized test ad and shows only after four
       return { canRequestAds: true, privacyOptionsRequirementStatus: "REQUIRED" };
     },
     async prepareInterstitial(options) { calls.prepare.push(options); },
+    async showBanner(options) { calls.banners.push(options); },
+    async removeBanner() {},
     async showInterstitial() { calls.show += 1; },
     async showPrivacyOptionsForm() {},
   };
@@ -50,7 +62,12 @@ test("native AdMob preloads a non-personalized test ad and shows only after four
 
   const preferences = {};
   let saved = 0;
-  const manager = createAdManager({ preferences, savePreferences: () => { saved += 1; } });
+  const states = [];
+  const manager = createAdManager({
+    preferences,
+    savePreferences: () => { saved += 1; },
+    onStateChange: (state) => states.push(state),
+  });
   await manager.initialize();
 
   assert.deepEqual(calls.initialize, [{ maxAdContentRating: "General" }]);
@@ -59,6 +76,15 @@ test("native AdMob preloads a non-personalized test ad and shows only after four
     adId: "ca-app-pub-3940256099942544/4411468910",
     npa: true,
   });
+  assert.deepEqual(calls.banners, [{
+    adId: "ca-app-pub-3940256099942544/2435281174",
+    adSize: "ADAPTIVE_BANNER",
+    position: "TOP_CENTER",
+    margin: 0,
+    npa: true,
+  }]);
+  listeners.get("bannerAdSizeChanged")({ width: 393, height: 50 });
+  assert.equal(states.at(-1).bannerHeight, 50);
   assert.equal(manager.isPrivacyOptionsRequired(), true);
 
   for (let solved = 0; solved < 3; solved += 1) manager.recordSolve();

@@ -32,5 +32,7 @@ test("showing an ad resets the solve count and enforces the ten-minute interval"
 test("release configuration remains on Google's official iOS demo ad unit until production IDs are supplied", () => {
   assert.equal(AD_CONFIG.testMode, true);
   assert.equal(AD_CONFIG.interstitialAdId, "ca-app-pub-3940256099942544/4411468910");
+  assert.equal(AD_CONFIG.bannerAdId, "ca-app-pub-3940256099942544/2435281174");
+  assert.equal(AD_CONFIG.bannerAdSize, "ADAPTIVE_BANNER");
   assert.equal(AD_CONFIG.nonPersonalizedAds, true);
 });

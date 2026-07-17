@@ -17,6 +17,7 @@
   --piece-ink: #24160d;
   --shadow: 0 18px 48px rgba(5, 27, 23, .24);
   --radius: 22px;
+  --native-banner-offset: 0px;
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --serif: "Yu Mincho", "Hiragino Mincho ProN", serif;
 }
@@ -101,6 +102,8 @@ a:focus-visible {
   min-height: 100dvh;
   margin: 0 auto;
   padding: max(8px, env(safe-area-inset-top)) 12px max(24px, env(safe-area-inset-bottom));
+  padding-top: calc(max(8px, env(safe-area-inset-top)) + var(--native-banner-offset));
+  transition: padding-top .18s ease-out;
 }
 
 .topbar {
