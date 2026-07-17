@@ -44,6 +44,8 @@ test("the iOS project uses test AdMob identifiers and documents the production r
   assert.match(adConfig, /bannerPosition:\s*"TOP_CENTER"/);
   assert.match(app, /--native-banner-offset/);
   assert.match(styles, /var\(--native-banner-offset\)/);
+  assert.match(styles, /html\[data-theme="washi"\] body::before/);
+  assert.match(styles, /repeating-linear-gradient\(103deg/);
   assert.match(preparation, /そのまま公開しない/);
   assert.match(packageJson, /@capacitor-community\/admob/);
 });
