@@ -11,6 +11,7 @@ for (const file of [
   "app.mjs",
   "game-core.mjs",
   "puzzles.mjs",
+  "puzzle-i18n.mjs",
   "manifest.webmanifest",
   "sw.js",
   "og.png",

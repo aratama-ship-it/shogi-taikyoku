@@ -48,9 +48,32 @@ function matchesHint(move, hint) {
 test("the bundle contains the requested number of puzzles for each mate length", () => {
   assert.deepEqual(
     Object.fromEntries([1, 3, 5, 7, 9].map((plies) => [plies, PUZZLES.filter((puzzle) => puzzle.plies === plies).length])),
-    { 1: 6, 3: 10, 5: 15, 7: 10, 9: 3 },
+    { 1: 8, 3: 12, 5: 27, 7: 12, 9: 5 },
   );
   assert.equal(new Set(PUZZLES.map((puzzle) => puzzle.id)).size, PUZZLES.length, "puzzle ids must be unique");
+});
+
+test("the bundle includes board-move and no-hand five-move practice", () => {
+  const fiveMove = PUZZLES.filter((puzzle) => puzzle.plies === 5);
+  const noHand = fiveMove.filter((puzzle) => Object.values(puzzle.position.hand || {}).every((count) => count === 0));
+  const allBoardMoves = noHand.filter((puzzle) => puzzle.hints.every((hint) => !hint.hand));
+  assert.ok(noHand.length >= 10, `expected at least 10 no-hand mate-in-5 puzzles, got ${noHand.length}`);
+  assert.ok(allBoardMoves.length >= 10, `expected at least 10 all-board mate-in-5 puzzles, got ${allBoardMoves.length}`);
+});
+
+test("every puzzle provides ja, en, fr, and es text", () => {
+  const LANGUAGES = ["ja", "en", "fr", "es"];
+  for (const puzzle of PUZZLES) {
+    for (const language of LANGUAGES) {
+      assert.ok(puzzle.title?.[language], `${puzzle.id} title lacks ${language}`);
+      assert.ok(puzzle.prompt?.[language], `${puzzle.id} prompt lacks ${language}`);
+      assert.ok(puzzle.success?.[language], `${puzzle.id} success lacks ${language}`);
+      const hints = puzzle.hints || [puzzle.hint];
+      hints.forEach((hint, index) => {
+        assert.ok(hint?.[language], `${puzzle.id} hint ${index + 1} lacks ${language}`);
+      });
+    }
+  }
 });
 
 test("practice variants match their declared source transformation", () => {

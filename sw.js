@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "tsume-shogi-v6";
+const CACHE_NAME = "tsume-shogi-v12";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -8,6 +8,7 @@ const APP_SHELL = [
   "./app.mjs",
   "./game-core.mjs",
   "./puzzles.mjs",
+  "./puzzle-i18n.mjs",
   "./manifest.webmanifest",
   "./og.png",
   "./icons/icon-192.png",

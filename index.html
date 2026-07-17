@@ -10,7 +10,7 @@
   <meta name="description" content="A bilingual, offline-friendly shogi puzzle app for beginners.">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Tsume Shogi — 詰将棋を一手ずつ">
-  <meta property="og:description" content="Learn to see checkmate, one move at a time. Japanese and English, built for iPhone and offline practice.">
+  <meta property="og:description" content="Learn to see checkmate, one move at a time. Japanese, English, French and Spanish, built for iPhone and offline practice.">
   <meta property="og:image" content="og.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Tsume Shogi — 詰将棋を一手ずつ">
@@ -40,7 +40,7 @@
       <section class="mission-card" aria-labelledby="puzzle-title">
         <div class="mission-topline">
           <span class="level-chip" id="puzzle-level">1手詰め</span>
-          <span class="puzzle-progress" id="puzzle-progress">1 / 44</span>
+          <span class="puzzle-progress" id="puzzle-progress">1 / 64</span>
         </div>
         <h1 id="puzzle-title">金は、とどめの駒</h1>
         <p id="puzzle-prompt">相手の玉がどこにも逃げられない一手を見つけよう。</p>
@@ -132,6 +132,8 @@
         <div class="segmented" id="language-options">
           <button type="button" data-value="ja">日本語</button>
           <button type="button" data-value="en">English</button>
+          <button type="button" data-value="fr">Français</button>
+          <button type="button" data-value="es">Español</button>
         </div>
         <p data-i18n="languageNote">翻訳データを追加するだけで、対応言語を増やせる設計です。</p>
       </div>
@@ -171,12 +173,12 @@
       </div>
       <p class="filter-copy" data-i18n="filterByMoves">手数から問題を選べます。</p>
       <div class="puzzle-filters" id="puzzle-filters" role="group" data-i18n-aria="filterByMoves" aria-label="手数から問題を選べます。">
-        <button class="active" type="button" data-plies="all" aria-pressed="true"><strong>すべて</strong><small>44問</small></button>
-        <button type="button" data-plies="1" aria-pressed="false"><strong>1手詰め</strong><small>6問</small></button>
-        <button type="button" data-plies="3" aria-pressed="false"><strong>3手詰め</strong><small>10問</small></button>
-        <button type="button" data-plies="5" aria-pressed="false"><strong>5手詰め</strong><small>15問</small></button>
-        <button type="button" data-plies="7" aria-pressed="false"><strong>7手詰め</strong><small>10問</small></button>
-        <button type="button" data-plies="9" aria-pressed="false"><strong>9手詰め</strong><small>3問</small></button>
+        <button class="active" type="button" data-plies="all" aria-pressed="true"><strong>すべて</strong><small>64問</small></button>
+        <button type="button" data-plies="1" aria-pressed="false"><strong>1手詰め</strong><small>8問</small></button>
+        <button type="button" data-plies="3" aria-pressed="false"><strong>3手詰め</strong><small>12問</small></button>
+        <button type="button" data-plies="5" aria-pressed="false"><strong>5手詰め</strong><small>27問</small></button>
+        <button type="button" data-plies="7" aria-pressed="false"><strong>7手詰め</strong><small>12問</small></button>
+        <button type="button" data-plies="9" aria-pressed="false"><strong>9手詰め</strong><small>5問</small></button>
       </div>
       <div class="puzzle-list" id="puzzle-list"></div>
     </section>

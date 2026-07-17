@@ -1,4 +1,5 @@
 import { ATTACK, DEFENSE, stateFromPosition } from "./game-core.mjs";
+import { PUZZLE_TRANSLATIONS } from "./puzzle-i18n.mjs";
 
 const A = ATTACK;
 const D = DEFENSE;
@@ -24,9 +25,7 @@ const BASE_PUZZLES = [
     hintSquare: [1, 4],
     position: {
       board: [
-        { row: 0, col: 3, type: "L", side: D },
         { row: 0, col: 4, type: "K", side: D },
-        { row: 0, col: 5, type: "L", side: D },
         { row: 3, col: 3, type: "N", side: A },
       ],
       hand: { G: 1 },
@@ -55,7 +54,6 @@ const BASE_PUZZLES = [
       board: [
         { row: 0, col: 0, type: "K", side: D },
         { row: 0, col: 1, type: "L", side: D },
-        { row: 1, col: 1, type: "N", side: D },
         { row: 2, col: 1, type: "G", side: A },
       ],
       hand: { R: 1 },
@@ -86,7 +84,6 @@ const BASE_PUZZLES = [
         { row: 0, col: 4, type: "K", side: D },
         { row: 0, col: 5, type: "N", side: D },
         { row: 1, col: 3, type: "N", side: D },
-        { row: 1, col: 4, type: "P", side: D },
         { row: 2, col: 5, type: "G", side: A },
       ],
       hand: { B: 1 },
@@ -113,11 +110,7 @@ const BASE_PUZZLES = [
     hintSquare: [1, 4],
     position: {
       board: [
-        { row: 0, col: 3, type: "L", side: D },
         { row: 0, col: 4, type: "K", side: D },
-        { row: 0, col: 5, type: "L", side: D },
-        { row: 1, col: 3, type: "N", side: D },
-        { row: 1, col: 5, type: "N", side: D },
         { row: 2, col: 4, type: "G", side: A },
       ],
       hand: { S: 1 },
@@ -149,7 +142,6 @@ const BASE_PUZZLES = [
         { row: 0, col: 5, type: "L", side: D },
         { row: 1, col: 3, type: "N", side: D },
         { row: 1, col: 4, type: "N", side: D },
-        { row: 1, col: 5, type: "N", side: D },
         { row: 2, col: 5, type: "P", side: A },
       ],
       hand: { N: 1 },
@@ -176,12 +168,67 @@ const BASE_PUZZLES = [
     hintTarget: [4, 0],
     position: {
       board: [
-        { row: 2, col: 0, type: "L", side: D },
         { row: 2, col: 1, type: "P", side: D },
         { row: 3, col: 0, type: "K", side: D },
         { row: 3, col: 1, type: "L", side: D },
         { row: 4, col: 2, type: "R", side: A },
         { row: 6, col: 1, type: "N", side: A },
+      ],
+      hand: {},
+      defenseHand: "all",
+    },
+  },
+  {
+    id: "pawn-promotion-push",
+    plies: 1,
+    title: { ja: "歩は成ると金になる", en: "The pawn promotes to gold" },
+    prompt: {
+      ja: "小さな歩にも、大きな力が隠れています。",
+      en: "Even the humble pawn hides great power.",
+    },
+    hint: {
+      ja: "5三の歩を進めて成りましょう。後ろの香車が支えます。",
+      en: "Push the pawn on 5c and promote. The lance behind supports it.",
+    },
+    success: {
+      ja: "突き歩成！ と金は金と同じ働きで、開いた香車の利きが守っています。",
+      en: "Promotion mate! The tokin works like a gold, protected by the lance on the opened file.",
+    },
+    hintSquare: [2, 4],
+    hintTarget: [1, 4],
+    position: {
+      board: [
+        { row: 0, col: 4, type: "K", side: D },
+        { row: 2, col: 4, type: "P", side: A },
+        { row: 3, col: 4, type: "L", side: A },
+      ],
+      hand: {},
+      defenseHand: "all",
+    },
+  },
+  {
+    id: "horse-power",
+    plies: 1,
+    title: { ja: "角は成ると馬になる", en: "The bishop becomes a horse" },
+    prompt: {
+      ja: "成り駒の力で、玉の逃げ道をすべて消しましょう。",
+      en: "A promoted piece can cover every escape at once.",
+    },
+    hint: {
+      ja: "3三の角を2二へ成り込みます。5二の竜が横から支えます。",
+      en: "Move the bishop from 3c to 2b and promote. The dragon on 5b supports it sideways.",
+    },
+    success: {
+      ja: "角成りの詰み！ 馬の利きと竜の横利きで、玉はどこへも動けません。",
+      en: "Horse mate! The horse's reach and the dragon's sideways power trap the king.",
+    },
+    hintSquare: [2, 6],
+    hintTarget: [1, 7],
+    position: {
+      board: [
+        { row: 0, col: 6, type: "K", side: D },
+        { row: 1, col: 4, type: "R", side: A, promoted: true },
+        { row: 2, col: 6, type: "B", side: A },
       ],
       hand: {},
       defenseHand: "all",
@@ -217,9 +264,7 @@ const BASE_PUZZLES = [
     position: {
       board: [
         { row: 0, col: 4, type: "K", side: D },
-        { row: 1, col: 4, type: "P", side: D },
         { row: 1, col: 5, type: "S", side: D },
-        { row: 1, col: 6, type: "P", side: A },
         { row: 2, col: 3, type: "R", side: A },
         { row: 4, col: 6, type: "B", side: A },
       ],
@@ -297,11 +342,46 @@ const BASE_PUZZLES = [
         { row: 0, col: 2, type: "K", side: D },
         { row: 0, col: 3, type: "P", side: D },
         { row: 1, col: 3, type: "G", side: D },
-        { row: 3, col: 0, type: "P", side: A },
         { row: 3, col: 1, type: "R", side: A },
-        { row: 4, col: 2, type: "S", side: A },
       ],
       hand: { B: 1, S: 1 },
+      defenseHand: "all",
+    },
+  },
+  {
+    id: "silver-lure-gold-pincer",
+    plies: 3,
+    title: { ja: "銀で誘い、金で挟む", en: "Lure with silver, pinch with gold" },
+    prompt: {
+      ja: "3手詰め。盤上の金と銀が、両側から壁になります。",
+      en: "Mate in 3. Your gold and silver form walls on both sides.",
+    },
+    hints: [
+      {
+        ja: "4二へ銀を打ち、玉を3二へ誘います。",
+        en: "Drop the silver on 4b to lure the king to 3b.",
+        hand: "S",
+        target: [1, 5],
+      },
+      {
+        ja: "下がった玉へ、3三から金を打って挟みます。",
+        en: "Drop the gold on 3c to pinch the king from below.",
+        hand: "G",
+        target: [2, 6],
+      },
+    ],
+    responses: [{ origin: [0, 6], target: [1, 6] }],
+    success: {
+      ja: "銀で退路を消しながら誘い、金でとどめ。挟み撃ちの形です。",
+      en: "The silver lured the king down, and the gold finished the pincer attack.",
+    },
+    position: {
+      board: [
+        { row: 0, col: 6, type: "K", side: D },
+        { row: 1, col: 4, type: "G", side: A },
+        { row: 1, col: 8, type: "S", side: A },
+      ],
+      hand: { S: 1, G: 1 },
       defenseHand: "all",
     },
   },
@@ -346,11 +426,7 @@ const BASE_PUZZLES = [
         { row: 0, col: 1, type: "K", side: D },
         { row: 0, col: 2, type: "P", side: D },
         { row: 1, col: 0, type: "P", side: D },
-        { row: 1, col: 4, type: "P", side: D },
-        { row: 2, col: 0, type: "L", side: A },
         { row: 3, col: 2, type: "L", side: A },
-        { row: 6, col: 0, type: "P", side: A },
-        { row: 6, col: 1, type: "B", side: A },
       ],
       hand: { R: 1, S: 1, G: 1 },
       defenseHand: "all",
@@ -397,12 +473,194 @@ const BASE_PUZZLES = [
         { row: 0, col: 4, type: "G", side: D },
         { row: 0, col: 6, type: "K", side: D },
         { row: 0, col: 8, type: "S", side: D },
-        { row: 1, col: 8, type: "N", side: D },
         { row: 3, col: 8, type: "G", side: A },
         { row: 5, col: 5, type: "L", side: A },
-        { row: 5, col: 6, type: "P", side: A },
       ],
       hand: { S: 1, B: 1, G: 1 },
+      defenseHand: "all",
+    },
+  },
+  {
+    id: "silver-sacrifice-gold-return",
+    plies: 5,
+    title: { ja: "銀を取らせて呼び戻す", en: "Give up the silver, call the king back" },
+    prompt: {
+      ja: "5手詰め。銀を一枚取らせてから、挟み撃ちを完成させましょう。",
+      en: "Mate in 5. Give up one silver, then complete the pincer.",
+    },
+    hints: [
+      {
+        ja: "2二へ銀を捨てます。玉に取らせましょう。",
+        en: "Sacrifice a silver on 2b and let the king take it.",
+        hand: "S",
+        target: [1, 7],
+      },
+      {
+        ja: "2三へ金。歩が金を支え、玉は3一へ戻ります。",
+        en: "Drop the gold on 2c — the pawn supports it and drives the king back to 3a.",
+        hand: "G",
+        target: [2, 7],
+      },
+      {
+        ja: "最後は3二へ二枚目の銀。これで詰みです。",
+        en: "Finish with the second silver on 3b.",
+        hand: "S",
+        target: [1, 6],
+      },
+    ],
+    responses: [
+      { origin: [0, 6], target: [1, 7] },
+      { origin: [1, 7], target: [0, 6] },
+    ],
+    success: {
+      ja: "銀を捨てて呼び込み、金で追い返して銀でとどめ。持ち駒を使い切る5手詰めです。",
+      en: "The silver sacrifice drew the king out, the gold sent it back, and the second silver finished with an empty hand.",
+    },
+    position: {
+      board: [
+        { row: 0, col: 6, type: "K", side: D },
+        { row: 1, col: 4, type: "G", side: A },
+        { row: 3, col: 7, type: "P", side: A },
+      ],
+      hand: { S: 2, G: 1 },
+      defenseHand: "all",
+    },
+  },
+  {
+    id: "lance-backed-silvers",
+    plies: 5,
+    title: { ja: "香を支えに銀二枚", en: "Silvers backed by the lance" },
+    prompt: {
+      ja: "5手詰め。離れた香車の利きを信じて攻めましょう。",
+      en: "Mate in 5. Trust the lance's reach from afar.",
+    },
+    hints: [
+      {
+        ja: "4二へ銀を打ち、玉を2一へ追います。",
+        en: "Drop a silver on 4b to push the king to 2a.",
+        hand: "S",
+        target: [1, 5],
+      },
+      {
+        ja: "1二へ二枚目の銀。香車の利きが支えるので取れません。",
+        en: "Drop the second silver on 1b — the lance protects it, so the king cannot take.",
+        hand: "S",
+        target: [1, 8],
+      },
+      {
+        ja: "3二へ逃げた玉へ、3三から金打ち。詰みです。",
+        en: "The king fled to 3b — drop the gold on 3c for mate.",
+        hand: "G",
+        target: [2, 6],
+      },
+    ],
+    responses: [
+      { origin: [0, 6], target: [0, 7] },
+      { origin: [0, 7], target: [1, 6] },
+    ],
+    success: {
+      ja: "香車の遠い利きが銀を支え、金でとどめ。離れた駒の連携です。",
+      en: "The lance's distant reach supported the silver, and the gold finished — teamwork across the board.",
+    },
+    position: {
+      board: [
+        { row: 0, col: 6, type: "K", side: D },
+        { row: 1, col: 4, type: "G", side: A },
+        { row: 3, col: 8, type: "L", side: A },
+      ],
+      hand: { S: 2, G: 1 },
+      defenseHand: "all",
+    },
+  },
+  {
+    id: "silver-stepping-stone",
+    plies: 5,
+    title: { ja: "銀を重ねて頭金", en: "Stack the silvers, finish with gold" },
+    prompt: {
+      ja: "5手詰め。一枚目の銀は取らせるための捨て駒です。",
+      en: "Mate in 5. The first silver is a sacrifice.",
+    },
+    hints: [
+      {
+        ja: "4二へ銀を捨てます。玉に取らせましょう。",
+        en: "Sacrifice a silver on 4b and let the king take it.",
+        hand: "S",
+        target: [1, 5],
+      },
+      {
+        ja: "同玉に4三へ二枚目の銀。5四の金が支えます。",
+        en: "Drop the second silver on 4c — the gold on 5d protects it.",
+        hand: "S",
+        target: [2, 5],
+      },
+      {
+        ja: "5一へ逃げた玉に、5二へ頭金。詰みです。",
+        en: "The king fled to 5a — drop the gold on 5b for a head-gold mate.",
+        hand: "G",
+        target: [1, 4],
+      },
+    ],
+    responses: [
+      { origin: [0, 6], target: [1, 5] },
+      { origin: [1, 5], target: [0, 4] },
+    ],
+    success: {
+      ja: "銀を取らせて足場を作り、最後は頭金。二枚の銀が道を開きました。",
+      en: "The captured silver became a foothold, and the head-gold finished — the two silvers opened the way.",
+    },
+    position: {
+      board: [
+        { row: 0, col: 6, type: "K", side: D },
+        { row: 1, col: 8, type: "G", side: A },
+        { row: 3, col: 4, type: "G", side: A },
+      ],
+      hand: { S: 2, G: 1 },
+      defenseHand: "all",
+    },
+  },
+  {
+    id: "knight-gold-corner-drive",
+    plies: 5,
+    title: { ja: "桂・金・銀の隅追い", en: "Drive the king to the corner" },
+    prompt: {
+      ja: "5手詰め。桂馬の王手から、玉を隅へ追い込みましょう。",
+      en: "Mate in 5. Start with a knight check and drive the king into the corner.",
+    },
+    hints: [
+      {
+        ja: "2三へ桂馬を打ちます。跳ぶ王手に合駒はできません。",
+        en: "Drop the knight on 2c — a jumping check cannot be blocked.",
+        hand: "N",
+        target: [2, 7],
+      },
+      {
+        ja: "3一へ金を打ち、玉を2二へ押し出します。",
+        en: "Drop the gold on 3a to push the king to 2b.",
+        hand: "G",
+        target: [0, 6],
+      },
+      {
+        ja: "最後は1三へ銀打ち。斜めの利きで詰みです。",
+        en: "Finish with a silver drop on 1c — its diagonal reach completes the mate.",
+        hand: "S",
+        target: [2, 8],
+      },
+    ],
+    responses: [
+      { origin: [0, 6], target: [0, 7] },
+      { origin: [0, 7], target: [1, 7] },
+    ],
+    success: {
+      ja: "桂で始まり、金で押し、銀で仕留める。持ち駒三枚の連携です。",
+      en: "Knight, gold, then silver — three hand pieces working together.",
+    },
+    position: {
+      board: [
+        { row: 0, col: 6, type: "K", side: D },
+        { row: 1, col: 4, type: "G", side: A },
+        { row: 3, col: 7, type: "G", side: A },
+      ],
+      hand: { N: 1, S: 1, G: 1 },
       defenseHand: "all",
     },
   },
@@ -451,16 +709,170 @@ const BASE_PUZZLES = [
     },
     position: {
       board: [
-        { row: 0, col: 4, type: "G", side: D },
         { row: 0, col: 8, type: "S", side: D },
         { row: 1, col: 8, type: "N", side: D },
         { row: 1, col: 6, type: "K", side: D },
         { row: 2, col: 5, type: "N", side: A },
         { row: 3, col: 8, type: "G", side: A },
         { row: 5, col: 5, type: "L", side: A },
-        { row: 5, col: 6, type: "P", side: A },
       ],
       hand: { S: 1, B: 1, G: 1 },
+      defenseHand: "all",
+    },
+  },
+  {
+    id: "wandering-king-two-knights",
+    plies: 7,
+    title: { ja: "二枚桂の追い回し", en: "Two knights on the chase" },
+    prompt: {
+      ja: "7手詰め。逃げ回る玉を、二枚の桂馬で追い詰めます。",
+      en: "Mate in 7. Chase the wandering king with two knights.",
+    },
+    hints: [
+      {
+        ja: "2四へ桂馬を打って王手します。",
+        en: "Drop a knight on 2d to give check.",
+        hand: "N",
+        target: [3, 7],
+      },
+      {
+        ja: "3四へ銀を打ち、玉を2二へ追います。",
+        en: "Drop the silver on 3d to push the king to 2b.",
+        hand: "S",
+        target: [3, 6],
+      },
+      {
+        ja: "1四へ二枚目の桂馬を打ち、玉を3一へ送り出します。",
+        en: "Drop the second knight on 1d to drive the king to 3a.",
+        hand: "N",
+        target: [3, 8],
+      },
+      {
+        ja: "最後は3二へ金。逃げ回った玉を捕まえます。",
+        en: "Finish with the gold on 3b to catch the wandering king.",
+        hand: "G",
+        target: [1, 6],
+      },
+    ],
+    responses: [
+      { origin: [1, 8], target: [2, 7] },
+      { origin: [2, 7], target: [1, 7] },
+      { origin: [1, 7], target: [0, 6] },
+    ],
+    success: {
+      ja: "桂・銀・桂・金のリレーで、逃げ回る玉を捕まえました。",
+      en: "Knight, silver, knight, gold — the wandering king is finally caught.",
+    },
+    position: {
+      board: [
+        { row: 1, col: 8, type: "K", side: D },
+        { row: 4, col: 7, type: "G", side: A },
+      ],
+      hand: { N: 2, S: 1, G: 1 },
+      defenseHand: "all",
+    },
+  },
+  {
+    id: "gold-pin-silver-seal",
+    plies: 7,
+    title: { ja: "金で止めて銀で締める", en: "Pin with gold, seal with silver" },
+    prompt: {
+      ja: "7手詰め。桂と銀で追い、金で退路を止めて銀でとどめます。",
+      en: "Mate in 7. Chase with knight and silver, stop the escape with gold, and seal with the second silver.",
+    },
+    hints: [
+      {
+        ja: "2四へ桂馬を打って王手します。",
+        en: "Drop the knight on 2d to give check.",
+        hand: "N",
+        target: [3, 7],
+      },
+      {
+        ja: "3四へ銀を打ち、玉を2二へ追います。",
+        en: "Drop a silver on 3d to push the king to 2b.",
+        hand: "S",
+        target: [3, 6],
+      },
+      {
+        ja: "3二へ金。玉は1一へ落ちるしかありません。",
+        en: "Drop the gold on 3b — the king must slide to 1a.",
+        hand: "G",
+        target: [1, 6],
+      },
+      {
+        ja: "最後は2二へ二枚目の銀。斜めの利きで詰みです。",
+        en: "Finish with the second silver on 2b — its diagonal reach mates.",
+        hand: "S",
+        target: [1, 7],
+      },
+    ],
+    responses: [
+      { origin: [1, 8], target: [2, 7] },
+      { origin: [2, 7], target: [1, 7] },
+      { origin: [1, 7], target: [0, 8] },
+    ],
+    success: {
+      ja: "桂・銀で追い、金で退路を封鎖、最後は銀。持ち駒四枚を使い切りました。",
+      en: "Knight and silver chased, the gold sealed the escape, and the last silver finished — all four hand pieces used.",
+    },
+    position: {
+      board: [
+        { row: 1, col: 8, type: "K", side: D },
+        { row: 4, col: 7, type: "G", side: A },
+      ],
+      hand: { N: 1, S: 2, G: 1 },
+      defenseHand: "all",
+    },
+  },
+  {
+    id: "corner-knight-net",
+    plies: 7,
+    title: { ja: "隅の玉に桂の網", en: "A knight net in the corner" },
+    prompt: {
+      ja: "7手詰め。銀を捨ててから、二枚の桂馬で網を張ります。",
+      en: "Mate in 7. Sacrifice the silver, then weave a net with two knights.",
+    },
+    hints: [
+      {
+        ja: "1二へ銀を捨てます。玉に取らせましょう。",
+        en: "Sacrifice the silver on 1b and let the king take it.",
+        hand: "S",
+        target: [1, 8],
+      },
+      {
+        ja: "2四へ桂馬。1二の玉に飛びの王手です。",
+        en: "Drop a knight on 2d — a jumping check on the king at 1b.",
+        hand: "N",
+        target: [3, 7],
+      },
+      {
+        ja: "3二へ金を打ち、玉を隅へ押し込みます。",
+        en: "Drop the gold on 3b to push the king into the corner.",
+        hand: "G",
+        target: [1, 6],
+      },
+      {
+        ja: "最後は2三へ二枚目の桂馬。2四の桂が1二を塞いでいます。",
+        en: "Finish with the second knight on 2c — the first knight guards 1b.",
+        hand: "N",
+        target: [2, 7],
+      },
+    ],
+    responses: [
+      { origin: [0, 8], target: [1, 8] },
+      { origin: [1, 8], target: [0, 7] },
+      { origin: [0, 7], target: [0, 8] },
+    ],
+    success: {
+      ja: "銀捨てから金で押し込み、二枚の桂馬の利きで隅の玉を仕留めました。",
+      en: "After the silver sacrifice and the gold's push, the two knights' reach caught the cornered king.",
+    },
+    position: {
+      board: [
+        { row: 0, col: 8, type: "K", side: D },
+        { row: 3, col: 8, type: "G", side: A },
+      ],
+      hand: { N: 2, S: 1, G: 1 },
       defenseHand: "all",
     },
   },
@@ -516,9 +928,7 @@ const BASE_PUZZLES = [
     },
     position: {
       board: [
-        { row: 0, col: 4, type: "G", side: D },
         { row: 0, col: 8, type: "S", side: D },
-        { row: 1, col: 8, type: "N", side: D },
         { row: 2, col: 6, type: "K", side: D },
         { row: 2, col: 5, type: "N", side: A },
         { row: 3, col: 5, type: "N", side: A },
@@ -530,18 +940,194 @@ const BASE_PUZZLES = [
       defenseHand: "all",
     },
   },
+  {
+    id: "double-silver-sacrifice-chase",
+    plies: 9,
+    title: { ja: "二枚の銀を捨てる長編", en: "Two silver sacrifices" },
+    prompt: {
+      ja: "9手詰め。二枚の銀を惜しまず使い、桂馬で仕留めます。",
+      en: "Mate in 9. Spend both silvers freely, then finish with a knight.",
+    },
+    hints: [
+      {
+        ja: "4二へ銀を打ち、玉を2一へ追います。",
+        en: "Drop a silver on 4b to push the king to 2a.",
+        hand: "S",
+        target: [1, 5],
+      },
+      {
+        ja: "1二へ二枚目の銀を捨てます。玉に取らせましょう。",
+        en: "Sacrifice the second silver on 1b and let the king take it.",
+        hand: "S",
+        target: [1, 8],
+      },
+      {
+        ja: "2四へ桂馬を打ちます。跳ぶ王手に合駒はできません。",
+        en: "Drop a knight on 2d — this jumping check cannot be blocked.",
+        hand: "N",
+        target: [3, 7],
+      },
+      {
+        ja: "1二へ金を打ち、玉を2三へ押し出します。",
+        en: "Drop the gold on 1b to push the king to 2c.",
+        hand: "G",
+        target: [1, 8],
+      },
+      {
+        ja: "最後は3五へ桂馬。跳びの利きで詰みです。",
+        en: "Finish with the second knight on 3e.",
+        hand: "N",
+        target: [4, 6],
+      },
+    ],
+    responses: [
+      { origin: [0, 6], target: [0, 7] },
+      { origin: [0, 7], target: [1, 8] },
+      { origin: [1, 8], target: [1, 7] },
+      { origin: [1, 7], target: [2, 7] },
+    ],
+    success: {
+      ja: "二枚の銀捨てから桂・金・桂へ。9手の長い追撃を読み切りました。",
+      en: "Two silver sacrifices, then knight, gold, knight — a nine-move chase read to the end.",
+    },
+    position: {
+      board: [
+        { row: 0, col: 6, type: "K", side: D },
+        { row: 1, col: 4, type: "G", side: A },
+        { row: 4, col: 7, type: "G", side: A },
+      ],
+      hand: { N: 2, S: 2, G: 1 },
+      defenseHand: "all",
+    },
+  },
+  {
+    id: "dragon-bishop-board-relay",
+    plies: 5,
+    title: { ja: "竜と二枚角の盤上リレー", en: "Dragon and two-bishop board relay" },
+    prompt: {
+      ja: "5手詰め。持ち駒はありません。盤上の竜と二枚の角だけで玉を追いましょう。",
+      en: "Mate in 5 with no pieces in hand. Chase the king using only the dragon and two bishops on the board.",
+    },
+    hints: [
+      {
+        ja: "9四の竜を9一へ進め、玉を斜め下へ追います。",
+        en: "Move the dragon from 9d to 9a and drive the king diagonally downward.",
+        origin: [3, 0],
+        target: [0, 0],
+      },
+      {
+        ja: "6四の角を7三へ成り込み、玉を上段へ戻します。",
+        en: "Move the bishop from 6d to 7c and promote, forcing the king back to the top rank.",
+        origin: [3, 3],
+        target: [2, 2],
+        promote: true,
+      },
+      {
+        ja: "最後は5一の角を6二へ成り、馬の利きで詰ませます。",
+        en: "Finally, move the bishop from 5a to 6b and promote; the horse completes the mate.",
+        origin: [0, 4],
+        target: [1, 3],
+        promote: true,
+      },
+    ],
+    responses: [
+      { origin: [0, 1], target: [1, 2] },
+      { origin: [1, 2], target: [0, 3] },
+    ],
+    success: {
+      ja: "竜で追い、角を成り込ませ、もう一枚の角を馬にして詰み。持ち駒を使わない盤上リレーです。",
+      en: "The dragon chased, one bishop promoted to keep up the attack, and the other became a horse to mate — all on the board.",
+    },
+    position: {
+      board: [
+        { row: 0, col: 1, type: "K", side: D },
+        { row: 0, col: 2, type: "S", side: D },
+        { row: 3, col: 0, type: "R", side: A, promoted: true },
+        { row: 0, col: 4, type: "B", side: A },
+        { row: 3, col: 3, type: "B", side: A },
+      ],
+      hand: {},
+      defenseHand: "all",
+    },
+  },
+  {
+    id: "promoted-lance-dragon-board-relay",
+    plies: 5,
+    title: { ja: "成香で追い、竜で仕留める", en: "Chase with a promoted lance, finish with a dragon" },
+    prompt: {
+      ja: "5手詰め。持ち駒はありません。成香と飛車を盤上で連携させましょう。",
+      en: "Mate in 5 with no pieces in hand. Coordinate the promoted lance and rook already on the board.",
+    },
+    hints: [
+      {
+        ja: "1四の成香を2三へ動かし、玉を2一へ追います。",
+        en: "Move the promoted lance from 1d to 2c, driving the king to 2a.",
+        origin: [3, 8],
+        target: [2, 7],
+      },
+      {
+        ja: "1七の飛車を1二へ進めて成り、玉を3一へ追います。",
+        en: "Move the rook from 1g to 1b and promote, driving the king to 3a.",
+        origin: [6, 8],
+        target: [1, 8],
+        promote: true,
+      },
+      {
+        ja: "最後は1二の竜を3二へ寄せ、金との連携で詰ませます。",
+        en: "Finally, move the dragon from 1b to 3b; together with the gold, it completes the mate.",
+        origin: [1, 8],
+        target: [1, 6],
+      },
+    ],
+    responses: [
+      { origin: [1, 8], target: [0, 7] },
+      { origin: [0, 7], target: [0, 6] },
+    ],
+    success: {
+      ja: "成香で追い、飛車を竜にして追撃し、最後は横へ寄って詰み。持ち駒なしの盤上攻撃です。",
+      en: "The promoted lance chased, the rook became a dragon, and the dragon slid sideways for mate — with no hand pieces.",
+    },
+    position: {
+      board: [
+        { row: 1, col: 8, type: "K", side: D },
+        { row: 3, col: 8, type: "L", side: A, promoted: true },
+        { row: 3, col: 6, type: "G", side: A },
+        { row: 6, col: 8, type: "R", side: A },
+      ],
+      hand: {},
+      defenseHand: "all",
+    },
+  },
 ];
 
+// 反復問題の自動生成文（fr/es は本文中で自然になるよう冠詞つき）
 const PIECE_NAMES = {
-  R: { ja: "飛車", en: "rook" },
-  B: { ja: "角", en: "bishop" },
-  G: { ja: "金", en: "gold" },
-  S: { ja: "銀", en: "silver" },
-  N: { ja: "桂馬", en: "knight" },
-  L: { ja: "香車", en: "lance" },
-  P: { ja: "歩", en: "pawn" },
+  R: { ja: "飛車", en: "rook", fr: "la tour", es: "la torre" },
+  B: { ja: "角", en: "bishop", fr: "le fou", es: "el alfil" },
+  G: { ja: "金", en: "gold", fr: "l'or", es: "el oro" },
+  S: { ja: "銀", en: "silver", fr: "l'argent", es: "la plata" },
+  N: { ja: "桂馬", en: "knight", fr: "le cavalier", es: "el caballo" },
+  L: { ja: "香車", en: "lance", fr: "la lance", es: "la lanza" },
+  P: { ja: "歩", en: "pawn", fr: "le pion", es: "el peón" },
 };
 const JA_RANKS = ["一", "二", "三", "四", "五", "六", "七", "八", "九"];
+
+// 基本問題に fr/es テキストをマージする（反復問題の生成より前に行うこと）。
+function mergeTranslations(puzzles) {
+  for (const puzzle of puzzles) {
+    const translation = PUZZLE_TRANSLATIONS[puzzle.id];
+    if (!translation) continue;
+    Object.assign(puzzle.title, translation.title);
+    Object.assign(puzzle.prompt, translation.prompt);
+    Object.assign(puzzle.success, translation.success);
+    if (puzzle.hint && translation.hint) Object.assign(puzzle.hint, translation.hint);
+    if (puzzle.hints && translation.hints) {
+      puzzle.hints.forEach((hint, index) => Object.assign(hint, translation.hints[index] || {}));
+    }
+  }
+}
+
+mergeTranslations(BASE_PUZZLES);
 
 function transformCol(col, mirror, shift) {
   return (mirror ? 8 - col : col) + shift;
@@ -560,9 +1146,12 @@ function variantHint(seed, hint, mirror, shift) {
   const target = transformSquare(hint.target, mirror, shift);
   if (hint.hand) {
     const name = PIECE_NAMES[hint.hand];
+    const square = squareLabel(target, "en");
     return {
       ja: `持ち駒の${name.ja}を${squareLabel(target, "ja")}へ打って王手します。`,
-      en: `Drop the ${name.en} on ${squareLabel(target, "en")} to give check.`,
+      en: `Drop the ${name.en} on ${square} to give check.`,
+      fr: `Parachutez ${name.fr} en ${square} pour donner échec.`,
+      es: `Suelta ${name.es} en ${square} para dar jaque.`,
       hand: hint.hand,
       target,
     };
@@ -570,12 +1159,17 @@ function variantHint(seed, hint, mirror, shift) {
 
   const origin = transformSquare(hint.origin, mirror, shift);
   const piece = seed.position.board.find((item) => item.row === hint.origin[0] && item.col === hint.origin[1]);
-  const name = PIECE_NAMES[piece?.type] || { ja: "駒", en: "piece" };
+  const name = PIECE_NAMES[piece?.type] || { ja: "駒", en: "piece", fr: "la pièce", es: "la pieza" };
+  const fromSquare = squareLabel(origin, "en");
+  const toSquare = squareLabel(target, "en");
   return {
-    ja: `${squareLabel(origin, "ja")}の${name.ja}を${squareLabel(target, "ja")}へ動かして王手します。`,
-    en: `Move the ${name.en} from ${squareLabel(origin, "en")} to ${squareLabel(target, "en")} to give check.`,
+    ja: `${squareLabel(origin, "ja")}の${name.ja}を${squareLabel(target, "ja")}へ動かし${hint.promote ? "、成って" : "て"}王手します。`,
+    en: `Move the ${name.en} from ${fromSquare} to ${toSquare}${hint.promote ? " and promote" : ""} to give check.`,
+    fr: `Jouez ${name.fr} de ${fromSquare} en ${toSquare}${hint.promote ? " avec promotion" : ""} pour donner échec.`,
+    es: `Mueve ${name.es} de ${fromSquare} a ${toSquare}${hint.promote ? " y promueve la pieza" : ""} para dar jaque.`,
     origin,
     target,
+    ...(hint.promote ? { promote: true } : {}),
   };
 }
 
@@ -595,10 +1189,14 @@ function practiceVariant(seedId, sequence, { mirror = false, shift = 0, extraBoa
     title: {
       ja: `${seed.title.ja}・反復${sequence}`,
       en: `${seed.title.en} — Practice ${sequence}`,
+      fr: `${seed.title.fr} — Exercice ${sequence}`,
+      es: `${seed.title.es} — Práctica ${sequence}`,
     },
     prompt: {
       ja: `${seed.plies}手詰め。同じ詰み筋を、盤の別の場所でも見つけましょう。`,
       en: `Mate in ${seed.plies}. Find the same mating pattern in a different part of the board.`,
+      fr: `Mat en ${seed.plies} coups. Retrouvez le même schéma de mat ailleurs sur le plateau.`,
+      es: `Mate en ${seed.plies}. Encuentra el mismo patrón de mate en otra parte del tablero.`,
     },
     hints,
     responses: (seed.responses || []).map((response) => ({
@@ -609,6 +1207,8 @@ function practiceVariant(seedId, sequence, { mirror = false, shift = 0, extraBoa
     success: {
       ja: "同じ詰み筋を別の位置でも発見できました。攻方の持ち駒も残りません。",
       en: "You found the same mating pattern in a new position, with no attacking piece left in hand.",
+      fr: "Vous avez retrouvé le même schéma de mat dans une nouvelle position, sans pièce restante en main.",
+      es: "Encontraste el mismo patrón de mate en una posición nueva, sin piezas sobrantes en mano.",
     },
     position: {
       board: [
@@ -645,9 +1245,6 @@ const PRACTICE_PUZZLES = [
   practiceVariant("silver-bishop-gold-relay", 7, { mirror: true, shift: 2 }),
   practiceVariant("silver-bishop-gold-relay", 8, { mirror: true, shift: 3 }),
   practiceVariant("silver-bishop-gold-relay", 9, { mirror: true, shift: 4 }),
-  practiceVariant("silver-bishop-gold-relay", 10, { extraBoard: [{ row: 7, col: 0, type: "P", side: D }] }),
-  practiceVariant("silver-bishop-gold-relay", 11, { extraBoard: [{ row: 7, col: 4, type: "P", side: D }] }),
-  practiceVariant("silver-bishop-gold-relay", 12, { extraBoard: [{ row: 7, col: 8, type: "P", side: D }] }),
 
   practiceVariant("knight-silver-bishop-gold-relay", 1, { shift: -1 }),
   practiceVariant("knight-silver-bishop-gold-relay", 2, { shift: -2 }),
@@ -656,11 +1253,24 @@ const PRACTICE_PUZZLES = [
   practiceVariant("knight-silver-bishop-gold-relay", 5, { mirror: true, shift: 1 }),
   practiceVariant("knight-silver-bishop-gold-relay", 6, { mirror: true, shift: 2 }),
   practiceVariant("knight-silver-bishop-gold-relay", 7, { mirror: true, shift: 3 }),
-  practiceVariant("knight-silver-bishop-gold-relay", 8, { extraBoard: [{ row: 7, col: 0, type: "P", side: D }] }),
-  practiceVariant("knight-silver-bishop-gold-relay", 9, { extraBoard: [{ row: 7, col: 8, type: "P", side: D }] }),
 
   practiceVariant("double-knight-silver-bishop-gold-relay", 1, { shift: -1 }),
   practiceVariant("double-knight-silver-bishop-gold-relay", 2, { mirror: true }),
+
+  practiceVariant("silver-lure-gold-pincer", 1, { shift: -2 }),
+  practiceVariant("knight-gold-corner-drive", 1, { mirror: true }),
+  practiceVariant("corner-knight-net", 1, { mirror: true }),
+  practiceVariant("double-silver-sacrifice-chase", 1, { mirror: true }),
+
+  practiceVariant("dragon-bishop-board-relay", 1, { shift: 1 }),
+  practiceVariant("dragon-bishop-board-relay", 2, { shift: 2 }),
+  practiceVariant("dragon-bishop-board-relay", 3, { shift: 3 }),
+  practiceVariant("dragon-bishop-board-relay", 4, { mirror: true }),
+  practiceVariant("dragon-bishop-board-relay", 5, { mirror: true, shift: -2 }),
+
+  practiceVariant("promoted-lance-dragon-board-relay", 1, { shift: -1 }),
+  practiceVariant("promoted-lance-dragon-board-relay", 2, { mirror: true }),
+  practiceVariant("promoted-lance-dragon-board-relay", 3, { mirror: true, shift: 1 }),
 ];
 
 export const PUZZLES = [...BASE_PUZZLES, ...PRACTICE_PUZZLES];

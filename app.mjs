@@ -4,9 +4,9 @@ import {
   applyMove,
   chooseLongestDefense,
   generateLegalMoves,
+  isCheckingMove,
   isInCheck,
   isMate,
-  isWinningCheckingMove,
 } from "./game-core.mjs";
 import { PUZZLES, puzzleState } from "./puzzles.mjs";
 
@@ -64,9 +64,13 @@ const I18N = {
     chooseDropCopy: "光っている空きマスに駒を置けます。",
     noLegalMove: "この駒は今は動かせません。",
     notMate: "もう一度読んでみよう",
-    notCheckCopy: "その手では王手になっていません。玉に利いているか確認しましょう。",
-    escapeCopy: "王手ですが、玉方に逃げ道か受ける手が残っています。",
-    goodCheck: "正しい王手です",
+    notCheckCopy: "その手では王手になっていません。詰将棋では、攻め方は毎手王手をかけます。",
+    failedTitle: "詰みませんでした",
+    failedCopy: "手数を使い切りました。最初の局面に戻って、もう一度読み直しましょう。",
+    noChecksTitle: "王手が続けられません",
+    noChecksCopy: "王手の連続が途切れました。「やり直す」で最初から読み直しましょう。",
+    hintOffLineCopy: "いまの手順は正解の筋から外れています。「やり直す」で最初から読み直せます。",
+    goodCheck: "王手です",
     goodCheckCopy: "玉方が最も長く逃げる応手を指します。",
     continueAttack: "次の王手を探そう",
     continueAttackCopy: "玉方が応手しました。攻め方は続けて王手します。",
@@ -74,6 +78,8 @@ const I18N = {
     moveSequence: "ここまでの手順",
     sequenceEmpty: "正解の手順がここに並びます",
     solved: "正解・詰みです！",
+    promptGeneric: "王手の連続で、玉を詰ませましょう。",
+    hintThemeTitle: "手筋のテーマ",
     hintTitle: "小さなヒント",
     hintTargetTitle: "置く場所も見てみよう",
     resetDone: "最初の局面に戻しました。",
@@ -83,6 +89,11 @@ const I18N = {
     boardLabel: "9×9の将棋盤",
     selectedPiece: "選択中",
     puzzleLabel: "問題",
+    mateInN: "{n}手詰め",
+    puzzleCountOne: "{n}問",
+    puzzleCountMany: "{n}問",
+    dropSuffix: "打",
+    promoteSuffix: "成",
   },
   en: {
     brandTagline: "Learn to see mate, one move at a time.",
@@ -133,9 +144,13 @@ const I18N = {
     chooseDropCopy: "Place the piece on a highlighted empty square.",
     noLegalMove: "That piece has no legal move here.",
     notMate: "Read the position once more",
-    notCheckCopy: "That move is not check. See whether the piece attacks the king.",
-    escapeCopy: "It is check, but the defender can still escape or answer it.",
-    goodCheck: "That is the right check",
+    notCheckCopy: "That move is not check. In tsume shogi, every attacking move must give check.",
+    failedTitle: "No checkmate",
+    failedCopy: "You used all your moves without mate. Reset and read the position again.",
+    noChecksTitle: "No more checks",
+    noChecksCopy: "The chain of checks is broken. Reset and start reading again.",
+    hintOffLineCopy: "You have left the solution line. Reset to start reading from the beginning.",
+    goodCheck: "Check",
     goodCheckCopy: "The defender will now choose the longest resistance.",
     continueAttack: "Find the next check",
     continueAttackCopy: "The defender has replied. Keep checking with your next move.",
@@ -143,6 +158,8 @@ const I18N = {
     moveSequence: "Moves so far",
     sequenceEmpty: "The correct sequence will appear here",
     solved: "Correct — checkmate!",
+    promptGeneric: "Every move must give check. Find the forced mate.",
+    hintThemeTitle: "The theme",
     hintTitle: "A small hint",
     hintTargetTitle: "Now look at the destination",
     resetDone: "The starting position has been restored.",
@@ -152,18 +169,245 @@ const I18N = {
     boardLabel: "9 by 9 shogi board",
     selectedPiece: "Selected",
     puzzleLabel: "Puzzle",
+    mateInN: "Mate in {n}",
+    puzzleCountOne: "{n} puzzle",
+    puzzleCountMany: "{n} puzzles",
+    dropSuffix: " drop",
+    promoteSuffix: "+",
+  },
+  fr: {
+    brandTagline: "Apprendre à voir le mat, un coup à la fois.",
+    settings: "Réglages",
+    defender: "Défenseur",
+    escapeGoal: "Fermez toutes les cases de fuite",
+    yourTurn: "À vous de jouer",
+    yourPieces: "Pièces en main",
+    tapPiece: "Choisissez une pièce, puis placez-la",
+    findMate: "Trouvez le mat",
+    startHint: "Touchez une pièce sur le plateau ou en main.",
+    reset: "Recommencer",
+    hint: "Indice",
+    next: "Problème suivant",
+    pieceGuide: "Découvrir les pièces et leurs déplacements",
+    language: "Langue",
+    languageNote: "Il suffit d'ajouter un dictionnaire de traduction pour prendre en charge une nouvelle langue.",
+    pieceStyle: "Affichage des pièces",
+    kanji: "Kanji",
+    latin: "Lettres",
+    hybrid: "Les deux",
+    appearance: "Style du plateau",
+    traditional: "Traditionnel",
+    modern: "Moderne",
+    night: "Nuit",
+    offlineReady: "Fonctionne hors ligne",
+    offlineCopy: "Ajoutez l'appli à l'écran d'accueil pour vous entraîner sans connexion.",
+    collection: "COLLECTION",
+    choosePuzzle: "Choisir un problème",
+    pickerSummary: "Mat en 1, 3, 5, 7 ou 9 coups",
+    filterByMoves: "Choisissez les problèmes par longueur du mat.",
+    allPuzzles: "Tous les problèmes",
+    comingSoon: "Bientôt disponible",
+    noPuzzlesYet: "Les problèmes de cette longueur seront ajoutés ici.",
+    learn: "APPRENDRE",
+    guideIntro: "▲ indique la direction de chaque pièce. Retenez d'abord la forme du déplacement ; les noms viendront ensuite.",
+    officialRules: "Lire les règles officielles de la Japan Shogi Association",
+    promoteQuestion: "Promouvoir cette pièce ?",
+    promoteCopy: "La promotion change le déplacement de la pièce.",
+    doNotPromote: "Ne pas promouvoir",
+    promote: "Promouvoir",
+    mateInOne: "Mat en 1 coup",
+    mateInThree: "Mat en 3 coups",
+    beginner: "Débutant",
+    chooseDestination: "Choisissez une destination",
+    chooseDestinationCopy: "Vous pouvez jouer sur une case en surbrillance.",
+    chooseDrop: "Choisissez où parachuter la pièce",
+    chooseDropCopy: "Posez la pièce sur une case libre en surbrillance.",
+    noLegalMove: "Cette pièce n'a aucun coup légal ici.",
+    notMate: "Relisez la position",
+    notCheckCopy: "Ce coup ne donne pas échec. Au tsume shogi, chaque coup de l'attaquant doit donner échec.",
+    failedTitle: "Pas de mat",
+    failedCopy: "Tous les coups sont joués sans mat. Recommencez et relisez la position.",
+    noChecksTitle: "Plus d'échec possible",
+    noChecksCopy: "La suite d'échecs est rompue. Recommencez depuis le début.",
+    hintOffLineCopy: "Vous avez quitté la ligne de solution. Recommencez pour reprendre du début.",
+    goodCheck: "Échec au roi",
+    goodCheckCopy: "Le défenseur choisira la résistance la plus longue.",
+    continueAttack: "Trouvez l'échec suivant",
+    continueAttackCopy: "Le défenseur a répondu. Continuez à donner échec.",
+    defenderThinking: "Le défenseur répond",
+    moveSequence: "Coups joués",
+    sequenceEmpty: "La séquence correcte apparaîtra ici",
+    solved: "Correct — échec et mat !",
+    promptGeneric: "Chaque coup doit donner échec. Trouvez le mat forcé.",
+    hintThemeTitle: "Le thème",
+    hintTitle: "Un petit indice",
+    hintTargetTitle: "Regardez maintenant la destination",
+    resetDone: "La position de départ a été rétablie.",
+    completed: "Terminé",
+    open: "Non tenté",
+    emptyHand: "Aucune pièce en main",
+    boardLabel: "Plateau de shogi 9×9",
+    selectedPiece: "Sélectionnée",
+    puzzleLabel: "Problème",
+    mateInN: "Mat en {n} coups",
+    puzzleCountOne: "{n} problème",
+    puzzleCountMany: "{n} problèmes",
+    dropSuffix: " drop",
+    promoteSuffix: "+",
+  },
+  es: {
+    brandTagline: "Aprende a ver el mate, jugada a jugada.",
+    settings: "Ajustes",
+    defender: "Defensor",
+    escapeGoal: "Cierra todas las casillas de escape",
+    yourTurn: "Tu turno",
+    yourPieces: "Piezas en mano",
+    tapPiece: "Elige una pieza y colócala",
+    findMate: "Encuentra el jaque mate",
+    startHint: "Toca una pieza del tablero o de tu mano.",
+    reset: "Reiniciar",
+    hint: "Pista",
+    next: "Siguiente problema",
+    pieceGuide: "Conoce las piezas y sus movimientos",
+    language: "Idioma",
+    languageNote: "Basta con añadir un diccionario de traducción para sumar más idiomas.",
+    pieceStyle: "Etiquetas de las piezas",
+    kanji: "Kanji",
+    latin: "Letras",
+    hybrid: "Ambos",
+    appearance: "Estilo del tablero",
+    traditional: "Tradicional",
+    modern: "Moderno",
+    night: "Noche",
+    offlineReady: "Funciona sin conexión",
+    offlineCopy: "Añádela a tu pantalla de inicio para practicar sin conexión.",
+    collection: "COLECCIÓN",
+    choosePuzzle: "Elegir un problema",
+    pickerSummary: "Mate en 1, 3, 5, 7 o 9",
+    filterByMoves: "Elige los problemas por longitud del mate.",
+    allPuzzles: "Todos los problemas",
+    comingSoon: "Próximamente",
+    noPuzzlesYet: "Los problemas de esta longitud se añadirán aquí.",
+    learn: "APRENDER",
+    guideIntro: "▲ muestra la dirección de cada pieza. Aprende primero la forma del movimiento; los nombres vendrán después.",
+    officialRules: "Leer las reglas oficiales de la Asociación Japonesa de Shogi",
+    promoteQuestion: "¿Promover esta pieza?",
+    promoteCopy: "La promoción cambia cómo se mueve la pieza.",
+    doNotPromote: "No promover",
+    promote: "Promover",
+    mateInOne: "Mate en 1",
+    mateInThree: "Mate en 3",
+    beginner: "Principiante",
+    chooseDestination: "Elige una casilla de destino",
+    chooseDestinationCopy: "Puedes mover a una casilla iluminada.",
+    chooseDrop: "Elige dónde soltar la pieza",
+    chooseDropCopy: "Coloca la pieza en una casilla libre iluminada.",
+    noLegalMove: "Esa pieza no tiene jugadas legales ahora.",
+    notMate: "Lee la posición otra vez",
+    notCheckCopy: "Esa jugada no da jaque. En el tsume shogi, cada jugada del atacante debe dar jaque.",
+    failedTitle: "Sin jaque mate",
+    failedCopy: "Usaste todas las jugadas sin dar mate. Reinicia y vuelve a leer la posición.",
+    noChecksTitle: "No hay más jaques",
+    noChecksCopy: "La cadena de jaques se rompió. Reinicia y empieza de nuevo.",
+    hintOffLineCopy: "Has salido de la línea de solución. Reinicia para leer desde el principio.",
+    goodCheck: "Jaque",
+    goodCheckCopy: "El defensor elegirá la resistencia más larga.",
+    continueAttack: "Busca el siguiente jaque",
+    continueAttackCopy: "El defensor ha respondido. Sigue dando jaque.",
+    defenderThinking: "El defensor está respondiendo",
+    moveSequence: "Jugadas hasta ahora",
+    sequenceEmpty: "La secuencia correcta aparecerá aquí",
+    solved: "¡Correcto: jaque mate!",
+    promptGeneric: "Cada jugada debe dar jaque. Encuentra el mate forzado.",
+    hintThemeTitle: "El tema",
+    hintTitle: "Una pequeña pista",
+    hintTargetTitle: "Mira ahora la casilla de destino",
+    resetDone: "Se restauró la posición inicial.",
+    completed: "Completado",
+    open: "Sin intentar",
+    emptyHand: "No hay piezas en mano",
+    boardLabel: "Tablero de shogi de 9×9",
+    selectedPiece: "Seleccionada",
+    puzzleLabel: "Problema",
+    mateInN: "Mate en {n}",
+    puzzleCountOne: "{n} problema",
+    puzzleCountMany: "{n} problemas",
+    dropSuffix: " drop",
+    promoteSuffix: "+",
   },
 };
 
 const PIECES = {
-  K: { kanjiAttack: "王", kanjiDefense: "玉", latin: "K", ja: "玉・王", en: "King", moveJa: "前後・左右・斜めへ1マス。取られない場所へ動きます。", moveEn: "One square in any direction, but never into attack." },
-  R: { kanji: "飛", promoted: "竜", latin: "R", ja: "飛車", en: "Rook", moveJa: "縦・横へ、途中に駒がない限り何マスでも。", moveEn: "Any distance vertically or horizontally, without jumping." },
-  B: { kanji: "角", promoted: "馬", latin: "B", ja: "角行", en: "Bishop", moveJa: "斜めへ、途中に駒がない限り何マスでも。", moveEn: "Any distance diagonally, without jumping." },
-  G: { kanji: "金", latin: "G", ja: "金将", en: "Gold", moveJa: "前3方向・横・真後ろへ1マス。詰みの主役です。", moveEn: "One square forward, sideways, or straight back. A key mating piece." },
-  S: { kanji: "銀", promoted: "全", latin: "S", ja: "銀将", en: "Silver", moveJa: "前と斜め4方向へ1マス。横と真後ろには進めません。", moveEn: "One square forward or diagonally; not sideways or straight back." },
-  N: { kanji: "桂", promoted: "圭", latin: "N", ja: "桂馬", en: "Knight", moveJa: "前へ2、横へ1。ほかの駒を飛び越えます。", moveEn: "Two forward and one sideways. It jumps over other pieces." },
-  L: { kanji: "香", promoted: "杏", latin: "L", ja: "香車", en: "Lance", moveJa: "前へ、途中に駒がない限り何マスでも。", moveEn: "Any distance straight forward, without jumping." },
-  P: { kanji: "歩", promoted: "と", latin: "P", ja: "歩兵", en: "Pawn", moveJa: "前へ1マス。持ち駒から打つときは二歩に注意。", moveEn: "One square forward. A dropped pawn cannot create two pawns on one file." },
+  K: {
+    kanjiAttack: "王", kanjiDefense: "玉", latin: "K",
+    ja: "玉・王", en: "King", fr: "Roi", es: "Rey",
+    moveJa: "前後・左右・斜めへ1マス。取られない場所へ動きます。",
+    moveEn: "One square in any direction, but never into attack.",
+    moveFr: "Une case dans toutes les directions, jamais sur une case attaquée.",
+    moveEs: "Una casilla en cualquier dirección, nunca hacia una casilla atacada.",
+  },
+  R: {
+    kanji: "飛", promoted: "竜", latin: "R",
+    ja: "飛車", en: "Rook", fr: "Tour", es: "Torre",
+    promotedFr: "Dragon", promotedEs: "Dragón",
+    moveJa: "縦・横へ、途中に駒がない限り何マスでも。",
+    moveEn: "Any distance vertically or horizontally, without jumping.",
+    moveFr: "En vertical ou horizontal, sur toute distance, sans sauter.",
+    moveEs: "En vertical u horizontal, cualquier distancia, sin saltar.",
+  },
+  B: {
+    kanji: "角", promoted: "馬", latin: "B",
+    ja: "角行", en: "Bishop", fr: "Fou", es: "Alfil",
+    promotedFr: "Cheval dragon", promotedEs: "Caballo dragón",
+    moveJa: "斜めへ、途中に駒がない限り何マスでも。",
+    moveEn: "Any distance diagonally, without jumping.",
+    moveFr: "En diagonale, sur toute distance, sans sauter.",
+    moveEs: "En diagonal, cualquier distancia, sin saltar.",
+  },
+  G: {
+    kanji: "金", latin: "G",
+    ja: "金将", en: "Gold", fr: "Or", es: "Oro",
+    moveJa: "前3方向・横・真後ろへ1マス。詰みの主役です。",
+    moveEn: "One square forward, sideways, or straight back. A key mating piece.",
+    moveFr: "Une case vers l'avant (3 directions), sur les côtés ou droit derrière. Pièce clé du mat.",
+    moveEs: "Una casilla al frente (3 direcciones), a los lados o directamente atrás. Pieza clave del mate.",
+  },
+  S: {
+    kanji: "銀", promoted: "全", latin: "S",
+    ja: "銀将", en: "Silver", fr: "Argent", es: "Plata",
+    promotedFr: "Argent promu", promotedEs: "Plata promovida",
+    moveJa: "前と斜め4方向へ1マス。横と真後ろには進めません。",
+    moveEn: "One square forward or diagonally; not sideways or straight back.",
+    moveFr: "Une case vers l'avant ou en diagonale ; ni de côté ni droit derrière.",
+    moveEs: "Una casilla al frente o en diagonal; ni de lado ni directamente atrás.",
+  },
+  N: {
+    kanji: "桂", promoted: "圭", latin: "N",
+    ja: "桂馬", en: "Knight", fr: "Cavalier", es: "Caballo",
+    promotedFr: "Cavalier promu", promotedEs: "Caballo promovido",
+    moveJa: "前へ2、横へ1。ほかの駒を飛び越えます。",
+    moveEn: "Two forward and one sideways. It jumps over other pieces.",
+    moveFr: "Deux cases vers l'avant et une de côté, en sautant par-dessus les pièces.",
+    moveEs: "Dos casillas al frente y una al lado, saltando sobre otras piezas.",
+  },
+  L: {
+    kanji: "香", promoted: "杏", latin: "L",
+    ja: "香車", en: "Lance", fr: "Lance", es: "Lanza",
+    promotedFr: "Lance promue", promotedEs: "Lanza promovida",
+    moveJa: "前へ、途中に駒がない限り何マスでも。",
+    moveEn: "Any distance straight forward, without jumping.",
+    moveFr: "Droit devant, sur toute distance, sans sauter.",
+    moveEs: "Recto hacia delante, cualquier distancia, sin saltar.",
+  },
+  P: {
+    kanji: "歩", promoted: "と", latin: "P",
+    ja: "歩兵", en: "Pawn", fr: "Pion", es: "Peón",
+    promotedFr: "Tokin (pion promu)", promotedEs: "Tokin (peón promovido)",
+    moveJa: "前へ1マス。持ち駒から打つときは二歩に注意。",
+    moveEn: "One square forward. A dropped pawn cannot create two pawns on one file.",
+    moveFr: "Une case vers l'avant. Un pion parachuté ne peut pas doubler un pion sur la même colonne.",
+    moveEs: "Una casilla al frente. Un peón lanzado no puede crear dos peones en la misma columna.",
+  },
 };
 
 const $ = (selector) => document.querySelector(selector);
@@ -182,11 +426,13 @@ let toastTimer = null;
 let defenseTimer = null;
 let playedPlies = 0;
 let attackerStep = 0;
+let onVerifiedLine = true;
 let moveHistory = [];
 let puzzleFilter = "all";
 
 function loadPreferences() {
-  const fallbackLanguage = navigator.language?.toLowerCase().startsWith("ja") ? "ja" : "en";
+  const prefix = (navigator.language || "").toLowerCase().slice(0, 2);
+  const fallbackLanguage = ["ja", "fr", "es"].includes(prefix) ? prefix : "en";
   const fallback = { language: fallbackLanguage, theme: "washi", pieceStyle: "hybrid", completed: [], currentPuzzle: 0 };
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
@@ -212,12 +458,11 @@ function localText(value) {
 function mateLabel(puzzle) {
   if (puzzle.plies === 1) return t("mateInOne");
   if (puzzle.plies === 3) return t("mateInThree");
-  return preferences.language === "ja" ? `${puzzle.plies}手詰め` : `Mate in ${puzzle.plies}`;
+  return t("mateInN").replace("{n}", puzzle.plies);
 }
 
 function puzzleCountLabel(count) {
-  if (preferences.language === "ja") return `${count}問`;
-  return `${count} ${count === 1 ? "puzzle" : "puzzles"}`;
+  return t(count === 1 ? "puzzleCountOne" : "puzzleCountMany").replace("{n}", count);
 }
 
 function filteredPuzzleEntries() {
@@ -290,11 +535,23 @@ function pieceDisplay(item) {
   return { main: kanji, sub: latin };
 }
 
+function pieceInfoName(info) {
+  return info[preferences.language] || info.en;
+}
+
+function pieceMoveText(info) {
+  const key = { ja: "moveJa", en: "moveEn", fr: "moveFr", es: "moveEs" }[preferences.language];
+  return info[key] || info.moveEn;
+}
+
 function pieceName(item) {
   const info = PIECES[item.type];
-  const base = preferences.language === "ja" ? info.ja : info.en;
+  const base = pieceInfoName(info);
   if (!item.promoted) return base;
-  return preferences.language === "ja" ? `成${base}` : `Promoted ${base}`;
+  if (preferences.language === "ja") return `成${base}`;
+  if (preferences.language === "fr") return info.promotedFr || `${base} promu`;
+  if (preferences.language === "es") return info.promotedEs || `${base} promovida`;
+  return `Promoted ${base}`;
 }
 
 function createPieceElement(item) {
@@ -351,8 +608,8 @@ function renderBoard() {
       const item = state.board[row][col];
       const moveTargets = selectedMoves.filter((move) => move.toRow === row && move.toCol === col);
       const isSelected = selected?.kind === "board" && selected.row === row && selected.col === col;
-      const hintOrigin = hintStage >= 1 && hint?.origin?.[0] === row && hint?.origin?.[1] === col;
-      const hintTarget = hintStage >= 2 && hint?.target?.[0] === row && hint?.target?.[1] === col;
+      const hintOrigin = hintStage >= 2 && hint?.origin?.[0] === row && hint?.origin?.[1] === col;
+      const hintTarget = hintStage >= 3 && hint?.target?.[0] === row && hint?.target?.[1] === col;
 
       cell.classList.toggle("selected", isSelected);
       cell.classList.toggle("target", moveTargets.length > 0);
@@ -383,7 +640,7 @@ function renderHand() {
     button.type = "button";
     button.className = "hand-piece";
     button.classList.toggle("selected", selected?.kind === "hand" && selected.type === type);
-    button.classList.toggle("hinted", hintStage >= 1 && hint?.hand === type);
+    button.classList.toggle("hinted", hintStage >= 2 && hint?.hand === type);
     button.disabled = locked;
     const item = { type, side: ATTACK, promoted: false };
     button.appendChild(createPieceElement(item));
@@ -414,8 +671,10 @@ function renderMission() {
   $("#puzzle-progress").textContent = filteredPosition >= 0
     ? `${filteredPosition + 1} / ${filtered.length}`
     : `${currentIndex + 1} / ${PUZZLES.length}`;
-  $("#puzzle-title").textContent = localText(puzzle.title);
-  $("#puzzle-prompt").textContent = localText(puzzle.prompt);
+  // 題名は答えに直結するため表示しない。番号のみ示し、題名はヒント第1段階で使う。
+  $("#puzzle-title").textContent = `${t("puzzleLabel")} ${currentIndex + 1}`;
+  // 問題文も詰み筋を示唆するため、盤面では汎用文のみ表示する。
+  $("#puzzle-prompt").textContent = t("promptGeneric");
   $("#turn-banner").textContent = feedbackMode === "good-check" ? t("defenderThinking") : t("yourTurn");
 }
 
@@ -437,11 +696,20 @@ function renderFeedback() {
     mark.textContent = "↺";
     title.textContent = t("notMate");
     message.textContent = t("notCheckCopy");
-  } else if (feedbackMode === "escape") {
+  } else if (feedbackMode === "failed") {
     container.classList.add("try-again");
     mark.textContent = "↺";
-    title.textContent = t("notMate");
-    message.textContent = t("escapeCopy");
+    title.textContent = t("failedTitle");
+    message.textContent = t("failedCopy");
+  } else if (feedbackMode === "no-checks") {
+    container.classList.add("try-again");
+    mark.textContent = "↺";
+    title.textContent = t("noChecksTitle");
+    message.textContent = t("noChecksCopy");
+  } else if (feedbackMode === "hint-offline") {
+    mark.textContent = "?";
+    title.textContent = t("hintTitle");
+    message.textContent = t("hintOffLineCopy");
   } else if (feedbackMode === "good-check") {
     mark.textContent = "✓";
     title.textContent = t("goodCheck");
@@ -452,8 +720,14 @@ function renderFeedback() {
     message.textContent = t("continueAttackCopy");
   } else if (feedbackMode === "hint") {
     mark.textContent = "?";
-    title.textContent = hintStage >= 2 ? t("hintTargetTitle") : t("hintTitle");
-    message.textContent = localText(currentHint());
+    if (hintStage <= 1) {
+      // 第1段階: 手筋のテーマ（旧タイトル）と問題文だけを見せる。
+      title.textContent = t("hintThemeTitle");
+      message.textContent = `${localText(puzzle.title)} — ${localText(puzzle.prompt)}`;
+    } else {
+      title.textContent = hintStage >= 3 ? t("hintTargetTitle") : t("hintTitle");
+      message.textContent = localText(currentHint());
+    }
   } else if (feedbackMode === "destination") {
     mark.textContent = "→";
     title.textContent = selected?.kind === "hand" ? t("chooseDrop") : t("chooseDestination");
@@ -510,7 +784,7 @@ function renderPuzzleList() {
     const copy = document.createElement("span");
     copy.className = "puzzle-list-copy";
     const title = document.createElement("strong");
-    title.textContent = localText(puzzle.title);
+    title.textContent = `${t("puzzleLabel")} ${index + 1}`;
     const status = document.createElement("small");
     status.textContent = `${mateLabel(puzzle)} · ${complete ? t("completed") : t("open")}`;
     copy.append(title, status);
@@ -532,8 +806,8 @@ function formatMove(entry) {
   const info = PIECES[entry.type];
   const name = preferences.language === "ja" ? (info.kanji || info.kanjiDefense) : info.latin;
   const suffix = entry.kind === "drop"
-    ? (preferences.language === "ja" ? "打" : " drop")
-    : (entry.promote ? (preferences.language === "ja" ? "成" : "+") : "");
+    ? t("dropSuffix")
+    : (entry.promote ? t("promoteSuffix") : "");
   return `${mark}${destination} ${name}${suffix}`;
 }
 
@@ -570,13 +844,13 @@ function renderPieceGuide() {
     icon.className = "guide-piece";
     icon.textContent = type === "K" ? info.kanjiDefense : info.kanji;
     const heading = document.createElement("h3");
-    heading.textContent = preferences.language === "ja" ? info.ja : info.en;
+    heading.textContent = pieceInfoName(info);
     const small = document.createElement("small");
     small.textContent = `${info.latin} · ▲`;
     heading.appendChild(small);
     top.append(icon, heading);
     const description = document.createElement("p");
-    description.textContent = preferences.language === "ja" ? info.moveJa : info.moveEn;
+    description.textContent = pieceMoveText(info);
     card.append(top, description);
     guide.appendChild(card);
   });
@@ -652,10 +926,20 @@ function commitMove(move) {
   closeModal("#promotion-layer");
   pendingPromotionMoves = [];
   const puzzle = PUZZLES[currentIndex];
-  const remaining = puzzle.plies - playedPlies;
   const nextState = applyMove(state, move);
-  const followsVerifiedLine = matchesPlannedMove(move, currentHint()) && isInCheck(nextState, DEFENSE);
-  const correct = followsVerifiedLine || isWinningCheckingMove(state, move, remaining);
+
+  // 王手でない手はルール違反として、盤面を変えずに差し戻す。
+  if (!isInCheck(nextState, DEFENSE)) {
+    feedbackMode = "not-check";
+    selected = null;
+    selectedMoves = [];
+    hintStage = 0;
+    renderAll();
+    return;
+  }
+
+  // 王手であれば正解手順かどうかに関わらず受け入れ、手数いっぱいまで対局を進める。
+  onVerifiedLine = onVerifiedLine && matchesPlannedMove(move, currentHint());
   const entry = moveWithType(state, move);
   state = nextState;
   moveHistory.push(entry);
@@ -665,18 +949,19 @@ function commitMove(move) {
   hintStage = 0;
   locked = true;
 
-  if (correct && isMate(state, DEFENSE)) {
+  if (isMate(state, DEFENSE)) {
     feedbackMode = "success";
     const id = puzzle.id;
     if (!preferences.completed.includes(id)) preferences.completed.push(id);
     savePreferences();
-  } else if (correct) {
+  } else if (playedPlies >= puzzle.plies) {
+    // 手数を使い切っても詰まなかった。ここで初めて失敗が分かる。
+    feedbackMode = "failed";
+  } else {
     feedbackMode = "good-check";
     renderAll();
     scheduleDefense(puzzle.plies - playedPlies);
     return;
-  } else {
-    feedbackMode = isInCheck(state, DEFENSE) ? "escape" : "not-check";
   }
   renderAll();
 }
@@ -686,11 +971,11 @@ function scheduleDefense(remainingPlies) {
   defenseTimer = setTimeout(() => {
     defenseTimer = null;
     const puzzle = PUZZLES[currentIndex];
-    const planned = puzzle.responses?.[attackerStep];
+    const planned = onVerifiedLine ? puzzle.responses?.[attackerStep] : null;
     const reply = generateLegalMoves(state, DEFENSE).find((move) => matchesPlannedMove(move, planned))
       || chooseLongestDefense(state, remainingPlies);
     if (!reply) {
-      feedbackMode = "escape";
+      feedbackMode = "no-checks";
       locked = true;
       renderAll();
       return;
@@ -704,6 +989,15 @@ function scheduleDefense(remainingPlies) {
     selectedMoves = [];
     hintStage = 0;
     legalMoves = generateLegalMoves(state, ATTACK);
+
+    // 王手を続けられる手が残っていなければ、この時点で失敗となる。
+    if (!legalMoves.some((move) => isCheckingMove(state, move))) {
+      feedbackMode = "no-checks";
+      locked = true;
+      renderAll();
+      return;
+    }
+
     locked = false;
     feedbackMode = "continue";
     renderAll();
@@ -723,6 +1017,7 @@ function resetPuzzle(showMessage = true) {
   locked = false;
   playedPlies = 0;
   attackerStep = 0;
+  onVerifiedLine = true;
   moveHistory = [];
   closeModal("#promotion-layer");
   renderAll();
@@ -747,7 +1042,17 @@ function showHint() {
   if (feedbackMode === "success") return;
   if (defenseTimer) return;
   if (locked) resetPuzzle(false);
-  hintStage = Math.min(hintStage + 1, 2);
+  if (!onVerifiedLine) {
+    // 正解手順から外れている間は、的外れなヒントを出さずにその旨を伝える。
+    feedbackMode = "hint-offline";
+    selected = null;
+    selectedMoves = [];
+    renderBoard();
+    renderHand();
+    renderFeedback();
+    return;
+  }
+  hintStage = Math.min(hintStage + 1, 3);
   feedbackMode = "hint";
   selected = null;
   selectedMoves = [];
