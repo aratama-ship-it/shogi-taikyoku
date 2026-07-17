@@ -100,15 +100,15 @@ a:focus-visible {
   width: min(100%, 520px);
   min-height: 100dvh;
   margin: 0 auto;
-  padding: max(12px, env(safe-area-inset-top)) 14px max(28px, env(safe-area-inset-bottom));
+  padding: max(8px, env(safe-area-inset-top)) 12px max(24px, env(safe-area-inset-bottom));
 }
 
 .topbar {
-  min-height: 56px;
+  min-height: 48px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 7px;
 }
 
 .brand {
@@ -124,15 +124,15 @@ a:focus-visible {
 }
 
 .brand-mark {
-  width: 42px;
-  height: 46px;
+  width: 36px;
+  height: 40px;
   display: grid;
   place-items: center;
   clip-path: polygon(50% 0, 92% 19%, 100% 100%, 0 100%, 8% 19%);
   background: linear-gradient(165deg, #f1d9a5, #c99b52);
   color: #2d1c0e;
   font-family: var(--serif);
-  font-size: 22px;
+  font-size: 19px;
   font-weight: 800;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .2));
 }
@@ -143,7 +143,7 @@ a:focus-visible {
 }
 
 .brand-copy strong {
-  font-size: 16px;
+  font-size: 15px;
   letter-spacing: .02em;
 }
 
@@ -153,8 +153,8 @@ a:focus-visible {
 }
 
 .icon-button {
-  width: 44px;
-  height: 44px;
+  width: 38px;
+  height: 38px;
   border: 1px solid rgba(255, 255, 255, .22);
   border-radius: 50%;
   background: rgba(255, 255, 255, .1);
@@ -165,19 +165,12 @@ a:focus-visible {
 }
 
 .mission-card {
-  margin-bottom: 10px;
-  padding: 16px 17px 15px;
+  margin-bottom: 7px;
+  padding: 7px 8px 8px;
   border: 1px solid rgba(255, 255, 255, .44);
-  border-radius: var(--radius) var(--radius) 12px 12px;
+  border-radius: 16px;
   background: var(--surface);
   box-shadow: var(--shadow);
-}
-
-.mission-topline {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
 }
 
 .level-chip,
@@ -194,65 +187,79 @@ a:focus-visible {
 }
 
 .level-chip {
+  padding-inline: 7px;
   background: color-mix(in srgb, var(--accent) 14%, var(--surface));
   color: var(--accent-strong);
+  font-size: 10px;
 }
 
 .puzzle-progress {
+  padding-inline: 3px;
   color: var(--muted);
+  font-size: 10px;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
-.mission-card h1 {
-  margin: 0;
+.mission-title {
+  min-width: 0;
+  overflow: hidden;
   font-family: var(--serif);
-  font-size: clamp(20px, 5.8vw, 27px);
-  line-height: 1.25;
+  font-size: 15px;
+  line-height: 1.2;
   letter-spacing: .02em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .mission-card p {
-  margin: 6px 0 0;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
   color: var(--muted);
-  font-size: 13px;
-  line-height: 1.55;
+  font-size: 10px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .puzzle-picker-button {
   width: 100%;
-  min-height: 54px;
+  min-height: 36px;
   display: grid;
-  grid-template-columns: 34px 1fr auto;
+  grid-template-columns: auto minmax(0, 1fr) auto auto auto;
   align-items: center;
-  gap: 10px;
-  margin: 9px 0;
-  padding: 8px 12px;
-  border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--line));
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+  gap: 7px;
+  margin: 0;
+  padding: 2px 5px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
   color: var(--ink);
   text-align: left;
-  box-shadow: var(--shadow);
   cursor: pointer;
 }
 
-.picker-mark {
-  width: 34px;
-  height: 34px;
-  display: grid;
-  place-items: center;
-  border-radius: 10px;
-  background: var(--accent);
-  color: white;
-  font-family: var(--serif);
-  font-size: 17px;
-  font-weight: 900;
+.puzzle-picker-button:hover {
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
 }
 
-.picker-copy { display: grid; gap: 2px; }
-.picker-copy strong { font-size: 12px; }
-.picker-copy small { color: var(--muted); font-size: 9px; }
-.picker-arrow { color: var(--accent); font-size: 24px; line-height: 1; }
+.picker-label {
+  color: var(--accent-strong);
+  font-size: 10px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.picker-arrow { color: var(--accent); font-size: 19px; line-height: 1; }
+
+.mission-subline {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 1px 5px 0;
+}
 
 .play-area {
   overflow: hidden;
@@ -262,36 +269,12 @@ a:focus-visible {
   box-shadow: var(--shadow);
 }
 
-.opponent-strip {
-  min-height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 9px 14px;
-  background: var(--surface-muted);
-  border-bottom: 1px solid var(--line);
-}
-
-.opponent-strip > div {
-  display: grid;
-  gap: 2px;
-}
-
-.side-label {
-  color: var(--muted);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-}
-
-.opponent-strip strong {
-  font-size: 12px;
-}
-
 .turn-badge {
   background: var(--bg);
   color: #fff;
+  min-height: 20px;
+  padding: 3px 7px;
+  font-size: 9px;
 }
 
 .board-frame {
@@ -547,8 +530,8 @@ html[data-piece-style="latin"] .piece-sub { display: none; }
 }
 
 .sequence-card {
-  margin-top: 10px;
-  padding: 10px 12px;
+  margin-top: 7px;
+  padding: 8px 10px;
   border: 1px solid rgba(255, 255, 255, .34);
   border-radius: 14px;
   background: color-mix(in srgb, var(--surface) 93%, transparent);
@@ -607,12 +590,13 @@ html[data-piece-style="latin"] .piece-sub { display: none; }
 }
 
 .feedback {
-  min-height: 68px;
+  min-width: 0;
+  min-height: 76px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-top: 10px;
-  padding: 11px 14px;
+  gap: 8px;
+  margin: 0;
+  padding: 9px 10px;
   border: 1px solid rgba(255, 255, 255, .34);
   border-radius: 14px;
   background: color-mix(in srgb, var(--surface) 93%, transparent);
@@ -621,8 +605,8 @@ html[data-piece-style="latin"] .piece-sub { display: none; }
 
 .feedback-mark {
   flex: 0 0 auto;
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
   display: grid;
   place-items: center;
   border: 1px solid var(--line);
@@ -635,14 +619,58 @@ html[data-piece-style="latin"] .piece-sub { display: none; }
 .feedback strong {
   display: block;
   margin-bottom: 3px;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .feedback p {
   margin: 0;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 10px;
   line-height: 1.45;
+}
+
+.feedback-tools {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 136px;
+  gap: 7px;
+  margin-top: 7px;
+}
+
+.judgement-quick {
+  min-height: 76px;
+  padding: 7px;
+  border: 1px solid rgba(255, 255, 255, .34);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 93%, transparent);
+  box-shadow: var(--shadow);
+}
+
+.judgement-quick-title {
+  display: block;
+  margin: 0 2px 5px;
+  color: var(--muted);
+  font-size: 9px;
+  letter-spacing: .05em;
+}
+
+.mode-options.quick-mode-options {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.mode-options.quick-mode-options button {
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 3px 6px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.mode-options.quick-mode-options b {
+  display: block;
+  font-size: 9px;
+  line-height: 1.15;
 }
 
 .feedback.success .feedback-mark {
@@ -659,20 +687,27 @@ html[data-piece-style="latin"] .piece-sub { display: none; }
 
 .action-row {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  margin-top: 10px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 7px;
+}
+
+.action-row button > span[aria-hidden="true"] {
+  display: none;
 }
 
 .primary-button,
 .secondary-button {
-  min-height: 46px;
+  min-height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  padding: 0 14px;
-  border-radius: 13px;
+  gap: 4px;
+  padding: 3px 5px;
+  border-radius: 11px;
+  font-size: 10px;
+  line-height: 1.15;
+  text-align: center;
   font-weight: 800;
   cursor: pointer;
 }
@@ -1171,11 +1206,15 @@ html[data-piece-style="latin"] .piece-sub { display: none; }
 @media (max-width: 374px) {
   .app-shell { padding-inline: 9px; }
   .brand-copy small { display: none; }
-  .mission-card { padding-block: 13px; }
-  .mission-card p { font-size: 11px; }
+  .mission-card { padding-inline: 5px; }
+  .puzzle-picker-button { gap: 5px; padding-inline: 3px; }
+  .picker-label { font-size: 9px; }
+  .feedback-tools { grid-template-columns: minmax(0, 1fr) 128px; gap: 5px; }
+  .feedback { padding-inline: 8px; }
+  .feedback-mark { display: none; }
   .board-frame { padding: 7px 8px 9px; }
   .hand-zone { grid-template-columns: 96px 1fr; padding-inline: 10px; }
-  .secondary-button { padding-inline: 10px; font-size: 11px; }
+  .action-row button { font-size: 9px; }
   .piece-guide { grid-template-columns: 1fr; }
 }
 

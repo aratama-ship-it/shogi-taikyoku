@@ -32,35 +32,26 @@
         </span>
       </button>
       <button class="icon-button" id="settings-button" type="button" data-i18n-aria="settings" aria-label="設定">
-        <span aria-hidden="true">Aa</span>
+        <span aria-hidden="true">⚙</span>
       </button>
     </header>
 
     <main>
       <section class="mission-card" aria-labelledby="puzzle-title">
-        <div class="mission-topline">
+        <button class="puzzle-picker-button" id="puzzle-picker-button" type="button">
           <span class="level-chip" id="puzzle-level">1手詰め</span>
+          <strong class="mission-title" id="puzzle-title" role="heading" aria-level="1">問題 1</strong>
           <span class="puzzle-progress" id="puzzle-progress">1 / 64</span>
-        </div>
-        <h1 id="puzzle-title">金は、とどめの駒</h1>
-        <p id="puzzle-prompt">相手の玉がどこにも逃げられない一手を見つけよう。</p>
-      </section>
-
-      <button class="puzzle-picker-button" id="puzzle-picker-button" type="button">
-        <span class="picker-mark" aria-hidden="true">問</span>
-        <span class="picker-copy"><strong data-i18n="choosePuzzle">問題を選ぶ</strong><small data-i18n="pickerSummary">1手・3手・5手・7手・9手から選択</small></span>
-        <span class="picker-arrow" aria-hidden="true">›</span>
-      </button>
-
-      <section class="play-area" aria-label="Shogi puzzle board">
-        <div class="opponent-strip">
-          <div>
-            <span class="side-label" data-i18n="defender">玉方</span>
-            <strong data-i18n="escapeGoal">すべての逃げ道をふさぐ</strong>
-          </div>
+          <span class="picker-label" data-i18n="choosePuzzleCompact">問題を選ぶ</span>
+          <span class="picker-arrow" aria-hidden="true">›</span>
+        </button>
+        <div class="mission-subline">
+          <p id="puzzle-prompt">王手の連続で詰ませましょう。</p>
           <span class="turn-badge" id="turn-banner" data-i18n="yourTurn">あなたの手番</span>
         </div>
+      </section>
 
+      <section class="play-area" aria-label="Shogi puzzle board">
         <div class="board-frame">
           <div class="file-labels" id="file-labels" aria-hidden="true"></div>
           <div class="board-row">
@@ -86,13 +77,27 @@
         <div class="sequence-moves" id="move-sequence"></div>
       </section>
 
-      <section class="feedback" id="feedback" aria-live="polite">
-        <span class="feedback-mark" id="feedback-mark" aria-hidden="true">○</span>
-        <div>
-          <strong id="feedback-title" data-i18n="findMate">詰みを見つけよう</strong>
-          <p id="feedback-message" data-i18n="startHint">盤上の駒か持ち駒をタップしてください。</p>
-        </div>
-      </section>
+      <div class="feedback-tools">
+        <section class="feedback" id="feedback" aria-live="polite">
+          <span class="feedback-mark" id="feedback-mark" aria-hidden="true">○</span>
+          <div>
+            <strong id="feedback-title" data-i18n="findMate">詰みを見つけよう</strong>
+            <p id="feedback-message" data-i18n="startHint">盤上の駒か持ち駒をタップしてください。</p>
+          </div>
+        </section>
+
+        <section class="judgement-quick" aria-labelledby="judgement-quick-title">
+          <strong class="judgement-quick-title" id="judgement-quick-title" data-i18n="judgementQuick">判定</strong>
+          <div class="mode-options quick-mode-options" id="judgement-options" role="group" data-i18n-aria="judgement" aria-label="判定方法">
+            <button type="button" data-value="immediate" aria-pressed="false">
+              <b data-i18n="judgementImmediate">1手ごと</b>
+            </button>
+            <button type="button" data-value="end" aria-pressed="true">
+              <b data-i18n="judgementEnd">通しで挑戦</b>
+            </button>
+          </div>
+        </section>
+      </div>
 
       <div class="action-row">
         <button class="secondary-button" id="reset-button" type="button">
@@ -139,21 +144,6 @@
           <button type="button" data-value="es">Español</button>
         </div>
         <p data-i18n="languageNote">翻訳データを追加するだけで、対応言語を増やせる設計です。</p>
-      </div>
-
-      <div class="setting-group">
-        <h3 data-i18n="judgement">判定方法</h3>
-        <div class="mode-options" id="judgement-options" role="group" data-i18n-aria="judgement" aria-label="判定方法">
-          <button type="button" data-value="immediate" aria-pressed="false">
-            <b data-i18n="judgementImmediate">1手ごと</b>
-            <small data-i18n="judgementImmediateCopy">正解筋かをその場で知らせる</small>
-          </button>
-          <button type="button" data-value="end" aria-pressed="true">
-            <b data-i18n="judgementEnd">通しで挑戦</b>
-            <small data-i18n="judgementEndCopy">王手なら進み、詰まない時に知らせる</small>
-          </button>
-        </div>
-        <p data-i18n="judgementNote">途中で切り替えると、問題は最初の局面に戻ります。</p>
       </div>
 
       <div class="setting-group">
