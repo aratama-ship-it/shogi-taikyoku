@@ -1,12 +1,14 @@
 # Tsume Shogi — App Store提出準備
 
-更新日: 2026-07-17
+更新日: 2026-07-18
 
 ## 現在の構成
 
 - Capacitor 8でWeb版をiOSのネイティブコンテナに同梱する。
 - 対象はiPhone・iOS 15以降。縦向き表示とし、問題、翻訳、判定エンジンを同梱して通常のプレイはオフラインで完結する。
-- アカウント、広告、アクセス解析、課金SDKは現時点で使用しない。
+- 無料版としてGoogle AdMobのインタースティシャル広告を使用する。アカウント、独自のアクセス解析、課金SDKは使用しない。
+- 広告は4問正解後、「次の問題」へ進む区切りでのみ候補となり、表示後10分間は再表示しない。対局中、不正解時、答え再生時、起動直後には表示しない。
+- 非パーソナライズ広告を要求し、ATT許可は要求しない。地域ごとの同意はGoogle User Messaging Platformで取得する。
 - 仮Bundle ID: `com.jugglerarata.tsumeshogi`。App Store Connectへ登録する前に、所有ドメインやブランド名と合わせて最終決定する。
 
 ## App Review 4.2への説明材料
@@ -28,14 +30,20 @@
 
 ※プライバシーとサポートページを含む版を公開してから、App Store Connectへ入力する。
 
-## App Privacy回答案（現行版）
+## App Privacy回答案（AdMob導入後）
 
-- Data Collection: **No, we do not collect data from this app**
-- Tracking: なし
-- アカウント: なし
-- 表示設定、現在の問題、クリア状況は端末内だけに保存し、外部へ送信しない。
+「データを収集しない」は選択できない。Google Mobile Ads SDKの現行開示を基に、少なくとも次をApp Store Connectで再確認する。
 
-広告、分析、クラウド同期、アカウント、課金SDKを後から追加する場合は、実装・公開より前にプライバシーポリシーとApp Store Connectの回答を再点検する。
+- おおよその位置情報（IPアドレスから推定）
+- デバイスID
+- 広告データ
+- 製品の操作情報
+- クラッシュデータ
+- パフォーマンスデータ
+- 利用目的: 第三者広告、分析、アプリ機能、不正防止・セキュリティ等（各データに該当する目的をGoogleの現行説明とXcode Privacy Reportで照合）
+- Tracking: 非パーソナライズ広告・ATT要求なしの設計。ただし最終回答は、使用する本番SDK版とApp Store Connectの定義を照合して決定する。
+
+学習進捗、表示設定、広告までの正解数、最終広告時刻は端末内だけに保存し、開発者のサーバーへ送信しない。
 
 ## ストア掲載文案
 
@@ -53,6 +61,8 @@
 > 判定は、正解筋から外れたときすぐ知らせる「1手ごと」と、最後まで考える「通しで挑戦」から選択できます。行き詰まったときは3段階ヒントや答えの再生を利用できます。
 >
 > 日本語・英語・フランス語・スペイン語、漢字・ローマ字・併記の駒表示に対応。問題と判定機能をアプリに収録しているため、通常の練習はオフラインで行えます。
+>
+> 本アプリは広告によって無料で提供されます。広告は複数の問題を正解した後、次の問題へ進む区切りで表示される場合があります。
 
 ### English
 
@@ -68,6 +78,8 @@ Description draft:
 > Choose immediate feedback when you want guidance after every move, or play through the full line when you want to test your reading. Three levels of hints and animated answer replay help you learn from difficult positions.
 >
 > The interface supports Japanese, English, French, and Spanish, with Kanji, letter, or combined piece labels. Puzzles and judging logic are included in the app, so normal practice works offline.
+>
+> The app is free with ads. An ad may appear at the transition to the next puzzle after several successful solves.
 
 ## 審査メモ案
 
@@ -77,12 +89,13 @@ Description draft:
 4. 「ヒント」は3段階、「答えを見る」は確認後に正解手順を再生する。
 5. ログイン、購入、特別な審査用アカウントは不要。
 6. 通信を切った状態でも通常の問題演習が可能。
+7. テスト時は、4問正解後の「広告のあと次へ」からGoogleのテスト広告を表示する。広告が取得できない場合も次の問題へ進める。
 
 ## オーナーが決める項目
 
 - Apple Developer Programを個人名義にするか、法人名義にするか
 - 正式なアプリ名とBundle ID
-- 無料、買い切り、将来のアプリ内課金のどれで開始するか
+- 販売方式は「無料＋広告」で開始する（2026-07-18決定）
 - 配信する国・地域
 - 「子ども向け」カテゴリを明示的に選ぶか。初回は通常カテゴリ・年齢レーティング4+相当で始める案を推奨する
 
@@ -93,20 +106,23 @@ Description draft:
 - Apple Developer Programの名義と署名チームが未設定。個人登録では原則として個人の法的氏名、法人登録では法人名が販売者名になる。
 - 販売価格、配信地域、年齢レーティングの回答はオーナー判断が必要。
 - プライバシー／サポートページはファイル作成済みだが、公開サイトにはまだ反映していない。
+- AdMobの本番アプリID／インタースティシャル広告ユニットIDが未発行。現在はGoogle公式のサンプルIDのみを使用しているため、そのまま公開しない。
+- AdMob管理画面でGDPR等のPrivacy & messagingを設定し、アプリ単位でも頻度上限を設定する。
 
-## 依存関係監査（2026-07-17）
+## 依存関係監査（2026-07-18）
 
 - `npm audit --omit=dev` は、Webビルドに使うNext.js内のPostCSSについてmoderate 2件を報告した。該当処理は、静的HTML・CSS・JavaScriptとしてiOSアプリへ同梱した後の実行時には含まれない。
 - 開発用依存を含めるとlow 1件・moderate 4件・high 6件。主にVite、Wrangler、Cloudflareのローカル開発・ビルド経路で、CapacitorのiOS実行依存からは報告されていない。
 - 監査が提案するNext.jsの大幅ダウングレードやビルド基盤の一括更新は互換性リスクがあるため未適用。公開ビルド基盤を更新するときに個別に更新・再検証する。
 
-## 実施済み検証（2026-07-17）
+## 実施済み検証（2026-07-18）
 
-- Node通常テスト: 18件合格
+- Node通常テスト: 25件合格（広告頻度、同意状態、ブラウザ無効化、本番／デモID混在防止を含む）
 - Webプロダクションビルド: 合格
-- Capacitor同期: 合格
-- Xcode 26.6・iOS 26.5 Simulator SDK・署名なしDebugビルド: 合格
+- AdMob 8.0.0を含むCapacitor同期: 合格
+- Xcode 26.6・iOS 26.5 Simulator SDK・署名なしDebugビルド: 合格（Google Mobile Ads／User Messaging Platformをリンク）
 - iPhone 17 Proシミュレータへのインストール、起動、縦画面表示: 合格
+- Google Mobile Ads／User Messaging PlatformのPrivacy Manifest同梱: 確認済み
 - 64問の難度別完全探索: 全件合格
   - 1手8問、3手12問、5手27問、7手12問、9手5問
   - 最短詰み手数、唯一の初手、ヒントが示す完全手順、攻め方の持駒余りなしを確認
@@ -121,5 +137,8 @@ Description draft:
 - [ ] 日本語・英語のストア用スクリーンショットを作る
 - [ ] 年齢レーティング質問票に回答する
 - [ ] App Privacyとプライバシーポリシーを最終照合する
+- [ ] AdMobでアプリとインタースティシャル広告ユニットを作り、サンプルIDを本番IDへ差し替える
+- [ ] AdMobのPrivacy & messagingと頻度上限を設定する
+- [ ] 不適切な広告の報告方法を、広告画面内のAdChoicesに加えてサポートページでも案内する
 - [ ] TestFlightで外部または内部テストを行う
 - [ ] 審査メモを添えて提出する

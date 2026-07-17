@@ -18,19 +18,34 @@ test("privacy and support documents ship in the public bundle", async () => {
     read("sw.js"),
   ]);
 
-  assert.match(privacy, /個人データを収集・送信しません/);
-  assert.match(privacy, /does not collect or transmit personal data/i);
-  assert.match(support, /通常のプレイにインターネット接続は不要/);
+  assert.match(privacy, /Google Mobile Ads SDK/);
+  assert.match(privacy, /device identifiers/i);
+  assert.match(privacy, /非パーソナライズ広告/);
+  assert.match(support, /広告を取得できなくても問題演習は続けられます/);
   for (const file of ["legal.css", "privacy.html", "support.html"]) {
     assert.match(prepare, new RegExp(`"${file.replace(".", "\\.")}"`));
     assert.match(serviceWorker, new RegExp(`"\\./${file.replace(".", "\\.")}"`));
   }
 });
 
+test("the iOS project uses test AdMob identifiers and documents the production replacement gate", async () => {
+  const [plist, preparation, packageJson] = await Promise.all([
+    read("ios/App/App/Info.plist"),
+    read("APP_STORE_PREPARATION.md"),
+    read("package.json"),
+  ]);
+  assert.match(plist, /ca-app-pub-3940256099942544~1458002511/);
+  assert.match(plist, /cstr6suwn9\.skadnetwork/);
+  assert.match(preparation, /そのまま公開しない/);
+  assert.match(packageJson, /@capacitor-community\/admob/);
+});
+
 test("settings expose localized privacy and support links", async () => {
   const [html, app] = await Promise.all([read("index.html"), read("app.mjs")]);
   assert.match(html, /data-i18n="privacyPolicy"/);
   assert.match(html, /data-i18n="support"/);
+  assert.match(html, /id="privacy-options-button"/);
   assert.equal((app.match(/privacyPolicy:/g) || []).length, 4);
   assert.equal((app.match(/appSupport:/g) || []).length, 4);
+  assert.equal((app.match(/advertisingNote:/g) || []).length, 4);
 });

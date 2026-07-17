@@ -10,6 +10,7 @@ import {
   isWinningCheckingMove,
 } from "./game-core.mjs";
 import { buildAnswerLine } from "./answer-line.mjs";
+import { createAdManager } from "./ad-manager.mjs";
 import { PUZZLES, puzzleState } from "./puzzles.mjs";
 import { pickRandomPuzzleIndex } from "./random-puzzle.mjs";
 
@@ -32,6 +33,7 @@ const I18N = {
     hint: "ヒント",
     showAnswer: "答えを見る",
     next: "次の問題",
+    nextAfterAd: "広告のあと次へ",
     answerConfirmTitle: "答えを表示しますか？",
     answerConfirmCopy: "正解手順を盤面で再生します。この問題はクリア扱いになりません。",
     answerCancel: "まだ考える",
@@ -79,6 +81,9 @@ const I18N = {
     appSupport: "アプリ情報とサポート",
     privacyPolicy: "プライバシーポリシー",
     support: "サポート",
+    advertising: "広告について",
+    advertisingNote: "無料提供のため、数問クリアした区切りで広告が表示されることがあります。対局中には表示しません。",
+    privacyChoices: "広告のプライバシー設定",
     promoteQuestion: "成りますか？",
     promoteCopy: "成ると駒の動きが変わります。",
     doNotPromote: "成らない",
@@ -141,6 +146,7 @@ const I18N = {
     hint: "Hint",
     showAnswer: "Show answer",
     next: "Next puzzle",
+    nextAfterAd: "Ad, then next puzzle",
     answerConfirmTitle: "Show the answer?",
     answerConfirmCopy: "The solution will play on the board. This puzzle will not be marked as completed.",
     answerCancel: "Keep thinking",
@@ -188,6 +194,9 @@ const I18N = {
     appSupport: "App information and support",
     privacyPolicy: "Privacy policy",
     support: "Support",
+    advertising: "About advertising",
+    advertisingNote: "To keep the app free, an ad may appear after several completed puzzles. Ads never interrupt a puzzle.",
+    privacyChoices: "Ad privacy choices",
     promoteQuestion: "Promote this piece?",
     promoteCopy: "Promotion changes how the piece moves.",
     doNotPromote: "Do not promote",
@@ -250,6 +259,7 @@ const I18N = {
     hint: "Indice",
     showAnswer: "Voir la solution",
     next: "Problème suivant",
+    nextAfterAd: "Publicité, puis problème suivant",
     answerConfirmTitle: "Afficher la solution ?",
     answerConfirmCopy: "La solution sera jouée sur le plateau. Ce problème ne sera pas marqué comme terminé.",
     answerCancel: "Continuer à chercher",
@@ -297,6 +307,9 @@ const I18N = {
     appSupport: "Informations et assistance",
     privacyPolicy: "Politique de confidentialité",
     support: "Assistance",
+    advertising: "À propos de la publicité",
+    advertisingNote: "Pour garder l'application gratuite, une publicité peut apparaître après plusieurs problèmes terminés, jamais pendant un problème.",
+    privacyChoices: "Choix de confidentialité publicitaire",
     promoteQuestion: "Promouvoir cette pièce ?",
     promoteCopy: "La promotion change le déplacement de la pièce.",
     doNotPromote: "Ne pas promouvoir",
@@ -359,6 +372,7 @@ const I18N = {
     hint: "Pista",
     showAnswer: "Ver respuesta",
     next: "Siguiente problema",
+    nextAfterAd: "Anuncio y siguiente problema",
     answerConfirmTitle: "¿Mostrar la respuesta?",
     answerConfirmCopy: "La solución se reproducirá en el tablero. El problema no contará como completado.",
     answerCancel: "Seguir pensando",
@@ -406,6 +420,9 @@ const I18N = {
     appSupport: "Información y asistencia",
     privacyPolicy: "Política de privacidad",
     support: "Asistencia",
+    advertising: "Acerca de la publicidad",
+    advertisingNote: "Para mantener la aplicación gratuita, puede aparecer un anuncio después de varios problemas completados, nunca durante un problema.",
+    privacyChoices: "Opciones de privacidad de anuncios",
     promoteQuestion: "¿Promover esta pieza?",
     promoteCopy: "La promoción cambia cómo se mueve la pieza.",
     doNotPromote: "No promover",
@@ -551,6 +568,8 @@ let attackerStep = 0;
 let onVerifiedLine = true;
 let moveHistory = [];
 let puzzleFilter = "all";
+let advancingToNextPuzzle = false;
+let adManager = null;
 
 function loadPreferences() {
   const prefix = (navigator.language || "").toLowerCase().slice(0, 2);
@@ -1024,9 +1043,14 @@ function renderAll() {
   renderRandomPuzzleButton();
   renderPuzzleList();
   renderPieceGuide();
-  $("#next-button").disabled = !["success", "answer-complete"].includes(feedbackMode);
+  const canContinue = ["success", "answer-complete"].includes(feedbackMode);
+  $("#next-button").disabled = advancingToNextPuzzle || !canContinue;
+  $("#next-button-label").textContent = feedbackMode === "success" && adManager?.willShowOnNext()
+    ? t("nextAfterAd")
+    : t("next");
   $("#answer-button").disabled = ["success", "answer-playing", "answer-complete"].includes(feedbackMode);
   $("#hint-button").disabled = feedbackMode === "answer-playing";
+  $("#privacy-options-button").hidden = !adManager?.isPrivacyOptionsRequired();
 }
 
 function selectBoardPiece(row, col) {
@@ -1129,6 +1153,7 @@ function commitMove(move) {
     const id = puzzle.id;
     if (!preferences.completed.includes(id)) preferences.completed.push(id);
     savePreferences();
+    adManager?.recordSolve();
   } else if (playedPlies >= puzzle.plies) {
     // 手数を使い切っても詰まなかった。ここで初めて失敗が分かる。
     feedbackMode = "failed";
@@ -1274,6 +1299,20 @@ function chooseRandomPuzzle() {
   showToast(t("randomChosen"));
 }
 
+async function continueToNextPuzzle() {
+  if (advancingToNextPuzzle) return;
+  const index = nextPuzzleIndex();
+  const mayShowAd = feedbackMode === "success";
+  advancingToNextPuzzle = true;
+  renderAll();
+  try {
+    if (mayShowAd) await adManager?.showIfDue();
+  } finally {
+    advancingToNextPuzzle = false;
+    loadPuzzle(index);
+  }
+}
+
 function showHint() {
   if (feedbackMode === "success") return;
   if (defenseTimer) return;
@@ -1356,8 +1395,9 @@ function bindEvents() {
   $("#answer-button").addEventListener("click", () => openModal("#answer-layer", "#cancel-answer-button"));
   $("#cancel-answer-button").addEventListener("click", () => closeModal("#answer-layer"));
   $("#confirm-answer-button").addEventListener("click", revealAnswer);
-  $("#next-button").addEventListener("click", () => loadPuzzle(nextPuzzleIndex()));
+  $("#next-button").addEventListener("click", continueToNextPuzzle);
   $("#random-puzzle-button").addEventListener("click", chooseRandomPuzzle);
+  $("#privacy-options-button").addEventListener("click", () => adManager?.showPrivacyOptions());
   document.querySelectorAll("[data-close-sheet]").forEach((button) => button.addEventListener("click", closeSheets));
 
   document.querySelectorAll("#puzzle-filters [data-plies]").forEach((button) => {
@@ -1402,6 +1442,12 @@ function registerServiceWorker() {
   }
 }
 
+adManager = createAdManager({
+  preferences,
+  savePreferences,
+  onStateChange: () => renderAll(),
+});
 bindEvents();
 renderAll();
 registerServiceWorker();
+adManager.initialize();
