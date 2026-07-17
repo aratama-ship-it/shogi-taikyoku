@@ -139,6 +139,21 @@
       </div>
 
       <div class="setting-group">
+        <h3 data-i18n="judgement">判定方法</h3>
+        <div class="mode-options" id="judgement-options" role="group" data-i18n-aria="judgement" aria-label="判定方法">
+          <button type="button" data-value="immediate" aria-pressed="false">
+            <b data-i18n="judgementImmediate">1手ごと</b>
+            <small data-i18n="judgementImmediateCopy">正解筋かをその場で知らせる</small>
+          </button>
+          <button type="button" data-value="end" aria-pressed="true">
+            <b data-i18n="judgementEnd">通しで挑戦</b>
+            <small data-i18n="judgementEndCopy">王手なら進み、詰まない時に知らせる</small>
+          </button>
+        </div>
+        <p data-i18n="judgementNote">途中で切り替えると、問題は最初の局面に戻ります。</p>
+      </div>
+
+      <div class="setting-group">
         <h3 data-i18n="pieceStyle">駒の表示</h3>
         <div class="option-grid" id="piece-style-options">
           <button type="button" data-value="kanji"><span class="option-piece">金</span><b data-i18n="kanji">漢字</b></button>

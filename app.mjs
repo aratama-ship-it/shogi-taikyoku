@@ -7,6 +7,7 @@ import {
   isCheckingMove,
   isInCheck,
   isMate,
+  isWinningCheckingMove,
 } from "./game-core.mjs";
 import { PUZZLES, puzzleState } from "./puzzles.mjs";
 
@@ -31,6 +32,12 @@ const I18N = {
     pieceGuide: "駒の名前と動きを見る",
     language: "言語",
     languageNote: "翻訳データを追加するだけで、対応言語を増やせる設計です。",
+    judgement: "判定方法",
+    judgementImmediate: "1手ごと",
+    judgementImmediateCopy: "正解筋かをその場で知らせる",
+    judgementEnd: "通しで挑戦",
+    judgementEndCopy: "王手なら進み、詰まない時に知らせる",
+    judgementNote: "途中で切り替えると、問題は最初の局面に戻ります。",
     pieceStyle: "駒の表示",
     kanji: "漢字",
     latin: "ローマ字",
@@ -70,8 +77,12 @@ const I18N = {
     noChecksTitle: "王手が続けられません",
     noChecksCopy: "王手の連続が途切れました。「やり直す」で最初から読み直しましょう。",
     hintOffLineCopy: "いまの手順は正解の筋から外れています。「やり直す」で最初から読み直せます。",
+    wrongLineTitle: "別の王手を探そう",
+    wrongLineCopy: "その手は正解の筋ではありません。盤面は指す前のままなので、別の王手を試せます。",
     goodCheck: "王手です",
     goodCheckCopy: "玉方が最も長く逃げる応手を指します。",
+    correctCheck: "正解です",
+    correctCheckCopy: "正しい王手です。玉方の応手のあと、次の一手を探しましょう。",
     continueAttack: "次の王手を探そう",
     continueAttackCopy: "玉方が応手しました。攻め方は続けて王手します。",
     defenderThinking: "玉方が応手中",
@@ -111,6 +122,12 @@ const I18N = {
     pieceGuide: "Learn the pieces and their moves",
     language: "Language",
     languageNote: "The translation registry is ready for more languages later.",
+    judgement: "Feedback timing",
+    judgementImmediate: "Each move",
+    judgementImmediateCopy: "Tell me immediately if the move leaves the solution line",
+    judgementEnd: "Play through",
+    judgementEndCopy: "Let checks continue and judge when the line fails",
+    judgementNote: "Changing this setting restarts the current puzzle.",
     pieceStyle: "Piece labels",
     kanji: "Kanji",
     latin: "Letters",
@@ -150,8 +167,12 @@ const I18N = {
     noChecksTitle: "No more checks",
     noChecksCopy: "The chain of checks is broken. Reset and start reading again.",
     hintOffLineCopy: "You have left the solution line. Reset to start reading from the beginning.",
+    wrongLineTitle: "Try another check",
+    wrongLineCopy: "That move is not on the solution line. The board is unchanged, so you can try another check.",
     goodCheck: "Check",
     goodCheckCopy: "The defender will now choose the longest resistance.",
+    correctCheck: "Correct",
+    correctCheckCopy: "That is the right check. After the defender replies, find the next move.",
     continueAttack: "Find the next check",
     continueAttackCopy: "The defender has replied. Keep checking with your next move.",
     defenderThinking: "Defender is replying",
@@ -191,6 +212,12 @@ const I18N = {
     pieceGuide: "Découvrir les pièces et leurs déplacements",
     language: "Langue",
     languageNote: "Il suffit d'ajouter un dictionnaire de traduction pour prendre en charge une nouvelle langue.",
+    judgement: "Moment de la correction",
+    judgementImmediate: "À chaque coup",
+    judgementImmediateCopy: "Signaler immédiatement un écart de la solution",
+    judgementEnd: "Jouer la ligne",
+    judgementEndCopy: "Continuer les échecs et corriger quand la ligne échoue",
+    judgementNote: "Changer ce réglage recommence le problème en cours.",
     pieceStyle: "Affichage des pièces",
     kanji: "Kanji",
     latin: "Lettres",
@@ -230,8 +257,12 @@ const I18N = {
     noChecksTitle: "Plus d'échec possible",
     noChecksCopy: "La suite d'échecs est rompue. Recommencez depuis le début.",
     hintOffLineCopy: "Vous avez quitté la ligne de solution. Recommencez pour reprendre du début.",
+    wrongLineTitle: "Essayez un autre échec",
+    wrongLineCopy: "Ce coup ne suit pas la solution. Le plateau reste inchangé : essayez un autre échec.",
     goodCheck: "Échec au roi",
     goodCheckCopy: "Le défenseur choisira la résistance la plus longue.",
+    correctCheck: "Correct",
+    correctCheckCopy: "C'est le bon échec. Après la réponse du défenseur, trouvez le coup suivant.",
     continueAttack: "Trouvez l'échec suivant",
     continueAttackCopy: "Le défenseur a répondu. Continuez à donner échec.",
     defenderThinking: "Le défenseur répond",
@@ -271,6 +302,12 @@ const I18N = {
     pieceGuide: "Conoce las piezas y sus movimientos",
     language: "Idioma",
     languageNote: "Basta con añadir un diccionario de traducción para sumar más idiomas.",
+    judgement: "Momento de la corrección",
+    judgementImmediate: "Cada jugada",
+    judgementImmediateCopy: "Avisar al instante si sales de la solución",
+    judgementEnd: "Jugar la línea",
+    judgementEndCopy: "Seguir los jaques y corregir cuando falle la línea",
+    judgementNote: "Cambiar este ajuste reinicia el problema actual.",
     pieceStyle: "Etiquetas de las piezas",
     kanji: "Kanji",
     latin: "Letras",
@@ -310,8 +347,12 @@ const I18N = {
     noChecksTitle: "No hay más jaques",
     noChecksCopy: "La cadena de jaques se rompió. Reinicia y empieza de nuevo.",
     hintOffLineCopy: "Has salido de la línea de solución. Reinicia para leer desde el principio.",
+    wrongLineTitle: "Prueba otro jaque",
+    wrongLineCopy: "Esa jugada no sigue la solución. El tablero no cambia, así que puedes probar otro jaque.",
     goodCheck: "Jaque",
     goodCheckCopy: "El defensor elegirá la resistencia más larga.",
+    correctCheck: "Correcto",
+    correctCheckCopy: "Ese es el jaque correcto. Tras la respuesta del defensor, busca la siguiente jugada.",
     continueAttack: "Busca el siguiente jaque",
     continueAttackCopy: "El defensor ha respondido. Sigue dando jaque.",
     defenderThinking: "El defensor está respondiendo",
@@ -433,7 +474,14 @@ let puzzleFilter = "all";
 function loadPreferences() {
   const prefix = (navigator.language || "").toLowerCase().slice(0, 2);
   const fallbackLanguage = ["ja", "fr", "es"].includes(prefix) ? prefix : "en";
-  const fallback = { language: fallbackLanguage, theme: "washi", pieceStyle: "hybrid", completed: [], currentPuzzle: 0 };
+  const fallback = {
+    language: fallbackLanguage,
+    theme: "washi",
+    pieceStyle: "hybrid",
+    judgementMode: "end",
+    completed: [],
+    currentPuzzle: 0,
+  };
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
     return saved ? { ...fallback, ...saved } : fallback;
@@ -485,6 +533,7 @@ function currentHint() {
 
 function matchesPlannedMove(move, plan) {
   if (!plan || move.toRow !== plan.target[0] || move.toCol !== plan.target[1]) return false;
+  if (plan.promote === true && move.promote !== true) return false;
   if (plan.hand) return move.kind === "drop" && move.type === plan.hand;
   return move.kind === "board"
     && move.fromRow === plan.origin[0]
@@ -511,6 +560,7 @@ function applyPreferences() {
   });
 
   updateOptionState("#language-options", preferences.language);
+  updateOptionState("#judgement-options", preferences.judgementMode);
   updateOptionState("#piece-style-options", preferences.pieceStyle);
   updateOptionState("#theme-options", preferences.theme);
   $("#board").setAttribute("aria-label", t("boardLabel"));
@@ -710,10 +760,15 @@ function renderFeedback() {
     mark.textContent = "?";
     title.textContent = t("hintTitle");
     message.textContent = t("hintOffLineCopy");
+  } else if (feedbackMode === "wrong-line") {
+    container.classList.add("try-again");
+    mark.textContent = "↺";
+    title.textContent = t("wrongLineTitle");
+    message.textContent = t("wrongLineCopy");
   } else if (feedbackMode === "good-check") {
     mark.textContent = "✓";
-    title.textContent = t("goodCheck");
-    message.textContent = t("goodCheckCopy");
+    title.textContent = t(preferences.judgementMode === "immediate" ? "correctCheck" : "goodCheck");
+    message.textContent = t(preferences.judgementMode === "immediate" ? "correctCheckCopy" : "goodCheckCopy");
   } else if (feedbackMode === "continue") {
     mark.textContent = "→";
     title.textContent = t("continueAttack");
@@ -938,7 +993,23 @@ function commitMove(move) {
     return;
   }
 
-  // 王手であれば正解手順かどうかに関わらず受け入れ、手数いっぱいまで対局を進める。
+  // 「1手ごと」では、正解の詰み筋から外れる王手を盤面へ反映せずに知らせる。
+  if (preferences.judgementMode === "immediate") {
+    const remaining = puzzle.plies - playedPlies;
+    const followsVerifiedLine = matchesPlannedMove(move, currentHint());
+    const correct = followsVerifiedLine || isWinningCheckingMove(state, move, remaining);
+    if (!correct) {
+      feedbackMode = "wrong-line";
+      selected = null;
+      selectedMoves = [];
+      hintStage = 0;
+      renderAll();
+      return;
+    }
+  }
+
+  // 「通しで挑戦」では正解手順かどうかに関わらず王手を受け入れる。
+  // 「1手ごと」は上で正解確認済みなので、以降の進行処理を共用する。
   onVerifiedLine = onVerifiedLine && matchesPlannedMove(move, currentHint());
   const entry = moveWithType(state, move);
   state = nextState;
@@ -1130,6 +1201,7 @@ function bindEvents() {
   });
 
   bindOptionGroup("#language-options", "language");
+  bindOptionGroup("#judgement-options", "judgementMode", () => resetPuzzle(false));
   bindOptionGroup("#piece-style-options", "pieceStyle");
   bindOptionGroup("#theme-options", "theme");
 

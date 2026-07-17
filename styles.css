@@ -860,6 +860,42 @@ html[data-piece-style="latin"] .piece-sub { display: none; }
   font-weight: 800;
 }
 
+.mode-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.mode-options button {
+  min-height: 76px;
+  display: grid;
+  align-content: center;
+  gap: 5px;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-muted);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.mode-options button.active {
+  border-color: var(--accent-strong);
+  background: var(--surface);
+  box-shadow: 0 3px 10px rgba(20, 30, 26, .1);
+}
+
+.mode-options b {
+  font-size: 13px;
+}
+
+.mode-options small {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.35;
+}
+
 .option-grid,
 .theme-grid {
   display: grid;
