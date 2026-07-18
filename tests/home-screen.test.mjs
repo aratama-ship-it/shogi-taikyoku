@@ -45,7 +45,8 @@ test("the craft-led home styling and refreshed offline cache ship together", () 
   assert.match(styles, /\.home-hero-mark/);
   assert.match(styles, /\.home-length-rail/);
   assert.match(styles, /html\[data-theme="washi"\] :is\([\s\S]*\.home-hero/);
-  assert.match(serviceWorker, /tsume-shogi-v26/);
+  assert.match(serviceWorker, /tsume-shogi-v27/);
+  assert.match(styles, /#settings-button > span[^}]*font-size: 20px/s);
   assert.match(html, /一手ずつ、<wbr>詰みが見える。/);
   assert.match(app, /homeTitle: "一手ずつ、\\u200B詰みが見える。"/);
   assert.match(styles, /\.home-hero h1[^}]*word-break: keep-all/s);

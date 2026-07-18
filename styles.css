@@ -234,6 +234,12 @@ html[data-theme="washi"] .play-area {
   backdrop-filter: blur(10px);
 }
 
+#settings-button > span {
+  display: block;
+  font-size: 20px;
+  line-height: 1;
+}
+
 .topbar-actions {
   display: flex;
   align-items: center;
