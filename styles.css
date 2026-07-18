@@ -432,7 +432,9 @@ html[data-theme="washi"] .play-area {
   color: color-mix(in srgb, var(--on-background) 70%, transparent);
   font-size: 9px;
   line-height: 1.45;
+  overflow-wrap: normal;
   text-align: right;
+  word-break: keep-all;
 }
 
 .home-length-rail {

@@ -30,7 +30,7 @@ const I18N = {
     learningRecord: "学習の記録",
     homeCompleted: "{done} / {total} 問クリア",
     chooseByLength: "手数から選ぶ",
-    chooseByLengthCopy: "短い詰みから、少しずつ読む距離を伸ばします。",
+    chooseByLengthCopy: "短い詰みから、\u200B少しずつ読む距離を伸ばします。",
     randomAll: "全問題からランダム",
     randomAllCopy: "いまの問題を避けて、一問選びます。",
     settings: "設定",
