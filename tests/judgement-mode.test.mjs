@@ -16,6 +16,14 @@ test("the play screen exposes both judgement modes beside feedback", () => {
   assert.doesNotMatch(settingsSection, /id="judgement-options"/);
 });
 
+test("feedback and judgement appear above the move sequence", () => {
+  const feedbackPosition = indexSource.indexOf('class="feedback-tools"');
+  const sequencePosition = indexSource.indexOf('class="sequence-card"');
+  assert.ok(feedbackPosition >= 0);
+  assert.ok(sequencePosition >= 0);
+  assert.ok(feedbackPosition < sequencePosition);
+});
+
 test("the puzzle selector is folded into the compact mission card and the defender strip is removed", () => {
   assert.match(indexSource, /class="mission-card"[\s\S]*id="puzzle-picker-button"[\s\S]*id="turn-banner"/);
   assert.doesNotMatch(indexSource, /class="opponent-strip"/);
