@@ -94,10 +94,18 @@
         <span class="home-random-arrow" aria-hidden="true">→</span>
       </button>
 
-      <button class="learn-link home-learn-link" id="home-learn-button" type="button">
-        <span aria-hidden="true">◇</span>
-        <span data-i18n="pieceGuide">駒の名前と動きを見る</span>
-      </button>
+      <nav class="home-learning-nav" data-i18n-aria="learningBasics" aria-label="はじめての方へ">
+        <button id="home-learn-button" type="button">
+          <span class="home-learning-index" aria-hidden="true">駒</span>
+          <span><strong data-i18n="pieceGuide">駒の名前と動きを見る</strong><small data-i18n="pieceGuideCopy">盤の図で、動ける方向を確認します。</small></span>
+          <span aria-hidden="true">→</span>
+        </button>
+        <button id="home-rules-button" type="button">
+          <span class="home-learning-index" aria-hidden="true">詰</span>
+          <span><strong data-i18n="tsumeRules">詰将棋のルール</strong><small data-i18n="tsumeRulesCopy">王手、応手、詰みまでを3分で。</small></span>
+          <span aria-hidden="true">→</span>
+        </button>
+      </nav>
     </main>
 
     <main class="play-view" id="play-view" hidden>
@@ -211,6 +219,14 @@
       </div>
 
       <div class="setting-group">
+        <h3 data-i18n="learningBasics">はじめての方へ</h3>
+        <div class="settings-links learning-settings-links">
+          <button id="settings-rules-button" type="button"><span aria-hidden="true">詰</span><span data-i18n="tsumeRules">詰将棋のルール</span></button>
+          <button id="settings-learn-button" type="button"><span aria-hidden="true">駒</span><span data-i18n="pieceGuide">駒の名前と動きを見る</span></button>
+        </div>
+      </div>
+
+      <div class="setting-group">
         <h3 data-i18n="pieceStyle">駒の表示</h3>
         <div class="option-grid" id="piece-style-options">
           <button type="button" data-value="kanji"><span class="option-piece">金</span><b data-i18n="kanji">漢字</b></button>
@@ -286,9 +302,61 @@
         <div><span class="eyebrow" data-i18n="learn">LEARN</span><h2 id="learn-title" data-i18n="pieceGuide">駒の名前と動きを見る</h2></div>
         <button class="close-button" type="button" data-close-sheet aria-label="Close">×</button>
       </div>
-      <p class="guide-intro" data-i18n="guideIntro">▲が駒の向いている方向です。最初は名前より、動ける形を覚えれば大丈夫。</p>
+      <p class="guide-intro" data-i18n="guideIntro">駒は上（▲）を向いています。点・矢印・菱形の違いを見ると、動きがすぐ分かります。</p>
+      <div class="movement-legend" data-i18n-aria="movementLegend" aria-label="動き方の図の見方">
+        <span><i class="legend-dot" aria-hidden="true"></i><b data-i18n="oneSquareLegend">1マス</b></span>
+        <span><i class="legend-ray" aria-hidden="true"></i><b data-i18n="slideLegend">何マスでも</b></span>
+        <span><i class="legend-jump" aria-hidden="true"></i><b data-i18n="jumpLegend">飛び越える</b></span>
+      </div>
       <div class="piece-guide" id="piece-guide"></div>
+      <section class="promotion-guide-section" aria-labelledby="promotion-guide-title">
+        <div class="promotion-guide-heading">
+          <span aria-hidden="true">成</span>
+          <div><h3 id="promotion-guide-title" data-i18n="promotionGuide">成るとどう動く？</h3><p data-i18n="promotionGuideCopy">敵陣で成ると、駒の動きが増えたり金と同じ動きになります。</p></div>
+        </div>
+        <div class="promotion-guide" id="promotion-guide"></div>
+      </section>
       <a class="rules-link" href="https://www.shogi.or.jp/match/taikyoku_rules/" target="_blank" rel="noreferrer" data-i18n="officialRules">日本将棋連盟の公式ルールを見る</a>
+    </section>
+  </div>
+
+  <div class="sheet-layer hidden" id="rules-layer" aria-hidden="true">
+    <button class="sheet-scrim" type="button" data-close-sheet aria-label="Close rules"></button>
+    <section class="sheet tall-sheet rules-sheet" role="dialog" aria-modal="true" aria-labelledby="rules-title">
+      <div class="sheet-handle" aria-hidden="true"></div>
+      <div class="sheet-header">
+        <div><span class="eyebrow">HOW TO PLAY</span><h2 id="rules-title" data-i18n="tsumeRules">詰将棋のルール</h2></div>
+        <button class="close-button" type="button" data-close-sheet aria-label="Close">×</button>
+      </div>
+
+      <p class="rules-lead" data-i18n="rulesLead">詰将棋は、少ない駒と決められた手数で、相手の玉を必ず詰ませる将棋のパズルです。</p>
+
+      <div class="rules-flow" data-i18n-aria="rulesFlowLabel" aria-label="王手から詰みまでの流れ">
+        <div><span class="flow-side attack">▲</span><strong data-i18n="ruleCheck">王手する</strong><small data-i18n="ruleCheckCopy">攻め方は毎手、玉を狙う</small></div>
+        <i aria-hidden="true">→</i>
+        <div><span class="flow-side defense">△</span><strong data-i18n="ruleReply">玉方が応じる</strong><small data-i18n="ruleReplyCopy">逃げる・取る・防ぐ</small></div>
+        <i aria-hidden="true">→</i>
+        <div><span class="flow-mate" aria-hidden="true"></span><strong data-i18n="ruleMate">逃げ道なし</strong><small data-i18n="ruleMateCopy">どの応手でも玉を守れない</small></div>
+      </div>
+
+      <section class="rules-count" aria-labelledby="rules-count-title">
+        <div><span class="rules-number" aria-hidden="true">三</span><div><h3 id="rules-count-title" data-i18n="countingMoves">「3手詰め」の数え方</h3><p data-i18n="countingMovesCopy">攻め方だけでなく、玉方の応手も1手として数えます。</p></div></div>
+        <ol>
+          <li><span>1</span><b>▲</b><small data-i18n="attackCheck">攻め方・王手</small></li>
+          <li><span>2</span><b>△</b><small data-i18n="defenseReply">玉方・応手</small></li>
+          <li><span>3</span><b>▲</b><small data-i18n="attackMate">攻め方・詰み</small></li>
+        </ol>
+      </section>
+
+      <div class="rules-principles">
+        <article><span>一</span><div><h3 data-i18n="alwaysCheck">攻め方は毎手王手</h3><p data-i18n="alwaysCheckCopy">途中で王手でない手を指すことはできません。</p></div></article>
+        <article><span>二</span><div><h3 data-i18n="bestDefense">玉方は最も長く逃げる</h3><p data-i18n="bestDefenseCopy">複数の応手があれば、詰みまで最も手数がかかる手を選びます。このアプリでは自動で応じます。</p></div></article>
+        <article><span>三</span><div><h3 data-i18n="whatIsMate">「詰み」とは</h3><p data-i18n="whatIsMateCopy">玉が逃げる、王手した駒を取る、合駒で防ぐ、そのどれでも王手を外せない状態です。</p></div></article>
+        <article><span>四</span><div><h3 data-i18n="useAllHandPieces">持ち駒を使い切る</h3><p data-i18n="useAllHandPiecesCopy">このアプリの問題は、表示された攻め方の持ち駒が余らない手順を正解とします。</p></div></article>
+      </div>
+
+      <aside class="rules-note"><strong data-i18n="importantRule">覚えておきたい反則</strong><p data-i18n="importantRuleCopy">二歩、打ち歩詰め、行き所のない駒などは通常の将棋と同じく指せません。</p></aside>
+      <a class="rules-link" href="https://www.shogi.or.jp/tsume_shogi/" target="_blank" rel="noreferrer" data-i18n="officialTsumeRules">日本将棋連盟の詰将棋ルールを見る</a>
     </section>
   </div>
 

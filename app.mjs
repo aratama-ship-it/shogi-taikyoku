@@ -55,6 +55,46 @@ const I18N = {
     answerRetryCopy: "「やり直す」で初形からもう一度挑戦できます。",
     answerUnavailable: "正解手順を表示できませんでした。",
     pieceGuide: "駒の名前と動きを見る",
+    pieceGuideCopy: "盤の図で、動ける方向を確認します。",
+    learningBasics: "はじめての方へ",
+    tsumeRules: "詰将棋のルール",
+    tsumeRulesCopy: "王手、応手、詰みまでを3分で。",
+    movementLegend: "動き方の図の見方",
+    oneSquareLegend: "1マス",
+    slideLegend: "何マスでも",
+    jumpLegend: "飛び越える",
+    promotionGuide: "成るとどう動く？",
+    promotionGuideCopy: "敵陣で成ると、駒の動きが増えたり金と同じ動きになります。",
+    goldPromotions: "と・成銀・成桂・成香",
+    goldPromotionsCopy: "歩・銀・桂・香が成ると、金と同じ6方向へ1マス動きます。",
+    dragonName: "竜（成飛車）",
+    dragonMove: "飛車の動きに、斜め4方向へ1マスが加わります。",
+    horseName: "馬（成角）",
+    horseMove: "角の動きに、前後左右へ1マスが加わります。",
+    rulesLead: "詰将棋は、少ない駒と決められた手数で、相手の玉を必ず詰ませる将棋のパズルです。",
+    ruleCheck: "王手する",
+    ruleCheckCopy: "攻め方は毎手、玉を狙う",
+    ruleReply: "玉方が応じる",
+    ruleReplyCopy: "逃げる・取る・防ぐ",
+    ruleMate: "逃げ道なし",
+    ruleMateCopy: "どの応手でも玉を守れない",
+    rulesFlowLabel: "王手から詰みまでの流れ",
+    countingMoves: "「3手詰め」の数え方",
+    countingMovesCopy: "攻め方だけでなく、玉方の応手も1手として数えます。",
+    attackCheck: "攻め方・王手",
+    defenseReply: "玉方・応手",
+    attackMate: "攻め方・詰み",
+    alwaysCheck: "攻め方は毎手王手",
+    alwaysCheckCopy: "途中で王手でない手を指すことはできません。",
+    bestDefense: "玉方は最も長く逃げる",
+    bestDefenseCopy: "複数の応手があれば、詰みまで最も手数がかかる手を選びます。盤上と攻め方の持ち駒以外の駒も、玉を除き合駒に使えます。このアプリでは自動で応じます。",
+    whatIsMate: "「詰み」とは",
+    whatIsMateCopy: "玉が逃げる、王手した駒を取る、合駒で防ぐ、そのどれでも王手を外せない状態です。",
+    useAllHandPieces: "持ち駒を使い切る",
+    useAllHandPiecesCopy: "このアプリの問題は、表示された攻め方の持ち駒が余らない手順を正解とします。",
+    importantRule: "覚えておきたい反則",
+    importantRuleCopy: "二歩、打ち歩詰め、行き所のない駒などは通常の将棋と同じく指せません。",
+    officialTsumeRules: "日本将棋連盟の詰将棋ルールを見る",
     language: "言語",
     languageNote: "翻訳データを追加するだけで、対応言語を増やせる設計です。",
     judgement: "判定方法",
@@ -87,7 +127,7 @@ const I18N = {
     comingSoon: "準備中",
     noPuzzlesYet: "この手数の問題は、これから追加します。",
     learn: "LEARN",
-    guideIntro: "▲が駒の向いている方向です。最初は名前より、動ける形を覚えれば大丈夫。",
+    guideIntro: "駒は上（▲）を向いています。点・矢印・菱形の違いを見ると、動きがすぐ分かります。",
     officialRules: "日本将棋連盟の公式ルールを見る",
     appSupport: "アプリ情報とサポート",
     privacyPolicy: "プライバシーポリシー",
@@ -179,6 +219,46 @@ const I18N = {
     answerRetryCopy: "Choose Reset to try again from the starting position.",
     answerUnavailable: "The solution could not be displayed.",
     pieceGuide: "Learn the pieces and their moves",
+    pieceGuideCopy: "See every legal direction on a mini board.",
+    learningBasics: "New to tsume shogi?",
+    tsumeRules: "How tsume shogi works",
+    tsumeRulesCopy: "Check, replies, and mate in three minutes.",
+    movementLegend: "How to read movement diagrams",
+    oneSquareLegend: "One square",
+    slideLegend: "Any distance",
+    jumpLegend: "Jumps",
+    promotionGuide: "What changes after promotion?",
+    promotionGuideCopy: "Promotion can add new moves or make a piece move like a Gold.",
+    goldPromotions: "Tokin and promoted S, N, L",
+    goldPromotionsCopy: "A promoted Pawn, Silver, Knight, or Lance moves one square in the six Gold directions.",
+    dragonName: "Dragon (promoted Rook)",
+    dragonMove: "Keeps the Rook's lines and adds one square diagonally.",
+    horseName: "Horse (promoted Bishop)",
+    horseMove: "Keeps the Bishop's lines and adds one square orthogonally.",
+    rulesLead: "Tsume shogi is a puzzle: force checkmate with a small position and a fixed number of moves.",
+    ruleCheck: "Give check",
+    ruleCheckCopy: "Every attacking move checks the king",
+    ruleReply: "Defender replies",
+    ruleReplyCopy: "Escape, capture, or block",
+    ruleMate: "No safe reply",
+    ruleMateCopy: "Nothing can remove the check",
+    rulesFlowLabel: "From check to checkmate",
+    countingMoves: "How “Mate in 3” is counted",
+    countingMovesCopy: "The defender's reply counts as a move too—not only your attacking moves.",
+    attackCheck: "Attacker · check",
+    defenseReply: "Defender · reply",
+    attackMate: "Attacker · mate",
+    alwaysCheck: "Check on every attacking move",
+    alwaysCheckCopy: "The attacker cannot play a non-checking move in the middle of the solution.",
+    bestDefense: "The defender resists longest",
+    bestDefenseCopy: "When several replies exist, the defender delays mate as long as possible. Except for the king, pieces not shown or held by the attacker may be used to block. The app replies automatically.",
+    whatIsMate: "What is checkmate?",
+    whatIsMateCopy: "The king cannot escape, capture the checking piece, or block the check.",
+    useAllHandPieces: "Use every displayed hand piece",
+    useAllHandPiecesCopy: "In this app, the correct line leaves none of the attacker's displayed hand pieces unused.",
+    importantRule: "Illegal moves to remember",
+    importantRuleCopy: "Double pawn, pawn-drop mate, and pieces with no future move are illegal, just as in regular shogi.",
+    officialTsumeRules: "Read the Japan Shogi Association tsume rules",
     language: "Language",
     languageNote: "The translation registry is ready for more languages later.",
     judgement: "Feedback timing",
@@ -211,7 +291,7 @@ const I18N = {
     comingSoon: "Coming soon",
     noPuzzlesYet: "Puzzles of this length will be added here.",
     learn: "LEARN",
-    guideIntro: "▲ shows the direction each piece faces. Learn the movement shape first; the names can follow.",
+    guideIntro: "Pieces face up (▲). Dots, arrowed lines, and diamonds show three different kinds of movement.",
     officialRules: "Read the official Japan Shogi Association rules",
     appSupport: "App information and support",
     privacyPolicy: "Privacy policy",
@@ -303,6 +383,46 @@ const I18N = {
     answerRetryCopy: "Choisissez Recommencer pour réessayer depuis la position initiale.",
     answerUnavailable: "Impossible d'afficher la solution.",
     pieceGuide: "Découvrir les pièces et leurs déplacements",
+    pieceGuideCopy: "Visualisez chaque direction sur un mini-plateau.",
+    learningBasics: "Premiers pas",
+    tsumeRules: "Règles du tsume shogi",
+    tsumeRulesCopy: "Échec, réponse et mat en trois minutes.",
+    movementLegend: "Lire les diagrammes de déplacement",
+    oneSquareLegend: "Une case",
+    slideLegend: "Toute distance",
+    jumpLegend: "Saute",
+    promotionGuide: "Que change la promotion ?",
+    promotionGuideCopy: "La promotion ajoute des mouvements ou donne le déplacement de l'Or.",
+    goldPromotions: "Tokin et S, N, L promus",
+    goldPromotionsCopy: "Le Pion, l'Argent, le Cavalier et la Lance promus se déplacent comme l'Or.",
+    dragonName: "Dragon (Tour promue)",
+    dragonMove: "Garde les lignes de la Tour et ajoute une case en diagonale.",
+    horseName: "Cheval dragon (Fou promu)",
+    horseMove: "Garde les diagonales du Fou et ajoute une case orthogonale.",
+    rulesLead: "Le tsume shogi est un problème : forcez le mat dans une petite position et un nombre de coups fixé.",
+    ruleCheck: "Donner échec",
+    ruleCheckCopy: "Chaque coup de l'attaquant donne échec",
+    ruleReply: "Le défenseur répond",
+    ruleReplyCopy: "Fuir, prendre ou interposer",
+    ruleMate: "Aucune réponse",
+    ruleMateCopy: "Rien ne peut lever l'échec",
+    rulesFlowLabel: "De l'échec au mat",
+    countingMoves: "Compter un « mat en 3 »",
+    countingMovesCopy: "La réponse du défenseur compte aussi comme un coup.",
+    attackCheck: "Attaquant · échec",
+    defenseReply: "Défenseur · réponse",
+    attackMate: "Attaquant · mat",
+    alwaysCheck: "Échec à chaque coup d'attaque",
+    alwaysCheckCopy: "L'attaquant ne peut pas jouer un coup sans échec pendant la solution.",
+    bestDefense: "Le défenseur résiste au plus long",
+    bestDefenseCopy: "S'il existe plusieurs réponses, il retarde le mat au maximum. Sauf le roi, les pièces absentes ou non détenues par l'attaquant peuvent être interposées. L'appli répond automatiquement.",
+    whatIsMate: "Qu'est-ce que le mat ?",
+    whatIsMateCopy: "Le roi ne peut ni fuir, ni prendre la pièce attaquante, ni interposer une pièce.",
+    useAllHandPieces: "Utiliser toutes les pièces en main",
+    useAllHandPiecesCopy: "Dans cette appli, la bonne ligne ne laisse aucune pièce affichée en main à l'attaquant.",
+    importantRule: "Coups illégaux à retenir",
+    importantRuleCopy: "Double pion, mat par parachutage d'un pion et pièce sans coup futur restent interdits.",
+    officialTsumeRules: "Lire les règles de tsume de la Japan Shogi Association",
     language: "Langue",
     languageNote: "Il suffit d'ajouter un dictionnaire de traduction pour prendre en charge une nouvelle langue.",
     judgement: "Moment de la correction",
@@ -335,7 +455,7 @@ const I18N = {
     comingSoon: "Bientôt disponible",
     noPuzzlesYet: "Les problèmes de cette longueur seront ajoutés ici.",
     learn: "APPRENDRE",
-    guideIntro: "▲ indique la direction de chaque pièce. Retenez d'abord la forme du déplacement ; les noms viendront ensuite.",
+    guideIntro: "Les pièces regardent vers le haut (▲). Points, lignes fléchées et losanges indiquent trois déplacements différents.",
     officialRules: "Lire les règles officielles de la Japan Shogi Association",
     appSupport: "Informations et assistance",
     privacyPolicy: "Politique de confidentialité",
@@ -427,6 +547,46 @@ const I18N = {
     answerRetryCopy: "Pulsa Reiniciar para intentarlo de nuevo desde la posición inicial.",
     answerUnavailable: "No se pudo mostrar la solución.",
     pieceGuide: "Conoce las piezas y sus movimientos",
+    pieceGuideCopy: "Mira cada dirección legal en un minitablero.",
+    learningBasics: "Primeros pasos",
+    tsumeRules: "Reglas del tsume shogi",
+    tsumeRulesCopy: "Jaque, respuesta y mate en tres minutos.",
+    movementLegend: "Cómo leer los diagramas de movimiento",
+    oneSquareLegend: "Una casilla",
+    slideLegend: "Cualquier distancia",
+    jumpLegend: "Salta",
+    promotionGuide: "¿Qué cambia al promover?",
+    promotionGuideCopy: "La promoción añade movimientos o hace que la pieza se mueva como el Oro.",
+    goldPromotions: "Tokin y S, N, L promovidos",
+    goldPromotionsCopy: "Peón, Plata, Caballo y Lanza promovidos se mueven como el Oro.",
+    dragonName: "Dragón (Torre promovida)",
+    dragonMove: "Conserva las líneas de la Torre y añade una casilla en diagonal.",
+    horseName: "Caballo dragón (Alfil promovido)",
+    horseMove: "Conserva las diagonales del Alfil y añade una casilla ortogonal.",
+    rulesLead: "El tsume shogi es un puzle: fuerza el mate en una posición pequeña y con un número fijo de jugadas.",
+    ruleCheck: "Dar jaque",
+    ruleCheckCopy: "Cada jugada del atacante da jaque",
+    ruleReply: "Responde el defensor",
+    ruleReplyCopy: "Escapar, capturar o bloquear",
+    ruleMate: "Sin respuesta segura",
+    ruleMateCopy: "Nada puede quitar el jaque",
+    rulesFlowLabel: "Del jaque al jaque mate",
+    countingMoves: "Cómo se cuenta «Mate en 3»",
+    countingMovesCopy: "La respuesta del defensor también cuenta como jugada.",
+    attackCheck: "Atacante · jaque",
+    defenseReply: "Defensor · respuesta",
+    attackMate: "Atacante · mate",
+    alwaysCheck: "Jaque en cada jugada atacante",
+    alwaysCheckCopy: "El atacante no puede jugar una jugada sin jaque durante la solución.",
+    bestDefense: "El defensor resiste al máximo",
+    bestDefenseCopy: "Si hay varias respuestas, retrasa el mate al máximo. Salvo el rey, las piezas no mostradas ni en mano del atacante pueden bloquear. La app responde automáticamente.",
+    whatIsMate: "¿Qué es jaque mate?",
+    whatIsMateCopy: "El rey no puede escapar, capturar la pieza atacante ni bloquear el jaque.",
+    useAllHandPieces: "Usa todas las piezas en mano",
+    useAllHandPiecesCopy: "En esta app, la línea correcta no deja sin usar ninguna pieza mostrada en la mano atacante.",
+    importantRule: "Jugadas ilegales que recordar",
+    importantRuleCopy: "Doble peón, mate al soltar un peón y piezas sin movimiento futuro siguen prohibidos.",
+    officialTsumeRules: "Leer las reglas de tsume de la Asociación Japonesa de Shogi",
     language: "Idioma",
     languageNote: "Basta con añadir un diccionario de traducción para sumar más idiomas.",
     judgement: "Momento de la corrección",
@@ -459,7 +619,7 @@ const I18N = {
     comingSoon: "Próximamente",
     noPuzzlesYet: "Los problemas de esta longitud se añadirán aquí.",
     learn: "APRENDER",
-    guideIntro: "▲ muestra la dirección de cada pieza. Aprende primero la forma del movimiento; los nombres vendrán después.",
+    guideIntro: "Las piezas miran hacia arriba (▲). Puntos, líneas con flecha y rombos muestran tres movimientos distintos.",
     officialRules: "Leer las reglas oficiales de la Asociación Japonesa de Shogi",
     appSupport: "Información y asistencia",
     privacyPolicy: "Política de privacidad",
@@ -589,6 +749,26 @@ const PIECES = {
     moveEs: "Una casilla al frente. Un peón lanzado no puede crear dos peones en la misma columna.",
   },
 };
+
+const GOLD_STEPS = [[0, -1], [-1, -1], [1, -1], [-1, 0], [1, 0], [0, 1]];
+const MOVEMENT_GUIDES = Object.freeze({
+  K: { steps: [[0, -1], [-1, -1], [1, -1], [-1, 0], [1, 0], [0, 1], [-1, 1], [1, 1]] },
+  R: { slides: [[0, -1], [0, 1], [-1, 0], [1, 0]] },
+  B: { slides: [[-1, -1], [1, -1], [-1, 1], [1, 1]] },
+  G: { steps: GOLD_STEPS },
+  S: { steps: [[0, -1], [-1, -1], [1, -1], [-1, 1], [1, 1]] },
+  N: { jumps: [[-1, -2], [1, -2]] },
+  L: { slides: [[0, -1]] },
+  P: { steps: [[0, -1]] },
+  DRAGON: {
+    slides: [[0, -1], [0, 1], [-1, 0], [1, 0]],
+    steps: [[-1, -1], [1, -1], [-1, 1], [1, 1]],
+  },
+  HORSE: {
+    slides: [[-1, -1], [1, -1], [-1, 1], [1, 1]],
+    steps: [[0, -1], [0, 1], [-1, 0], [1, 0]],
+  },
+});
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -1094,6 +1274,49 @@ function renderSequence() {
   });
 }
 
+function createMovementDiagram({ mark, latin = "", movement, label }) {
+  const diagram = document.createElement("div");
+  diagram.className = "movement-diagram";
+  diagram.setAttribute("role", "img");
+  diagram.setAttribute("aria-label", label);
+
+  const forward = document.createElement("span");
+  forward.className = "movement-forward";
+  forward.textContent = "▲";
+  diagram.appendChild(forward);
+
+  (movement.slides || []).forEach(([dx, dy]) => {
+    const ray = document.createElement("i");
+    ray.className = "movement-ray";
+    ray.style.setProperty("--ray-angle", `${Math.atan2(dy, dx) * 180 / Math.PI}deg`);
+    diagram.appendChild(ray);
+  });
+
+  [...(movement.steps || []).map((point) => ({ point, kind: "step" })),
+    ...(movement.jumps || []).map((point) => ({ point, kind: "jump" }))]
+    .forEach(({ point: [dx, dy], kind }) => {
+      const target = document.createElement("i");
+      target.className = `movement-target ${kind}`;
+      target.style.setProperty("--move-left", `${50 + dx * 20}%`);
+      target.style.setProperty("--move-top", `${50 + dy * 20}%`);
+      diagram.appendChild(target);
+    });
+
+  const piece = document.createElement("span");
+  piece.className = "movement-piece";
+  const main = document.createElement("b");
+  main.textContent = mark;
+  piece.appendChild(main);
+  if (preferences.pieceStyle !== "kanji" && latin) {
+    const sub = document.createElement("small");
+    sub.textContent = latin;
+    if (preferences.pieceStyle === "latin") main.textContent = latin;
+    else piece.appendChild(sub);
+  }
+  diagram.appendChild(piece);
+  return diagram;
+}
+
 function renderPieceGuide() {
   const guide = $("#piece-guide");
   guide.replaceChildren();
@@ -1101,21 +1324,46 @@ function renderPieceGuide() {
     const info = PIECES[type];
     const card = document.createElement("article");
     card.className = "guide-card";
-    const top = document.createElement("div");
-    top.className = "guide-card-top";
-    const icon = document.createElement("span");
-    icon.className = "guide-piece";
-    icon.textContent = type === "K" ? info.kanjiDefense : info.kanji;
+    const mark = type === "K" ? info.kanjiDefense : info.kanji;
+    const descriptionText = pieceMoveText(info);
+    const diagram = createMovementDiagram({
+      mark,
+      latin: info.latin,
+      movement: MOVEMENT_GUIDES[type],
+      label: `${pieceInfoName(info)}: ${descriptionText}`,
+    });
+    const copy = document.createElement("div");
+    copy.className = "guide-card-copy";
     const heading = document.createElement("h3");
     heading.textContent = pieceInfoName(info);
     const small = document.createElement("small");
-    small.textContent = `${info.latin} · ▲`;
+    small.textContent = `${mark} · ${info.latin}`;
     heading.appendChild(small);
-    top.append(icon, heading);
     const description = document.createElement("p");
-    description.textContent = pieceMoveText(info);
-    card.append(top, description);
+    description.textContent = descriptionText;
+    copy.append(heading, description);
+    card.append(diagram, copy);
     guide.appendChild(card);
+  });
+
+  const promotions = $("#promotion-guide");
+  promotions.replaceChildren();
+  [
+    { mark: "金", latin: "G", movement: MOVEMENT_GUIDES.G, title: t("goldPromotions"), copy: t("goldPromotionsCopy") },
+    { mark: "竜", latin: "+R", movement: MOVEMENT_GUIDES.DRAGON, title: t("dragonName"), copy: t("dragonMove") },
+    { mark: "馬", latin: "+B", movement: MOVEMENT_GUIDES.HORSE, title: t("horseName"), copy: t("horseMove") },
+  ].forEach((entry) => {
+    const card = document.createElement("article");
+    card.className = "promotion-guide-card";
+    const diagram = createMovementDiagram({ ...entry, label: `${entry.title}: ${entry.copy}` });
+    const copy = document.createElement("div");
+    const heading = document.createElement("h4");
+    heading.textContent = entry.title;
+    const description = document.createElement("p");
+    description.textContent = entry.copy;
+    copy.append(heading, description);
+    card.append(diagram, copy);
+    promotions.appendChild(card);
   });
 }
 
@@ -1485,8 +1733,11 @@ function bindEvents() {
     chooseRandomPuzzle();
   });
   $("#home-learn-button").addEventListener("click", () => openSheet("#learn-layer"));
+  $("#home-rules-button").addEventListener("click", () => openSheet("#rules-layer"));
   $("#puzzle-picker-button").addEventListener("click", () => openSheet("#puzzles-layer"));
   $("#learn-button").addEventListener("click", () => openSheet("#learn-layer"));
+  $("#settings-rules-button").addEventListener("click", () => openSheet("#rules-layer"));
+  $("#settings-learn-button").addEventListener("click", () => openSheet("#learn-layer"));
   $("#reset-button").addEventListener("click", () => resetPuzzle(true));
   $("#hint-button").addEventListener("click", showHint);
   $("#answer-button").addEventListener("click", () => openModal("#answer-layer", "#cancel-answer-button"));
