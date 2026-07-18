@@ -10,6 +10,7 @@ import {
   isWinningCheckingMove,
 } from "./game-core.mjs";
 import { buildAnswerLine } from "./answer-line.mjs";
+import { replayAnswerPrefix } from "./answer-review.mjs";
 import { createAdManager } from "./ad-manager.mjs";
 import { PUZZLES, puzzleState } from "./puzzles.mjs";
 import { pickRandomPuzzleIndex } from "./random-puzzle.mjs";
@@ -46,7 +47,7 @@ const I18N = {
     next: "次の問題",
     nextAfterAd: "広告のあと次へ",
     answerConfirmTitle: "答えを表示しますか？",
-    answerConfirmCopy: "正解手順を盤面で再生します。この問題はクリア扱いになりません。",
+    answerConfirmCopy: "正解手順を盤面で再生します。表示後は一手ずつ前後に動かせます。この問題はクリア扱いになりません。",
     answerCancel: "まだ考える",
     answerReveal: "答えを見る",
     answerPlayingTitle: "正解手順を再生中",
@@ -54,6 +55,13 @@ const I18N = {
     answerShownTitle: "これが正解手順です",
     answerRetryCopy: "「やり直す」で初形からもう一度挑戦できます。",
     answerUnavailable: "正解手順を表示できませんでした。",
+    answerReviewTitle: "正解手順を一手ずつ確認",
+    answerReviewCopy: "前後のボタンで、盤面と手順を行き来できます。",
+    answerPrevious: "一手戻る",
+    answerNextStep: "一手進む",
+    answerPause: "一時停止",
+    answerPlay: "自動再生",
+    answerStepProgress: "{current} / {total} 手",
     pieceGuide: "駒の名前と動きを見る",
     pieceGuideCopy: "盤の図で、動ける方向を確認します。",
     learningBasics: "はじめての方へ",
@@ -210,7 +218,7 @@ const I18N = {
     next: "Next puzzle",
     nextAfterAd: "Ad, then next puzzle",
     answerConfirmTitle: "Show the answer?",
-    answerConfirmCopy: "The solution will play on the board. This puzzle will not be marked as completed.",
+    answerConfirmCopy: "The solution will play on the board. You can then step backward or forward. This puzzle will not be marked as completed.",
     answerCancel: "Keep thinking",
     answerReveal: "Show answer",
     answerPlayingTitle: "Playing the solution",
@@ -218,6 +226,13 @@ const I18N = {
     answerShownTitle: "This is the solution",
     answerRetryCopy: "Choose Reset to try again from the starting position.",
     answerUnavailable: "The solution could not be displayed.",
+    answerReviewTitle: "Review the solution move by move",
+    answerReviewCopy: "Use Back and Forward to move through the board position and the move list.",
+    answerPrevious: "One move back",
+    answerNextStep: "One move forward",
+    answerPause: "Pause",
+    answerPlay: "Auto play",
+    answerStepProgress: "{current} / {total} moves",
     pieceGuide: "Learn the pieces and their moves",
     pieceGuideCopy: "See every legal direction on a mini board.",
     learningBasics: "New to tsume shogi?",
@@ -374,7 +389,7 @@ const I18N = {
     next: "Problème suivant",
     nextAfterAd: "Publicité, puis problème suivant",
     answerConfirmTitle: "Afficher la solution ?",
-    answerConfirmCopy: "La solution sera jouée sur le plateau. Ce problème ne sera pas marqué comme terminé.",
+    answerConfirmCopy: "La solution sera jouée sur le plateau. Vous pourrez ensuite avancer ou reculer coup par coup. Ce problème ne sera pas marqué comme terminé.",
     answerCancel: "Continuer à chercher",
     answerReveal: "Voir la solution",
     answerPlayingTitle: "Lecture de la solution",
@@ -382,6 +397,13 @@ const I18N = {
     answerShownTitle: "Voici la solution",
     answerRetryCopy: "Choisissez Recommencer pour réessayer depuis la position initiale.",
     answerUnavailable: "Impossible d'afficher la solution.",
+    answerReviewTitle: "Revoir la solution coup par coup",
+    answerReviewCopy: "Utilisez Précédent et Suivant pour parcourir la position et la liste des coups.",
+    answerPrevious: "Coup précédent",
+    answerNextStep: "Coup suivant",
+    answerPause: "Pause",
+    answerPlay: "Lecture auto",
+    answerStepProgress: "{current} / {total} coups",
     pieceGuide: "Découvrir les pièces et leurs déplacements",
     pieceGuideCopy: "Visualisez chaque direction sur un mini-plateau.",
     learningBasics: "Premiers pas",
@@ -538,7 +560,7 @@ const I18N = {
     next: "Siguiente problema",
     nextAfterAd: "Anuncio y siguiente problema",
     answerConfirmTitle: "¿Mostrar la respuesta?",
-    answerConfirmCopy: "La solución se reproducirá en el tablero. El problema no contará como completado.",
+    answerConfirmCopy: "La solución se reproducirá en el tablero. Después podrás avanzar o retroceder jugada a jugada. El problema no contará como completado.",
     answerCancel: "Seguir pensando",
     answerReveal: "Ver respuesta",
     answerPlayingTitle: "Reproduciendo la solución",
@@ -546,6 +568,13 @@ const I18N = {
     answerShownTitle: "Esta es la solución",
     answerRetryCopy: "Pulsa Reiniciar para intentarlo de nuevo desde la posición inicial.",
     answerUnavailable: "No se pudo mostrar la solución.",
+    answerReviewTitle: "Revisa la solución jugada a jugada",
+    answerReviewCopy: "Usa Atrás y Adelante para recorrer la posición y la lista de jugadas.",
+    answerPrevious: "Una jugada atrás",
+    answerNextStep: "Una jugada adelante",
+    answerPause: "Pausar",
+    answerPlay: "Reproducción auto",
+    answerStepProgress: "{current} / {total} jugadas",
     pieceGuide: "Conoce las piezas y sus movimientos",
     pieceGuideCopy: "Mira cada dirección legal en un minitablero.",
     learningBasics: "Primeros pasos",
@@ -787,6 +816,7 @@ let defenseTimer = null;
 let answerTimer = null;
 let answerLine = [];
 let answerCursor = 0;
+let answerAutoplay = false;
 let playedPlies = 0;
 let attackerStep = 0;
 let onVerifiedLine = true;
@@ -1146,6 +1176,10 @@ function renderFeedback() {
     mark.textContent = "…";
     title.textContent = t("answerPlayingTitle");
     message.textContent = t("answerPlayingCopy");
+  } else if (feedbackMode === "answer-review") {
+    mark.textContent = "↔";
+    title.textContent = t("answerReviewTitle");
+    message.textContent = t("answerReviewCopy");
   } else if (feedbackMode === "answer-complete") {
     mark.textContent = "答";
     title.textContent = t("answerShownTitle");
@@ -1274,6 +1308,23 @@ function renderSequence() {
   });
 }
 
+function renderAnswerNavigator() {
+  const navigator = $("#answer-navigator");
+  const visible = answerLine.length > 0
+    && ["answer-playing", "answer-review", "answer-complete"].includes(feedbackMode);
+  navigator.hidden = !visible;
+  if (!visible) return;
+
+  $("#answer-step-progress").textContent = t("answerStepProgress")
+    .replace("{current}", answerCursor)
+    .replace("{total}", answerLine.length);
+  $("#answer-prev-button").disabled = answerCursor <= 0;
+  $("#answer-next-step-button").disabled = answerCursor >= answerLine.length;
+  $("#answer-autoplay-button").setAttribute("aria-pressed", String(answerAutoplay));
+  $("#answer-autoplay-icon").textContent = answerAutoplay ? "Ⅱ" : "▶";
+  $("#answer-autoplay-label").textContent = t(answerAutoplay ? "answerPause" : "answerPlay");
+}
+
 function createMovementDiagram({ mark, latin = "", movement, label }) {
   const diagram = document.createElement("div");
   diagram.className = "movement-diagram";
@@ -1376,6 +1427,7 @@ function renderAll() {
   renderBoard();
   renderHand();
   renderSequence();
+  renderAnswerNavigator();
   renderFeedback();
   renderPuzzleFilters();
   renderRandomPuzzleButton();
@@ -1386,8 +1438,8 @@ function renderAll() {
   $("#next-button-label").textContent = feedbackMode === "success" && adManager?.willShowOnNext()
     ? t("nextAfterAd")
     : t("next");
-  $("#answer-button").disabled = ["success", "answer-playing", "answer-complete"].includes(feedbackMode);
-  $("#hint-button").disabled = feedbackMode === "answer-playing";
+  $("#answer-button").disabled = feedbackMode === "success" || answerLine.length > 0;
+  $("#hint-button").disabled = answerLine.length > 0;
   $("#privacy-options-button").hidden = !adManager?.isPrivacyOptionsRequired();
 }
 
@@ -1542,35 +1594,61 @@ function scheduleDefense(remainingPlies) {
   }, 680);
 }
 
-function playNextAnswerMove() {
+function pauseAnswerPlayback() {
+  clearTimeout(answerTimer);
   answerTimer = null;
-  const move = answerLine[answerCursor];
-  if (!move) {
-    feedbackMode = "answer-complete";
-    locked = true;
-    renderAll();
-    return;
-  }
+  answerAutoplay = false;
+}
 
-  moveHistory.push(move);
-  state = applyMove(state, move);
-  playedPlies += 1;
-  if (move.side === DEFENSE) attackerStep += 1;
-  answerCursor += 1;
+function showAnswerAtCursor(cursor, { autoplay = false } = {}) {
+  const puzzle = PUZZLES[currentIndex];
+  const snapshot = replayAnswerPrefix(puzzle, answerLine, cursor);
+  state = snapshot.state;
+  moveHistory = snapshot.moveHistory;
+  playedPlies = snapshot.playedPlies;
+  attackerStep = snapshot.attackerStep;
+  answerCursor = snapshot.playedPlies;
+  answerAutoplay = autoplay && answerCursor < answerLine.length;
+  legalMoves = generateLegalMoves(state, answerCursor % 2 === 0 ? ATTACK : DEFENSE);
   selected = null;
   selectedMoves = [];
   hintStage = 0;
   locked = true;
 
   if (answerCursor >= answerLine.length) {
+    answerAutoplay = false;
     feedbackMode = "answer-complete";
+  } else {
+    feedbackMode = answerAutoplay ? "answer-playing" : "answer-review";
+  }
+  renderAll();
+}
+
+function playNextAnswerMove() {
+  answerTimer = null;
+  if (!answerAutoplay) return;
+  showAnswerAtCursor(answerCursor + 1, { autoplay: true });
+  if (answerAutoplay) answerTimer = setTimeout(playNextAnswerMove, 700);
+}
+
+function stepAnswer(delta) {
+  if (!answerLine.length) return;
+  pauseAnswerPlayback();
+  showAnswerAtCursor(answerCursor + delta);
+}
+
+function toggleAnswerAutoplay() {
+  if (!answerLine.length) return;
+  if (answerAutoplay) {
+    pauseAnswerPlayback();
+    if (feedbackMode !== "answer-complete") feedbackMode = "answer-review";
     renderAll();
     return;
   }
 
-  feedbackMode = "answer-playing";
-  renderAll();
-  answerTimer = setTimeout(playNextAnswerMove, 620);
+  const startCursor = answerCursor >= answerLine.length ? 0 : answerCursor;
+  showAnswerAtCursor(startCursor, { autoplay: true });
+  answerTimer = setTimeout(playNextAnswerMove, 420);
 }
 
 function revealAnswer() {
@@ -1584,10 +1662,8 @@ function revealAnswer() {
   resetPuzzle(false);
   answerLine = line;
   answerCursor = 0;
-  feedbackMode = "answer-playing";
-  locked = true;
-  renderAll();
-  answerTimer = setTimeout(playNextAnswerMove, 260);
+  showAnswerAtCursor(0, { autoplay: true });
+  answerTimer = setTimeout(playNextAnswerMove, 650);
 }
 
 function resetPuzzle(showMessage = true) {
@@ -1597,6 +1673,7 @@ function resetPuzzle(showMessage = true) {
   answerTimer = null;
   answerLine = [];
   answerCursor = 0;
+  answerAutoplay = false;
   state = puzzleState(PUZZLES[currentIndex]);
   legalMoves = generateLegalMoves(state, ATTACK);
   selected = null;
@@ -1743,6 +1820,9 @@ function bindEvents() {
   $("#answer-button").addEventListener("click", () => openModal("#answer-layer", "#cancel-answer-button"));
   $("#cancel-answer-button").addEventListener("click", () => closeModal("#answer-layer"));
   $("#confirm-answer-button").addEventListener("click", revealAnswer);
+  $("#answer-prev-button").addEventListener("click", () => stepAnswer(-1));
+  $("#answer-next-step-button").addEventListener("click", () => stepAnswer(1));
+  $("#answer-autoplay-button").addEventListener("click", toggleAnswerAutoplay);
   $("#next-button").addEventListener("click", continueToNextPuzzle);
   $("#random-puzzle-button").addEventListener("click", chooseRandomPuzzle);
   $("#privacy-options-button").addEventListener("click", () => adManager?.showPrivacyOptions());

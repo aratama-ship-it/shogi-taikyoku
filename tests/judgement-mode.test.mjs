@@ -38,6 +38,19 @@ test("the play controls expose a confirmed answer reveal", () => {
   assert.match(appSource, /feedbackMode = "answer-complete"/);
 });
 
+test("revealed answers can move backward, forward, pause, and resume", () => {
+  assert.match(indexSource, /id="answer-navigator"/);
+  assert.match(indexSource, /id="answer-prev-button"/);
+  assert.match(indexSource, /id="answer-next-step-button"/);
+  assert.match(indexSource, /id="answer-autoplay-button"/);
+  assert.match(appSource, /replayAnswerPrefix\(puzzle, answerLine, cursor\)/);
+  assert.match(appSource, /function stepAnswer\(delta\)/);
+  assert.match(appSource, /function toggleAnswerAutoplay\(\)/);
+  assert.match(appSource, /feedbackMode = "answer-review"/);
+  assert.equal((appSource.match(/answerPrevious:/g) || []).length, 4);
+  assert.equal((appSource.match(/answerNextStep:/g) || []).length, 4);
+});
+
 test("play-through remains the default and immediate mode checks the forced line", () => {
   assert.match(appSource, /judgementMode: "end"/);
   assert.match(appSource, /preferences\.judgementMode === "immediate"/);

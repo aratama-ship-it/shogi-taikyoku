@@ -171,6 +171,24 @@
         <div class="sequence-moves" id="move-sequence"></div>
       </section>
 
+      <section class="answer-navigator" id="answer-navigator" aria-labelledby="answer-navigator-title" hidden>
+        <div class="answer-navigator-heading">
+          <div><span aria-hidden="true">答</span><strong id="answer-navigator-title" data-i18n="answerReviewTitle">正解手順を一手ずつ確認</strong></div>
+          <small id="answer-step-progress">0 / 1 手</small>
+        </div>
+        <div class="answer-navigator-controls">
+          <button id="answer-prev-button" type="button">
+            <span aria-hidden="true">←</span><strong data-i18n="answerPrevious">一手戻る</strong>
+          </button>
+          <button class="answer-autoplay-button" id="answer-autoplay-button" type="button" aria-pressed="true">
+            <span id="answer-autoplay-icon" aria-hidden="true">Ⅱ</span><strong id="answer-autoplay-label" data-i18n="answerPause">一時停止</strong>
+          </button>
+          <button id="answer-next-step-button" type="button">
+            <strong data-i18n="answerNextStep">一手進む</strong><span aria-hidden="true">→</span>
+          </button>
+        </div>
+      </section>
+
       <div class="action-row">
         <button class="secondary-button" id="reset-button" type="button">
           <span aria-hidden="true">↺</span><span data-i18n="reset">やり直す</span>
