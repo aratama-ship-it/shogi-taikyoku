@@ -21,6 +21,17 @@ const HAND_ORDER = ["R", "B", "G", "S", "N", "L", "P"];
 const I18N = {
   ja: {
     brandTagline: "一手ずつ、読めるようになる。",
+    home: "ホーム",
+    homeKicker: "読みの稽古",
+    homeTitle: "一手ずつ、詰みが見える。",
+    homeIntro: "前の問題から続けるか、手数を選んで始めましょう。",
+    continuePractice: "続きから",
+    learningRecord: "学習の記録",
+    homeCompleted: "{done} / {total} 問クリア",
+    chooseByLength: "手数から選ぶ",
+    chooseByLengthCopy: "短い詰みから、少しずつ読む距離を伸ばします。",
+    randomAll: "全問題からランダム",
+    randomAllCopy: "いまの問題を避けて、一問選びます。",
     settings: "設定",
     defender: "玉方",
     escapeGoal: "すべての逃げ道をふさぐ",
@@ -134,6 +145,17 @@ const I18N = {
   },
   en: {
     brandTagline: "Learn to see mate, one move at a time.",
+    home: "Home",
+    homeKicker: "READING PRACTICE",
+    homeTitle: "See the mate, one move at a time.",
+    homeIntro: "Continue your last puzzle or choose how many moves to read ahead.",
+    continuePractice: "Continue",
+    learningRecord: "Practice record",
+    homeCompleted: "{done} / {total} completed",
+    chooseByLength: "Choose mate length",
+    chooseByLengthCopy: "Begin with short mates, then gradually read deeper.",
+    randomAll: "Random from all puzzles",
+    randomAllCopy: "Choose one puzzle, avoiding the current one.",
     settings: "Settings",
     defender: "Defender",
     escapeGoal: "Cover every escape square",
@@ -247,6 +269,17 @@ const I18N = {
   },
   fr: {
     brandTagline: "Apprendre à voir le mat, un coup à la fois.",
+    home: "Accueil",
+    homeKicker: "EXERCICE DE LECTURE",
+    homeTitle: "Voir le mat, un coup à la fois.",
+    homeIntro: "Reprenez le dernier problème ou choisissez la profondeur à lire.",
+    continuePractice: "Continuer",
+    learningRecord: "Progression",
+    homeCompleted: "{done} / {total} terminés",
+    chooseByLength: "Choisir la longueur",
+    chooseByLengthCopy: "Commencez par les mats courts, puis lisez plus loin.",
+    randomAll: "Problème aléatoire",
+    randomAllCopy: "Choisit un problème différent de celui en cours.",
     settings: "Réglages",
     defender: "Défenseur",
     escapeGoal: "Fermez toutes les cases de fuite",
@@ -360,6 +393,17 @@ const I18N = {
   },
   es: {
     brandTagline: "Aprende a ver el mate, jugada a jugada.",
+    home: "Inicio",
+    homeKicker: "PRÁCTICA DE LECTURA",
+    homeTitle: "Ve el mate, jugada a jugada.",
+    homeIntro: "Continúa el último problema o elige cuántas jugadas leer.",
+    continuePractice: "Continuar",
+    learningRecord: "Progreso",
+    homeCompleted: "{done} / {total} completados",
+    chooseByLength: "Elegir longitud",
+    chooseByLengthCopy: "Empieza con mates cortos y aumenta la profundidad.",
+    randomAll: "Problema aleatorio",
+    randomAllCopy: "Elige un problema distinto del actual.",
     settings: "Ajustes",
     defender: "Defensor",
     escapeGoal: "Cierra todas las casillas de escape",
@@ -570,6 +614,7 @@ let moveHistory = [];
 let puzzleFilter = "all";
 let advancingToNextPuzzle = false;
 let adManager = null;
+let activeView = "home";
 
 function loadPreferences() {
   const prefix = (navigator.language || "").toLowerCase().slice(0, 2);
@@ -611,6 +656,49 @@ function mateLabel(puzzle) {
 
 function puzzleCountLabel(count) {
   return t(count === 1 ? "puzzleCountOne" : "puzzleCountMany").replace("{n}", count);
+}
+
+function renderHome() {
+  const puzzle = PUZZLES[currentIndex];
+  const completed = new Set(preferences.completed).size;
+  const total = PUZZLES.length;
+  $("#home-current-puzzle").textContent = `${t("puzzleLabel")} ${currentIndex + 1} · ${mateLabel(puzzle)}`;
+  $("#home-completed-count").textContent = t("homeCompleted")
+    .replace("{done}", completed)
+    .replace("{total}", total);
+  $("#home-progress-track").setAttribute("aria-valuemax", String(total));
+  $("#home-progress-track").setAttribute("aria-valuenow", String(completed));
+  $("#home-progress-fill").style.width = `${total ? (completed / total) * 100 : 0}%`;
+
+  document.querySelectorAll("#home-length-options [data-home-plies]").forEach((button) => {
+    const plies = Number(button.dataset.homePlies);
+    const count = PUZZLES.filter((entry) => entry.plies === plies).length;
+    button.classList.toggle("current", puzzle.plies === plies);
+    button.querySelector("strong").textContent = mateLabel({ plies });
+    button.querySelector("small").textContent = puzzleCountLabel(count);
+  });
+}
+
+function renderViewState() {
+  const onHome = activeView === "home";
+  $("#home-view").hidden = !onHome;
+  $("#play-view").hidden = onHome;
+  $("#home-button").hidden = onHome;
+}
+
+function showHome() {
+  activeView = "home";
+  closeSheets();
+  renderHome();
+  renderViewState();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function showPlay() {
+  activeView = "play";
+  closeSheets();
+  renderViewState();
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function filteredPuzzleEntries() {
@@ -1033,6 +1121,8 @@ function renderPieceGuide() {
 
 function renderAll() {
   applyPreferences();
+  renderHome();
+  renderViewState();
   renderCoordinates();
   renderMission();
   renderBoard();
@@ -1281,7 +1371,7 @@ function loadPuzzle(index) {
   currentIndex = (index + PUZZLES.length) % PUZZLES.length;
   savePreferences();
   resetPuzzle(false);
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  showPlay();
 }
 
 function nextPuzzleIndex() {
@@ -1387,7 +1477,14 @@ function bindOptionGroup(selector, preferenceKey, onChange) {
 
 function bindEvents() {
   $("#settings-button").addEventListener("click", () => openSheet("#settings-layer"));
-  $("#brand-button").addEventListener("click", () => openSheet("#puzzles-layer"));
+  $("#brand-button").addEventListener("click", showHome);
+  $("#home-button").addEventListener("click", showHome);
+  $("#home-continue-button").addEventListener("click", showPlay);
+  $("#home-random-button").addEventListener("click", () => {
+    puzzleFilter = "all";
+    chooseRandomPuzzle();
+  });
+  $("#home-learn-button").addEventListener("click", () => openSheet("#learn-layer"));
   $("#puzzle-picker-button").addEventListener("click", () => openSheet("#puzzles-layer"));
   $("#learn-button").addEventListener("click", () => openSheet("#learn-layer"));
   $("#reset-button").addEventListener("click", () => resetPuzzle(true));
@@ -1407,6 +1504,16 @@ function bindEvents() {
       renderRandomPuzzleButton();
       renderPuzzleList();
       renderMission();
+    });
+  });
+
+  document.querySelectorAll("#home-length-options [data-home-plies]").forEach((button) => {
+    button.addEventListener("click", () => {
+      puzzleFilter = button.dataset.homePlies;
+      renderPuzzleFilters();
+      renderRandomPuzzleButton();
+      renderPuzzleList();
+      openSheet("#puzzles-layer");
     });
   });
 

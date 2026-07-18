@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "tsume-shogi-v20";
+const CACHE_NAME = "tsume-shogi-v21";
 const APP_SHELL = [
   "./",
   "./index.html",

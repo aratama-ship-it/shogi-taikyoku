@@ -18,25 +18,89 @@
   <meta name="twitter:image" content="og.png">
   <title>Tsume Shogi — 詰将棋を一手ずつ</title>
   <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
-      <button class="brand" id="brand-button" type="button" aria-label="Open puzzle list">
+      <button class="brand" id="brand-button" type="button" data-i18n-aria="home" aria-label="ホーム">
         <span class="brand-mark" aria-hidden="true">詰</span>
         <span class="brand-copy">
           <strong>Tsume Shogi</strong>
           <small data-i18n="brandTagline">一手ずつ、読めるようになる。</small>
         </span>
       </button>
-      <button class="icon-button" id="settings-button" type="button" data-i18n-aria="settings" aria-label="設定">
-        <span aria-hidden="true">⚙</span>
-      </button>
+      <div class="topbar-actions">
+        <button class="icon-button home-button" id="home-button" type="button" data-i18n-aria="home" aria-label="ホーム" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.2 12 4l8 7.2v8.3h-5.2v-5.7H9.2v5.7H4z"/></svg>
+        </button>
+        <button class="icon-button" id="settings-button" type="button" data-i18n-aria="settings" aria-label="設定">
+          <span aria-hidden="true">⚙</span>
+        </button>
+      </div>
     </header>
 
-    <main>
+    <main class="home-view" id="home-view">
+      <section class="home-hero" aria-labelledby="home-title">
+        <span class="home-hero-mark" aria-hidden="true">詰</span>
+        <div class="home-hero-copy">
+          <span class="home-kicker" data-i18n="homeKicker">読みの稽古</span>
+          <h1 id="home-title" data-i18n="homeTitle">一手ずつ、詰みが見える。</h1>
+          <p data-i18n="homeIntro">前の問題から続けるか、手数を選んで始めましょう。</p>
+        </div>
+
+        <button class="home-continue" id="home-continue-button" type="button">
+          <span class="home-continue-label" data-i18n="continuePractice">続きから</span>
+          <strong id="home-current-puzzle">問題 1 · 1手詰め</strong>
+          <span class="home-continue-arrow" aria-hidden="true">→</span>
+        </button>
+
+        <div class="home-progress">
+          <div class="home-progress-copy">
+            <span data-i18n="learningRecord">学習の記録</span>
+            <strong id="home-completed-count">0 / 64 問クリア</strong>
+          </div>
+          <div class="home-progress-track" id="home-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="64" aria-valuenow="0">
+            <span id="home-progress-fill"></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="home-length-section" aria-labelledby="home-length-title">
+        <div class="home-section-heading">
+          <div>
+            <span class="home-section-index" aria-hidden="true">一</span>
+            <h2 id="home-length-title" data-i18n="chooseByLength">手数から選ぶ</h2>
+          </div>
+          <p data-i18n="chooseByLengthCopy">短い詰みから、少しずつ読む距離を伸ばします。</p>
+        </div>
+        <div class="home-length-rail" id="home-length-options" role="group" data-i18n-aria="chooseByLength">
+          <button type="button" data-home-plies="1"><span>1</span><strong>1手詰め</strong><small>8問</small></button>
+          <button type="button" data-home-plies="3"><span>3</span><strong>3手詰め</strong><small>12問</small></button>
+          <button type="button" data-home-plies="5"><span>5</span><strong>5手詰め</strong><small>27問</small></button>
+          <button type="button" data-home-plies="7"><span>7</span><strong>7手詰め</strong><small>12問</small></button>
+          <button type="button" data-home-plies="9"><span>9</span><strong>9手詰め</strong><small>5問</small></button>
+        </div>
+      </section>
+
+      <button class="home-random" id="home-random-button" type="button">
+        <span class="home-random-mark" aria-hidden="true">↝</span>
+        <span>
+          <strong data-i18n="randomAll">全問題からランダム</strong>
+          <small data-i18n="randomAllCopy">いまの問題を避けて、一問選びます。</small>
+        </span>
+        <span class="home-random-arrow" aria-hidden="true">→</span>
+      </button>
+
+      <button class="learn-link home-learn-link" id="home-learn-button" type="button">
+        <span aria-hidden="true">◇</span>
+        <span data-i18n="pieceGuide">駒の名前と動きを見る</span>
+      </button>
+    </main>
+
+    <main class="play-view" id="play-view" hidden>
       <section class="mission-card" aria-labelledby="puzzle-title">
         <button class="puzzle-picker-button" id="puzzle-picker-button" type="button">
           <span class="level-chip" id="puzzle-level">1手詰め</span>
