@@ -298,6 +298,8 @@ html[data-theme="washi"] .play-area {
   margin: 13px 0 9px;
   font: 800 clamp(27px, 8vw, 37px)/1.25 var(--display);
   letter-spacing: .025em;
+  overflow-wrap: normal;
+  word-break: keep-all;
 }
 
 .home-hero-copy p {

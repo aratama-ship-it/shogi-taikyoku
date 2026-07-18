@@ -24,7 +24,7 @@ const I18N = {
     brandTagline: "一手ずつ、読めるようになる。",
     home: "ホーム",
     homeKicker: "読みの稽古",
-    homeTitle: "一手ずつ、詰みが見える。",
+    homeTitle: "一手ずつ、\u200B詰みが見える。",
     homeIntro: "前の問題から続けるか、手数を選んで始めましょう。",
     continuePractice: "続きから",
     learningRecord: "学習の記録",
