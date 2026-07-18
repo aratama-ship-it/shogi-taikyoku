@@ -46,6 +46,9 @@ test("the iOS project uses test AdMob identifiers and documents the production r
   assert.match(styles, /var\(--native-banner-offset\)/);
   assert.match(styles, /html\[data-theme="washi"\] body::before/);
   assert.match(styles, /repeating-linear-gradient\(103deg/);
+  assert.match(styles, /html\[data-theme="washi"\] \.feedback-tools/);
+  assert.match(styles, /--display: "Iowan Old Style"/);
+  assert.match(styles, /--accent: #b7492f/);
   assert.match(preparation, /そのまま公開しない/);
   assert.match(packageJson, /@capacitor-community\/admob/);
 });
