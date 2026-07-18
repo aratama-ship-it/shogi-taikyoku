@@ -28,3 +28,4 @@ for (const file of [
 }
 
 await cp(resolve(root, "icons"), resolve(output, "icons"), { recursive: true, force: true });
+await cp(resolve(root, "assets"), resolve(output, "assets"), { recursive: true, force: true });

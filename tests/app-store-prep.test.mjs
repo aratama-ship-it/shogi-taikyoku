@@ -26,6 +26,8 @@ test("privacy and support documents ship in the public bundle", async () => {
     assert.match(prepare, new RegExp(`"${file.replace(".", "\\.")}"`));
     assert.match(serviceWorker, new RegExp(`"\\./${file.replace(".", "\\.")}"`));
   }
+  assert.match(prepare, /resolve\(root, "assets"\)/);
+  assert.match(serviceWorker, /assets\/washi-paper-v1\.jpg/);
 });
 
 test("the iOS project uses test AdMob identifiers and documents the production replacement gate", async () => {
@@ -49,6 +51,9 @@ test("the iOS project uses test AdMob identifiers and documents the production r
   assert.match(styles, /html\[data-theme="washi"\] \.feedback-tools/);
   assert.match(styles, /--display: "Iowan Old Style"/);
   assert.match(styles, /--accent: #b7492f/);
+  assert.match(styles, /--washi-fibers: url\("assets\/washi-paper-v1\.jpg"\)/);
+  assert.match(styles, /\.piece, \.option-piece, \.guide-piece, \.modal-mark/);
+  assert.match(styles, /#fffdf3/);
   assert.match(preparation, /そのまま公開しない/);
   assert.match(packageJson, /@capacitor-community\/admob/);
 });

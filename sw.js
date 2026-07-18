@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "tsume-shogi-v19";
+const CACHE_NAME = "tsume-shogi-v20";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -19,6 +19,7 @@ const APP_SHELL = [
   "./random-puzzle.mjs",
   "./manifest.webmanifest",
   "./og.png",
+  "./assets/washi-paper-v1.jpg",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
 ];

@@ -14,8 +14,8 @@
   --board: #d9aa61;
   --board-light: #e7c681;
   --board-line: #5f4326;
-  --piece: #f3d89c;
-  --piece-edge: #b47f3e;
+  --piece: #fff2c9;
+  --piece-edge: #976029;
   --piece-ink: #24160d;
   --shadow: 0 22px 58px rgba(1, 17, 14, .3), 0 1px 0 rgba(224, 191, 120, .12);
   --radius: 22px;
@@ -23,6 +23,7 @@
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --serif: "Yu Mincho", "Hiragino Mincho ProN", serif;
   --display: "Iowan Old Style", "Palatino Linotype", "Yu Mincho", "Hiragino Mincho ProN", serif;
+  --washi-fibers: url("assets/washi-paper-v1.jpg");
 }
 
 html[data-theme="paper"] {
@@ -518,9 +519,7 @@ html[data-piece-style="latin"] .piece-sub { display: none; }
 }
 
 html[data-theme="washi"] .hand-zone {
-  background:
-    repeating-linear-gradient(104deg, rgba(86, 66, 36, .025) 0 1px, transparent 1px 11px),
-    linear-gradient(108deg, #fffaf0, #f8f0df);
+  background-color: var(--surface);
 }
 
 .hand-heading {
@@ -1414,6 +1413,56 @@ html[data-theme="washi"] .primary-button:not(:disabled) {
 .modal h2 { margin: 0; font: 800 22px var(--serif); }
 .modal p { margin: 7px 0 19px; color: var(--muted); font-size: 12px; }
 .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+
+html[data-theme="washi"] :is(
+  .mission-card,
+  .play-area,
+  .hand-zone,
+  .sequence-card,
+  .feedback-tools,
+  .sheet,
+  .modal
+) {
+  background-color: var(--surface);
+  background-image: var(--washi-fibers);
+  background-size: 360px 360px;
+  background-blend-mode: multiply;
+}
+
+html[data-theme="washi"] :is(
+  .secondary-button,
+  .settings-links a,
+  .privacy-options-button,
+  .segmented,
+  .segmented button.active,
+  .mode-options button,
+  .option-grid button,
+  .theme-grid button,
+  .offline-note,
+  .puzzle-filters button,
+  .random-puzzle-button,
+  .puzzle-empty,
+  .puzzle-list-item,
+  .puzzle-number,
+  .guide-card,
+  .rules-link
+) {
+  background-image: var(--washi-fibers);
+  background-size: 360px 360px;
+  background-blend-mode: multiply;
+}
+
+html[data-theme="washi"] :is(.piece, .option-piece, .guide-piece, .modal-mark) {
+  background: linear-gradient(160deg, #fffdf3 0%, #fff1c5 58%, #eec77d 100%);
+  filter:
+    drop-shadow(0 0 1px rgba(79, 43, 12, .62))
+    drop-shadow(0 2px 2px rgba(67, 38, 12, .24));
+}
+
+html[data-theme="washi"] .piece::after {
+  border-color: rgba(119, 70, 25, .72);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .48);
+}
 
 @media (max-width: 374px) {
   .app-shell { padding-inline: 9px; }
