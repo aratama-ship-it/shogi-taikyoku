@@ -1,8 +1,7 @@
 {
   "name": "Tsume Shogi — 詰将棋を一手ずつ",
   "short_name": "Tsume Shogi",
-  "description": "A bilingual, offline-friendly shogi puzzle app for beginners.",
-  "lang": "ja",
+  "description": "A multilingual, offline-friendly tsume shogi puzzle app for beginners.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

@@ -9,6 +9,7 @@ for (const file of [
   "index.html",
   "styles.css",
   "legal.css",
+  "legal.mjs",
   "privacy.html",
   "support.html",
   "app.mjs",

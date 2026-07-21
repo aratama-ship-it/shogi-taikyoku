@@ -22,7 +22,7 @@ test("privacy and support documents ship in the public bundle", async () => {
   assert.match(privacy, /device identifiers/i);
   assert.match(privacy, /非パーソナライズ広告/);
   assert.match(support, /広告を取得できなくても問題演習は続けられます/);
-  for (const file of ["legal.css", "privacy.html", "support.html"]) {
+  for (const file of ["legal.css", "legal.mjs", "privacy.html", "support.html"]) {
     assert.match(prepare, new RegExp(`"${file.replace(".", "\\.")}"`));
     assert.match(serviceWorker, new RegExp(`"\\./${file.replace(".", "\\.")}"`));
   }
@@ -30,6 +30,12 @@ test("privacy and support documents ship in the public bundle", async () => {
   assert.match(prepare, /"answer-review\.mjs"/);
   assert.match(serviceWorker, /"\.\/answer-review\.mjs"/);
   assert.match(serviceWorker, /assets\/washi-paper-v1\.jpg/);
+  assert.equal((privacy.match(/data-legal-lang=/g) || []).length, 4);
+  assert.equal((support.match(/data-legal-lang=/g) || []).length, 4);
+  assert.match(privacy, /Politique de confidentialité/);
+  assert.match(privacy, /Política de privacidad/);
+  assert.match(support, /Aide et assistance/);
+  assert.match(support, /Ayuda y asistencia/);
 });
 
 test("the iOS project uses test AdMob identifiers and documents the production replacement gate", async () => {

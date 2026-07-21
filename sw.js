@@ -1,11 +1,12 @@
 "use strict";
 
-const CACHE_NAME = "tsume-shogi-v27";
+const CACHE_NAME = "tsume-shogi-v30";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./styles.css",
   "./legal.css",
+  "./legal.mjs",
   "./privacy.html",
   "./support.html",
   "./app.mjs",
@@ -40,15 +41,33 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
+  const url = new URL(event.request.url);
+  const refreshOnVisit = event.request.mode === "navigate"
+    || ["script", "style"].includes(event.request.destination)
+    || /\.(?:html|mjs|css|webmanifest)$/.test(url.pathname);
+
+  if (refreshOnVisit) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          if (response && response.status === 200 && response.type !== "opaque") {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+          }
+          return response;
+        })
+        .catch(() => caches.match(event.request).then((cached) => cached || caches.match("./index.html"))),
+    );
+    return;
+  }
+
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) return cached;
-      return fetch(event.request).then((response) => {
-        if (!response || response.status !== 200 || response.type === "opaque") return response;
+    caches.match(event.request).then((cached) => cached || fetch(event.request).then((response) => {
+      if (response && response.status === 200 && response.type !== "opaque") {
         const copy = response.clone();
         caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
-        return response;
-      }).catch(() => caches.match("./index.html"));
-    }),
+      }
+      return response;
+    })),
   );
 });

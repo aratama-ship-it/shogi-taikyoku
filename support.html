@@ -3,60 +3,66 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Tsume Shogiの使い方とサポート / Help and Support">
+  <meta name="description" content="Tsume Shogi help and support in Japanese, English, French, and Spanish.">
   <title>サポート — Tsume Shogi</title>
   <link rel="stylesheet" href="legal.css">
 </head>
 <body>
   <main>
-    <a class="legal-brand" href="./"><span class="legal-mark" aria-hidden="true">詰</span><span>Tsume Shogi</span></a>
-    <h1>サポート</h1>
-    <p class="lead">使い方、よくある質問、不具合の報告先をご案内します。</p>
-
-    <section>
-      <h2>基本の遊び方</h2>
-      <ul>
-        <li>盤上の攻め方の駒、または持ち駒を選び、移動先を選びます。</li>
-        <li>「問題を選ぶ」で1手・3手・5手・7手・9手詰めを選べます。</li>
-        <li>手数を選んで「ランダム出題」を押すと、その手数から現在とは違う問題を選びます。</li>
-        <li>判定は「1手ごと」と「通しで挑戦」から選べます。</li>
-        <li>行き詰まったときは、段階ヒントまたは「答えを見る」を利用できます。</li>
-      </ul>
-    </section>
-    <section>
-      <h2>オフライン利用</h2>
-      <p>iOSアプリ版には問題と判定機能を同梱するため、通常のプレイにインターネット接続は不要です。広告の取得には通信が必要ですが、広告を取得できなくても問題演習は続けられます。ブラウザ版も、一度読み込んだ後はオフラインで利用できます。</p>
-    </section>
-    <section>
-      <h2>広告について</h2>
-      <p>無料提供を続けるため、iOS版では画面最上部に端末幅へ合うバナー広告を表示する場合があります。広告が読み込めたときだけ表示領域を確保するため、ロゴや盤面には重なりません。また、複数の問題を正解した後、「次の問題」へ進む区切りで全画面広告が表示される場合があります。全画面広告は対局中、不正解時、答えの再生中、アプリ起動直後には表示しません。地域によって広告のプライバシー選択が必要な場合は、設定画面から再設定できます。不適切または年齢に合わない広告は、広告内のAdChoices／報告機能を使用するか、広告のスクリーンショットと表示時刻を添えて<a href="https://github.com/aratama-ship-it/shogi-taikyoku/issues">サポート窓口</a>へ報告してください。</p>
-    </section>
-    <section>
-      <h2>表示や進行がおかしい場合</h2>
-      <ul>
-        <li>「やり直す」で現在の問題を初期局面に戻します。</li>
-        <li>ブラウザ版が古い表示のままの場合は、ページを再読み込みしてください。</li>
-        <li>解決しない場合は、端末の種類、OSのバージョン、問題番号、発生した操作を添えて報告してください。</li>
-      </ul>
-    </section>
-    <section>
-      <h2>不具合・ご要望</h2>
-      <p><a href="https://github.com/aratama-ship-it/shogi-taikyoku/issues">GitHubの公開サポート窓口</a>で受け付けています。棋譜や盤面に関する報告には、問題番号を添えてください。</p>
-    </section>
-
-    <div class="english" lang="en">
-      <h2>Help and Support (English)</h2>
-      <p>Select an attacking piece or a piece in hand, then choose its destination. Use the puzzle list to choose mate in 1, 3, 5, 7, or 9, or start a random puzzle within the selected length.</p>
-      <p>The iOS app bundles its puzzles and judging logic, so normal play works offline. An internet connection is only needed to fetch ads; practice continues when no ad is available.</p>
-      <p>To keep the app free, an adaptive banner may appear at the top of the iOS app. Space is reserved only after it loads, so it does not cover the interface. A full-screen ad may also appear at the transition to the next puzzle after several successful solves. Full-screen ads do not interrupt a puzzle, appear after mistakes, play during answer replay, or appear at app launch. Report inappropriate or age-inappropriate ads through the ad's AdChoices/report control, or send a screenshot and display time through the <a href="https://github.com/aratama-ship-it/shogi-taikyoku/issues">support page</a>.</p>
-      <p>If you report a problem, include your device, OS version, puzzle number, and the steps that caused it.</p>
-      <p>Bug reports and requests are accepted through the <a href="https://github.com/aratama-ship-it/shogi-taikyoku/issues">public support page</a>.</p>
+    <div class="legal-toolbar">
+      <a class="legal-brand" href="./"><span class="legal-mark" aria-hidden="true">詰</span><span>Tsume Shogi</span></a>
+      <div class="legal-languages" role="group" aria-label="Language / 言語">
+        <button type="button" data-language="ja" aria-pressed="true">日本語</button>
+        <button type="button" data-language="en" aria-pressed="false">EN</button>
+        <button type="button" data-language="fr" aria-pressed="false">FR</button>
+        <button type="button" data-language="es" aria-pressed="false">ES</button>
+      </div>
     </div>
 
-    <nav class="legal-actions" aria-label="関連ページ">
-      <a href="./">アプリを開く</a>
-      <a href="privacy.html">プライバシーポリシー</a>
-    </nav>
+    <div data-legal-lang="ja" data-title="サポート">
+      <h1>サポート</h1>
+      <p class="lead">使い方、よくある質問、不具合の報告先をご案内します。</p>
+      <section><h2>基本の遊び方</h2><ul><li>盤上の攻め方の駒、または持ち駒を選び、移動先を選びます。</li><li>「問題を選ぶ」で1手・3手・5手・7手・9手詰めを選べます。</li><li>手数を選んで「ランダム出題」を押すと、その手数から現在とは違う問題を選びます。</li><li>判定は「1手ごと」と「通しで挑戦」から選べます。</li><li>行き詰まったときは、段階ヒントまたは「答えを見る」を利用できます。</li></ul></section>
+      <section><h2>オフライン利用</h2><p>iOSアプリ版には問題と判定機能を同梱するため、通常のプレイにインターネット接続は不要です。広告の取得には通信が必要ですが、広告を取得できなくても問題演習は続けられます。ブラウザ版も、一度読み込んだ後はオフラインで利用できます。</p></section>
+      <section><h2>広告について</h2><p>無料提供を続けるため、iOS版では画面最上部に端末幅へ合うバナー広告を表示する場合があります。広告が読み込めたときだけ表示領域を確保するため、ロゴや盤面には重なりません。また、複数の問題を正解した後、「次の問題」へ進む区切りで全画面広告が表示される場合があります。全画面広告は対局中、不正解時、答えの再生中、アプリ起動直後には表示しません。地域によって広告のプライバシー選択が必要な場合は、設定画面から再設定できます。不適切または年齢に合わない広告は、広告内のAdChoices／報告機能を使用するか、広告のスクリーンショットと表示時刻を添えて<a href="https://github.com/aratama-ship-it/shogi-taikyoku/issues">サポート窓口</a>へ報告してください。</p></section>
+      <section><h2>表示や進行がおかしい場合</h2><ul><li>「やり直す」で現在の問題を初期局面に戻します。</li><li>ブラウザ版が古い表示のままの場合は、ページを再読み込みしてください。</li><li>解決しない場合は、端末の種類、OSのバージョン、問題番号、発生した操作を添えて報告してください。</li></ul></section>
+      <section><h2>不具合・ご要望</h2><p><a href="https://github.com/aratama-ship-it/shogi-taikyoku/issues">GitHubの公開サポート窓口</a>で受け付けています。棋譜や盤面に関する報告には、問題番号を添えてください。</p></section>
+      <nav class="legal-actions" aria-label="関連ページ"><a href="./">アプリを開く</a><a href="privacy.html">プライバシーポリシー</a></nav>
+    </div>
+
+    <div data-legal-lang="en" data-title="Help and Support" lang="en" hidden>
+      <h1>Help and Support</h1>
+      <p class="lead">How to play, common questions, and where to report a problem.</p>
+      <section><h2>How to play</h2><ul><li>Select one of your pieces on the board or in hand, then choose its destination.</li><li>Open “Choose a puzzle” to select a 1-, 3-, 5-, 7-, or 9-move tsume.</li><li>Choose a length and select “Random puzzle” to get a different puzzle of that length.</li><li>Choose “Check every move” for immediate feedback or “Play through” to continue until the line fails.</li><li>If you get stuck, use the staged hints or “Show solution.”</li></ul></section>
+      <section><h2>Offline use</h2><p>The iOS app bundles its puzzles and solution checking, so normal play works without an internet connection. A connection is only needed to fetch ads; practice continues when no ad is available. The browser version also works offline after it has been loaded once.</p></section>
+      <section><h2>Advertising</h2><p>To keep the app free, an adaptive banner may appear at the top of the iOS app. Space is reserved only after it loads, so it does not cover the logo or board. A full-screen ad may also appear when moving to the next puzzle after several successful solves. Full-screen ads do not interrupt a puzzle, appear after a mistake, play during solution review, or appear at app launch. Where regional privacy choices are required, you can revisit them in Settings. Report inappropriate or age-inappropriate ads through the ad's AdChoices or report control, or send a screenshot and display time through the <a href="https://github.com/aratama-ship-it/shogi-taikyoku/issues">support page</a>.</p></section>
+      <section><h2>If the display or progress looks wrong</h2><ul><li>Select “Reset” to restore the current puzzle's starting position.</li><li>If the browser version still shows an older screen, reload the page.</li><li>If the problem continues, include your device, OS version, puzzle number, and the steps that caused it in your report.</li></ul></section>
+      <section><h2>Bugs and requests</h2><p>Use the <a href="https://github.com/aratama-ship-it/shogi-taikyoku/issues">public GitHub support page</a>. Include the puzzle number when reporting a move-sequence or board-position issue.</p></section>
+      <nav class="legal-actions" aria-label="Related pages"><a href="./">Open the app</a><a href="privacy.html">Privacy Policy</a></nav>
+    </div>
+
+    <div data-legal-lang="fr" data-title="Aide et assistance" lang="fr" hidden>
+      <h1>Aide et assistance</h1>
+      <p class="lead">Mode d'emploi, questions fréquentes et signalement d'un problème.</p>
+      <section><h2>Comment jouer</h2><ul><li>Sélectionnez l'une de vos pièces sur le plateau ou dans votre main, puis choisissez sa destination.</li><li>Ouvrez « Choisir un problème » pour sélectionner un tsume en 1, 3, 5, 7 ou 9 coups.</li><li>Choisissez une longueur, puis « Problème aléatoire » pour obtenir un autre problème de cette longueur.</li><li>Choisissez « Vérifier chaque coup » pour une correction immédiate ou « Jouer la ligne » pour continuer jusqu'à ce que la variante échoue.</li><li>Si vous êtes bloqué, utilisez les indices progressifs ou « Voir la solution ».</li></ul></section>
+      <section><h2>Utilisation hors ligne</h2><p>L'application iOS contient les problèmes et la vérification des solutions : le jeu normal fonctionne donc sans connexion Internet. Une connexion n'est nécessaire que pour charger les publicités ; l'entraînement continue si aucune publicité n'est disponible. La version web fonctionne également hors ligne après un premier chargement.</p></section>
+      <section><h2>Publicité</h2><p>Pour garder l'application gratuite, une bannière adaptative peut apparaître en haut de l'application iOS. L'espace n'est réservé qu'après son chargement : elle ne recouvre ni le logo ni le plateau. Une publicité plein écran peut aussi apparaître au passage au problème suivant, après plusieurs réussites. Elle n'interrompt jamais un problème, ne s'affiche pas après une erreur, pendant la consultation de la solution ou au lancement. Lorsque des choix de confidentialité régionaux sont requis, vous pouvez les modifier dans les réglages. Signalez les publicités inappropriées via le bouton AdChoices ou de signalement de la publicité, ou envoyez une capture d'écran et l'heure d'affichage sur la <a href="https://github.com/aratama-ship-it/shogi-taikyoku/issues">page d'assistance</a>.</p></section>
+      <section><h2>Si l'affichage ou la progression semble incorrect</h2><ul><li>Sélectionnez « Recommencer » pour rétablir la position initiale du problème.</li><li>Si la version web affiche encore un ancien écran, rechargez la page.</li><li>Si le problème persiste, indiquez votre appareil, la version du système, le numéro du problème et les étapes qui l'ont provoqué.</li></ul></section>
+      <section><h2>Bugs et demandes</h2><p>Utilisez la <a href="https://github.com/aratama-ship-it/shogi-taikyoku/issues">page d'assistance publique sur GitHub</a>. Pour un problème de suite de coups ou de position, indiquez le numéro du problème.</p></section>
+      <nav class="legal-actions" aria-label="Pages associées"><a href="./">Ouvrir l'application</a><a href="privacy.html">Politique de confidentialité</a></nav>
+    </div>
+
+    <div data-legal-lang="es" data-title="Ayuda y asistencia" lang="es" hidden>
+      <h1>Ayuda y asistencia</h1>
+      <p class="lead">Cómo jugar, preguntas frecuentes y dónde informar de un problema.</p>
+      <section><h2>Cómo jugar</h2><ul><li>Selecciona una de tus piezas del tablero o de tu mano y elige su destino.</li><li>Abre «Elegir un problema» para seleccionar un tsume de 1, 3, 5, 7 o 9 jugadas.</li><li>Elige una longitud y pulsa «Problema aleatorio» para obtener otro problema de esa longitud.</li><li>Elige «Comprobar cada jugada» para recibir corrección inmediata o «Jugar la línea» para continuar hasta que falle la variante.</li><li>Si te atascas, usa las pistas progresivas o «Ver solución».</li></ul></section>
+      <section><h2>Uso sin conexión</h2><p>La aplicación para iOS incluye los problemas y la comprobación de soluciones, por lo que el juego normal funciona sin conexión a Internet. Solo se necesita conexión para cargar anuncios; la práctica continúa si no hay ningún anuncio disponible. La versión web también funciona sin conexión después de cargarla una vez.</p></section>
+      <section><h2>Publicidad</h2><p>Para mantener la aplicación gratuita, puede aparecer un banner adaptable en la parte superior de la aplicación para iOS. El espacio solo se reserva cuando se carga, por lo que no cubre el logotipo ni el tablero. También puede aparecer un anuncio a pantalla completa al pasar al siguiente problema después de varias soluciones correctas. Nunca interrumpe un problema ni aparece tras un error, durante la revisión de la solución o al iniciar la aplicación. Si tu región exige opciones de privacidad, puedes modificarlas en Ajustes. Informa de anuncios inapropiados mediante el control AdChoices o de denuncia del propio anuncio, o envía una captura de pantalla y la hora en que apareció desde la <a href="https://github.com/aratama-ship-it/shogi-taikyoku/issues">página de asistencia</a>.</p></section>
+      <section><h2>Si la pantalla o el progreso parecen incorrectos</h2><ul><li>Pulsa «Reiniciar» para restaurar la posición inicial del problema actual.</li><li>Si la versión web sigue mostrando una pantalla antigua, vuelve a cargar la página.</li><li>Si el problema continúa, incluye en el informe tu dispositivo, la versión del sistema operativo, el número del problema y los pasos que lo causaron.</li></ul></section>
+      <section><h2>Errores y solicitudes</h2><p>Usa la <a href="https://github.com/aratama-ship-it/shogi-taikyoku/issues">página pública de asistencia en GitHub</a>. Incluye el número del problema cuando informes de una secuencia de jugadas o una posición del tablero.</p></section>
+      <nav class="legal-actions" aria-label="Páginas relacionadas"><a href="./">Abrir la aplicación</a><a href="privacy.html">Política de privacidad</a></nav>
+    </div>
   </main>
+  <script type="module" src="legal.mjs"></script>
 </body>
 </html>

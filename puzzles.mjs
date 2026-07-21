@@ -8,18 +8,18 @@ const BASE_PUZZLES = [
   {
     id: "gold-at-the-head",
     plies: 1,
-    title: { ja: "金は、とどめの駒", en: "Gold delivers the finish" },
+    title: { ja: "金は、とどめの駒", en: "The Gold General delivers mate" },
     prompt: {
       ja: "相手の玉がどこにも逃げられない一手を見つけよう。",
       en: "Find the move that leaves the king no escape.",
     },
     hint: {
       ja: "持ち駒の金は、玉のすぐ下に置くと強力です。",
-      en: "A gold in hand is powerful directly below the king.",
+      en: "A Gold General in hand is powerful directly in front of the king.",
     },
     success: {
       ja: "頭金！ 金が5一・4一・6一と横の逃げ道を同時に押さえました。",
-      en: "A head-gold mate! The gold covers the king and every nearby escape.",
+      en: "Gold General mate! The piece directly in front of the king covers every nearby escape.",
     },
     hintHand: "G",
     hintSquare: [1, 4],
@@ -42,11 +42,11 @@ const BASE_PUZZLES = [
     },
     hint: {
       ja: "飛車を玉の真下に打ち、金で支えましょう。",
-      en: "Drop the rook directly below the king, protected by the gold.",
+      en: "Drop the rook directly in front of the king, protected by the Gold General.",
     },
     success: {
       ja: "飛車打ちの詰み！ 玉は飛車を取ると金に取られます。",
-      en: "Rook-drop mate! The king cannot capture the rook because the gold protects it.",
+      en: "Rook-drop mate! The king cannot capture the rook because the Gold General protects it.",
     },
     hintHand: "R",
     hintSquare: [1, 0],
@@ -70,11 +70,11 @@ const BASE_PUZZLES = [
     },
     hint: {
       ja: "金に守られる4二へ角を打ってみましょう。",
-      en: "Try dropping the bishop on 4b, where the gold protects it.",
+      en: "Try dropping the bishop on 4b, where the Gold General protects it.",
     },
     success: {
       ja: "角打ち成功！ 斜めの王手と味方の金が連携しています。",
-      en: "Bishop-drop mate! The diagonal check works together with your gold.",
+      en: "Bishop-drop mate! The diagonal check works together with your Gold General.",
     },
     hintHand: "B",
     hintSquare: [1, 5],
@@ -93,18 +93,18 @@ const BASE_PUZZLES = [
   {
     id: "silver-at-the-head",
     plies: 1,
-    title: { ja: "銀の鋭い一手", en: "A sharp silver drop" },
+    title: { ja: "銀の鋭い一手", en: "A sharp Silver General drop" },
     prompt: {
       ja: "銀が得意な、前方への攻めを使ってみましょう。",
-      en: "Use the silver's strong forward attack.",
+      en: "Use the Silver General's strong forward attack.",
     },
     hint: {
       ja: "玉の真下に銀を打ちます。銀を守る駒にも注目。",
-      en: "Drop the silver directly below the king. Notice which piece protects it.",
+      en: "Drop the Silver General directly in front of the king. Notice which piece protects it.",
     },
     success: {
       ja: "銀打ちの詰み！ 後ろの金が銀をしっかり守っています。",
-      en: "Silver-drop mate! The gold behind it makes the move safe.",
+      en: "Silver General drop mate! The Gold General behind it keeps it protected.",
     },
     hintHand: "S",
     hintSquare: [1, 4],
@@ -242,7 +242,7 @@ const BASE_PUZZLES = [
     title: { ja: "飛車を捨てて道を作る", en: "Sacrifice the rook" },
     prompt: {
       ja: "3手詰め。飛車を取らせた先に、金の決め手があります。",
-      en: "Mate in 3. Let the king take your rook, then finish with gold.",
+      en: "3-move tsume. Let the king take your rook, then finish with a gold general.",
     },
     hints: [
       {
@@ -253,7 +253,7 @@ const BASE_PUZZLES = [
       },
       {
         ja: "玉が飛車を取ったら、7二へ金を打つ頭金です。",
-        en: "After the king captures, drop gold on 7b for a head-gold mate.",
+        en: "After the king captures, drop the gold general on 7b for mate directly in front of the king.",
         hand: "G",
         target: [1, 3],
       },
@@ -280,7 +280,7 @@ const BASE_PUZZLES = [
     title: { ja: "二枚の桂馬をつなぐ", en: "A relay of two knights" },
     prompt: {
       ja: "3手詰め。一枚目の桂馬で玉を動かし、二枚目で仕留めます。",
-      en: "Mate in 3. The first knight drives the king; the second finishes.",
+      en: "3-move tsume. The first knight drives the king away; the second delivers mate.",
     },
     hints: [
       {
@@ -319,7 +319,7 @@ const BASE_PUZZLES = [
     title: { ja: "銀で追い、角で詰ます", en: "Drive with silver, mate with bishop" },
     prompt: {
       ja: "3手詰め。二種類の持ち駒を順番に使いましょう。",
-      en: "Mate in 3. Use two different pieces from your hand in sequence.",
+      en: "3-move tsume. Use two different pieces from your hand in sequence.",
     },
     hints: [
       {
@@ -357,7 +357,7 @@ const BASE_PUZZLES = [
     title: { ja: "銀で誘い、金で挟む", en: "Lure with silver, pinch with gold" },
     prompt: {
       ja: "3手詰め。盤上の金と銀が、両側から壁になります。",
-      en: "Mate in 3. Your gold and silver form walls on both sides.",
+      en: "3-move tsume. Your gold and silver generals cover both sides.",
     },
     hints: [
       {
@@ -394,7 +394,7 @@ const BASE_PUZZLES = [
     title: { ja: "飛車を捨て、銀で追う", en: "Sacrifice, chase, and finish" },
     prompt: {
       ja: "5手詰め。飛車・銀・金を、使う順番まで読んでみましょう。",
-      en: "Mate in 5. Work out the right order for rook, silver, and gold.",
+      en: "5-move tsume. Find the right order for the rook, silver general, and gold general.",
     },
     hints: [
       {
@@ -441,7 +441,7 @@ const BASE_PUZZLES = [
     title: { ja: "銀・角・金のリレー", en: "Silver, bishop, gold relay" },
     prompt: {
       ja: "5手詰め。三種類の持ち駒で、玉を往復させます。",
-      en: "Mate in 5. Use three different pieces to send the king out and back.",
+      en: "5-move tsume. Use three different pieces to drive the king out and back.",
     },
     hints: [
       {
@@ -489,7 +489,7 @@ const BASE_PUZZLES = [
     title: { ja: "銀を取らせて呼び戻す", en: "Give up the silver, call the king back" },
     prompt: {
       ja: "5手詰め。銀を一枚取らせてから、挟み撃ちを完成させましょう。",
-      en: "Mate in 5. Give up one silver, then complete the pincer.",
+      en: "5-move tsume. Sacrifice one silver general, then complete the mating net.",
     },
     hints: [
       {
@@ -535,7 +535,7 @@ const BASE_PUZZLES = [
     title: { ja: "香を支えに銀二枚", en: "Silvers backed by the lance" },
     prompt: {
       ja: "5手詰め。離れた香車の利きを信じて攻めましょう。",
-      en: "Mate in 5. Trust the lance's reach from afar.",
+      en: "5-move tsume. Use the lance's long-range support.",
     },
     hints: [
       {
@@ -581,7 +581,7 @@ const BASE_PUZZLES = [
     title: { ja: "銀を重ねて頭金", en: "Stack the silvers, finish with gold" },
     prompt: {
       ja: "5手詰め。一枚目の銀は取らせるための捨て駒です。",
-      en: "Mate in 5. The first silver is a sacrifice.",
+      en: "5-move tsume. The first silver general is a sacrifice.",
     },
     hints: [
       {
@@ -598,7 +598,7 @@ const BASE_PUZZLES = [
       },
       {
         ja: "5一へ逃げた玉に、5二へ頭金。詰みです。",
-        en: "The king fled to 5a — drop the gold on 5b for a head-gold mate.",
+        en: "The king fled to 5a — drop the gold on 5b for mate directly in front of the king.",
         hand: "G",
         target: [1, 4],
       },
@@ -609,7 +609,7 @@ const BASE_PUZZLES = [
     ],
     success: {
       ja: "銀を取らせて足場を作り、最後は頭金。二枚の銀が道を開きました。",
-      en: "The captured silver became a foothold, and the head-gold finished — the two silvers opened the way.",
+      en: "The captured silver became a foothold, and the gold directly in front of the king finished the mate.",
     },
     position: {
       board: [
@@ -627,7 +627,7 @@ const BASE_PUZZLES = [
     title: { ja: "桂・金・銀の隅追い", en: "Drive the king to the corner" },
     prompt: {
       ja: "5手詰め。桂馬の王手から、玉を隅へ追い込みましょう。",
-      en: "Mate in 5. Start with a knight check and drive the king into the corner.",
+      en: "5-move tsume. Start with a knight check and drive the king into the corner.",
     },
     hints: [
       {
@@ -673,7 +673,7 @@ const BASE_PUZZLES = [
     title: { ja: "桂を捨て、三枚で仕留める", en: "Sacrifice the knight, then finish" },
     prompt: {
       ja: "7手詰め。盤上の桂馬で玉を呼び、銀・角・金を順番に使いましょう。",
-      en: "Mate in 7. Draw the king with the knight, then use silver, bishop, and gold in order.",
+      en: "7-move tsume. Lure the king with the knight, then use the silver general, bishop, and gold general in order.",
     },
     hints: [
       {
@@ -730,7 +730,7 @@ const BASE_PUZZLES = [
     title: { ja: "二枚桂の追い回し", en: "Two knights on the chase" },
     prompt: {
       ja: "7手詰め。逃げ回る玉を、二枚の桂馬で追い詰めます。",
-      en: "Mate in 7. Chase the wandering king with two knights.",
+      en: "7-move tsume. Chase the king with two knights.",
     },
     hints: [
       {
@@ -782,7 +782,7 @@ const BASE_PUZZLES = [
     title: { ja: "金で止めて銀で締める", en: "Pin with gold, seal with silver" },
     prompt: {
       ja: "7手詰め。桂と銀で追い、金で退路を止めて銀でとどめます。",
-      en: "Mate in 7. Chase with knight and silver, stop the escape with gold, and seal with the second silver.",
+      en: "7-move tsume. Chase with a knight and silver general, block the escape with a gold general, and seal the net with the second silver general.",
     },
     hints: [
       {
@@ -834,7 +834,7 @@ const BASE_PUZZLES = [
     title: { ja: "隅の玉に桂の網", en: "A knight net in the corner" },
     prompt: {
       ja: "7手詰め。銀を捨ててから、二枚の桂馬で網を張ります。",
-      en: "Mate in 7. Sacrifice the silver, then weave a net with two knights.",
+      en: "7-move tsume. Sacrifice the silver general, then build a mating net with two knights.",
     },
     hints: [
       {
@@ -886,7 +886,7 @@ const BASE_PUZZLES = [
     title: { ja: "二枚の桂を捨てて仕留める", en: "Sacrifice two knights, then finish" },
     prompt: {
       ja: "9手詰め。二枚の桂馬で玉を二度呼び、銀・角・金へつなぎましょう。",
-      en: "Mate in 9. Draw the king twice with two knights, then continue with silver, bishop, and gold.",
+      en: "9-move tsume. Lure the king twice with two knights, then continue with the silver general, bishop, and gold general.",
     },
     hints: [
       {
@@ -952,7 +952,7 @@ const BASE_PUZZLES = [
     title: { ja: "二枚の銀を捨てる長編", en: "Two silver sacrifices" },
     prompt: {
       ja: "9手詰め。二枚の銀を惜しまず使い、桂馬で仕留めます。",
-      en: "Mate in 9. Spend both silvers freely, then finish with a knight.",
+      en: "9-move tsume. Sacrifice both silver generals, then finish with a knight.",
     },
     hints: [
       {
@@ -994,7 +994,7 @@ const BASE_PUZZLES = [
     ],
     success: {
       ja: "二枚の銀捨てから桂・金・桂へ。9手の長い追撃を読み切りました。",
-      en: "Two silver sacrifices, then knight, gold, knight — a nine-move chase read to the end.",
+      en: "Two silver sacrifices, then knight, gold, knight — a nine-move chase calculated to the end.",
     },
     position: {
       board: [
@@ -1012,7 +1012,7 @@ const BASE_PUZZLES = [
     title: { ja: "竜と二枚角の盤上リレー", en: "Dragon and two-bishop board relay" },
     prompt: {
       ja: "5手詰め。持ち駒はありません。盤上の竜と二枚の角だけで玉を追いましょう。",
-      en: "Mate in 5 with no pieces in hand. Chase the king using only the dragon and two bishops on the board.",
+      en: "5-move tsume with no pieces in hand. Chase the king using only the dragon and two bishops on the board.",
     },
     hints: [
       {
@@ -1062,7 +1062,7 @@ const BASE_PUZZLES = [
     title: { ja: "成香で追い、竜で仕留める", en: "Chase with a promoted lance, finish with a dragon" },
     prompt: {
       ja: "5手詰め。持ち駒はありません。成香と飛車を盤上で連携させましょう。",
-      en: "Mate in 5 with no pieces in hand. Coordinate the promoted lance and rook already on the board.",
+      en: "5-move tsume with no pieces in hand. Coordinate the promoted lance and rook already on the board.",
     },
     hints: [
       {
@@ -1110,8 +1110,8 @@ const BASE_PUZZLES = [
 const PIECE_NAMES = {
   R: { ja: "飛車", en: "rook", fr: "la tour", es: "la torre" },
   B: { ja: "角", en: "bishop", fr: "le fou", es: "el alfil" },
-  G: { ja: "金", en: "gold", fr: "l'or", es: "el oro" },
-  S: { ja: "銀", en: "silver", fr: "l'argent", es: "la plata" },
+  G: { ja: "金", en: "Gold General", fr: "le Général d'or", es: "el General de oro" },
+  S: { ja: "銀", en: "Silver General", fr: "le Général d'argent", es: "el General de plata" },
   N: { ja: "桂馬", en: "knight", fr: "le cavalier", es: "el caballo" },
   L: { ja: "香車", en: "lance", fr: "la lance", es: "la lanza" },
   P: { ja: "歩", en: "pawn", fr: "le pion", es: "el peón" },
@@ -1156,8 +1156,8 @@ function variantHint(seed, hint, mirror, shift) {
     return {
       ja: `持ち駒の${name.ja}を${squareLabel(target, "ja")}へ打って王手します。`,
       en: `Drop the ${name.en} on ${square} to give check.`,
-      fr: `Parachutez ${name.fr} en ${square} pour donner échec.`,
-      es: `Suelta ${name.es} en ${square} para dar jaque.`,
+      fr: `Posez ${name.fr} en ${square} depuis votre main pour donner échec.`,
+      es: `Coloca ${name.es} en ${square} desde tu mano para dar jaque.`,
       hand: hint.hand,
       target,
     };
@@ -1201,9 +1201,9 @@ function practiceVariant(seedId, sequence, { mirror = false, shift = 0, extraBoa
     },
     prompt: {
       ja: `${seed.plies}手詰め。同じ詰み筋を、盤の別の場所でも見つけましょう。`,
-      en: `Mate in ${seed.plies}. Find the same mating pattern in a different part of the board.`,
-      fr: `Mat en ${seed.plies} coups. Retrouvez le même schéma de mat ailleurs sur le plateau.`,
-      es: `Mate en ${seed.plies}. Encuentra el mismo patrón de mate en otra parte del tablero.`,
+      en: `${seed.plies}-move tsume. Find the same mating pattern in a different part of the board.`,
+      fr: `Tsume en ${seed.plies} coups. Retrouvez le même schéma de mat ailleurs sur le plateau.`,
+      es: `Tsume de ${seed.plies} jugadas. Encuentra el mismo patrón de mate en otra parte del tablero.`,
     },
     hints,
     responses: (seed.responses || []).map((response) => ({
@@ -1213,7 +1213,7 @@ function practiceVariant(seedId, sequence, { mirror = false, shift = 0, extraBoa
     })),
     success: {
       ja: "同じ詰み筋を別の位置でも発見できました。攻方の持ち駒も残りません。",
-      en: "You found the same mating pattern in a new position, with no attacking piece left in hand.",
+      en: "You found the same mating pattern in a new position, with no pieces left in hand.",
       fr: "Vous avez retrouvé le même schéma de mat dans une nouvelle position, sans pièce restante en main.",
       es: "Encontraste el mismo patrón de mate en una posición nueva, sin piezas sobrantes en mano.",
     },

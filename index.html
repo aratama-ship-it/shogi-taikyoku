@@ -7,14 +7,14 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Tsume Shogi">
-  <meta name="description" content="A bilingual, offline-friendly shogi puzzle app for beginners.">
+  <meta name="description" content="A multilingual, offline-friendly tsume shogi puzzle app for beginners.">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Tsume Shogi — 詰将棋を一手ずつ">
-  <meta property="og:description" content="Learn to see checkmate, one move at a time. Japanese, English, French and Spanish, built for iPhone and offline practice.">
+  <meta property="og:description" content="Learn to calculate checkmate, one move at a time. Japanese, English, French, and Spanish, built for iPhone and offline practice.">
   <meta property="og:image" content="og.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Tsume Shogi — 詰将棋を一手ずつ">
-  <meta name="twitter:description" content="A bilingual, offline-friendly shogi puzzle app for beginners.">
+  <meta name="twitter:description" content="A multilingual, offline-friendly tsume shogi puzzle app for beginners.">
   <meta name="twitter:image" content="og.png">
   <title>Tsume Shogi — 詰将棋を一手ずつ</title>
   <link rel="manifest" href="manifest.webmanifest">
@@ -123,11 +123,11 @@
         </div>
       </section>
 
-      <section class="play-area" aria-label="Shogi puzzle board">
+      <section class="play-area" data-i18n-aria="boardRegion" aria-label="詰将棋の盤面">
         <div class="board-frame">
           <div class="file-labels" id="file-labels" aria-hidden="true"></div>
           <div class="board-row">
-            <div class="board" id="board" role="grid" aria-label="9 by 9 shogi board"></div>
+            <div class="board" id="board" role="grid" data-i18n-aria="boardLabel" aria-label="9×9の将棋盤"></div>
             <div class="rank-labels" id="rank-labels" aria-hidden="true"></div>
           </div>
         </div>
@@ -137,7 +137,7 @@
             <span data-i18n="yourPieces">持ち駒</span>
             <small data-i18n="tapPiece">駒を選び、盤に置きます</small>
           </div>
-          <div class="hand" id="attacker-hand" aria-label="Pieces in hand"></div>
+          <div class="hand" id="attacker-hand" data-i18n-aria="yourPieces" aria-label="持ち駒"></div>
         </div>
       </section>
 
@@ -214,7 +214,7 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <div class="sheet-layer hidden" id="settings-layer" aria-hidden="true">
-    <button class="sheet-scrim" type="button" data-close-sheet aria-label="Close settings"></button>
+    <button class="sheet-scrim" type="button" data-close-sheet data-i18n-aria="closeSettings" aria-label="設定を閉じる"></button>
     <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="settings-title">
       <div class="sheet-handle" aria-hidden="true"></div>
       <div class="sheet-header">
@@ -222,7 +222,7 @@
           <span class="eyebrow">Tsume Shogi</span>
           <h2 id="settings-title" data-i18n="settings">設定</h2>
         </div>
-        <button class="close-button" type="button" data-close-sheet aria-label="Close">×</button>
+        <button class="close-button" type="button" data-close-sheet data-i18n-aria="close" aria-label="閉じる">×</button>
       </div>
 
       <div class="setting-group">
@@ -284,12 +284,12 @@
   </div>
 
   <div class="sheet-layer hidden" id="puzzles-layer" aria-hidden="true">
-    <button class="sheet-scrim" type="button" data-close-sheet aria-label="Close puzzle list"></button>
+    <button class="sheet-scrim" type="button" data-close-sheet data-i18n-aria="closePuzzleList" aria-label="問題一覧を閉じる"></button>
     <section class="sheet tall-sheet" role="dialog" aria-modal="true" aria-labelledby="puzzles-title">
       <div class="sheet-handle" aria-hidden="true"></div>
       <div class="sheet-header">
         <div><span class="eyebrow" data-i18n="collection">COLLECTION</span><h2 id="puzzles-title" data-i18n="choosePuzzle">問題を選ぶ</h2></div>
-        <button class="close-button" type="button" data-close-sheet aria-label="Close">×</button>
+        <button class="close-button" type="button" data-close-sheet data-i18n-aria="close" aria-label="閉じる">×</button>
       </div>
       <p class="filter-copy" data-i18n="filterByMoves">手数から問題を選べます。</p>
       <div class="puzzle-filters" id="puzzle-filters" role="group" data-i18n-aria="filterByMoves" aria-label="手数から問題を選べます。">
@@ -313,12 +313,12 @@
   </div>
 
   <div class="sheet-layer hidden" id="learn-layer" aria-hidden="true">
-    <button class="sheet-scrim" type="button" data-close-sheet aria-label="Close piece guide"></button>
+    <button class="sheet-scrim" type="button" data-close-sheet data-i18n-aria="closePieceGuide" aria-label="駒の動きを閉じる"></button>
     <section class="sheet tall-sheet" role="dialog" aria-modal="true" aria-labelledby="learn-title">
       <div class="sheet-handle" aria-hidden="true"></div>
       <div class="sheet-header">
         <div><span class="eyebrow" data-i18n="learn">LEARN</span><h2 id="learn-title" data-i18n="pieceGuide">駒の名前と動きを見る</h2></div>
-        <button class="close-button" type="button" data-close-sheet aria-label="Close">×</button>
+        <button class="close-button" type="button" data-close-sheet data-i18n-aria="close" aria-label="閉じる">×</button>
       </div>
       <p class="guide-intro" data-i18n="guideIntro">駒は上（▲）を向いています。点・矢印・菱形の違いを見ると、動きがすぐ分かります。</p>
       <div class="movement-legend" data-i18n-aria="movementLegend" aria-label="動き方の図の見方">
@@ -339,12 +339,12 @@
   </div>
 
   <div class="sheet-layer hidden" id="rules-layer" aria-hidden="true">
-    <button class="sheet-scrim" type="button" data-close-sheet aria-label="Close rules"></button>
+    <button class="sheet-scrim" type="button" data-close-sheet data-i18n-aria="closeRules" aria-label="ルールを閉じる"></button>
     <section class="sheet tall-sheet rules-sheet" role="dialog" aria-modal="true" aria-labelledby="rules-title">
       <div class="sheet-handle" aria-hidden="true"></div>
       <div class="sheet-header">
-        <div><span class="eyebrow">HOW TO PLAY</span><h2 id="rules-title" data-i18n="tsumeRules">詰将棋のルール</h2></div>
-        <button class="close-button" type="button" data-close-sheet aria-label="Close">×</button>
+        <div><span class="eyebrow" data-i18n="howToPlay">遊び方</span><h2 id="rules-title" data-i18n="tsumeRules">詰将棋のルール</h2></div>
+        <button class="close-button" type="button" data-close-sheet data-i18n-aria="close" aria-label="閉じる">×</button>
       </div>
 
       <p class="rules-lead" data-i18n="rulesLead">詰将棋は、少ない駒と決められた手数で、相手の玉を必ず詰ませる将棋のパズルです。</p>

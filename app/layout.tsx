@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {
   title: "Tsume Shogi — 詰将棋を一手ずつ",
-  description: "A bilingual, offline-friendly shogi puzzle app for beginners.",
+  description: "A multilingual, offline-friendly tsume shogi puzzle app for beginners.",
 };
 
 export const viewport: Viewport = {

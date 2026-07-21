@@ -38,6 +38,40 @@ main {
   text-decoration: none;
 }
 
+.legal-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.legal-languages {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid var(--legal-line);
+  border-radius: 10px;
+  background: #f5efe2;
+}
+
+.legal-languages button {
+  min-width: 34px;
+  min-height: 34px;
+  padding: 4px 7px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--legal-muted);
+  font: 800 11px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  cursor: pointer;
+}
+
+.legal-languages button[aria-pressed="true"] {
+  background: var(--legal-ink);
+  color: white;
+}
+
+[data-legal-lang][hidden] { display: none; }
+
 .legal-mark {
   width: 34px;
   height: 38px;
@@ -104,4 +138,7 @@ a { color: var(--legal-accent); font-weight: 700; }
 @media (max-width: 480px) {
   body { padding: 10px 9px 32px; }
   main { padding: 22px 17px; border-radius: 18px; }
+  .legal-toolbar { align-items: flex-start; }
+  .legal-brand { margin-top: 2px; }
+  .legal-languages button { min-width: 31px; padding-inline: 5px; }
 }
