@@ -83,6 +83,11 @@
           <button type="button" data-home-plies="7"><span>7</span><strong>7手詰め</strong><small>12問</small></button>
           <button type="button" data-home-plies="9"><span>9</span><strong>9手詰め</strong><small>5問</small></button>
         </div>
+        <button class="home-counting-note" id="home-counting-button" type="button">
+          <span class="home-counting-line" aria-hidden="true"><b>▲1</b><i>→</i><b>△2</b><i>→</i><b>▲3</b></span>
+          <span><strong data-i18n="homeCountingTitle">手数の数え方</strong><small data-i18n="homeCountingCopy">王手 → 応手 → 詰みで3手。チェス式では Mate in 2 相当です。</small></span>
+          <span aria-hidden="true">?</span>
+        </button>
       </section>
 
       <button class="home-random" id="home-random-button" type="button">
@@ -364,6 +369,7 @@
           <li><span>2</span><b>△</b><small data-i18n="defenseReply">玉方・応手</small></li>
           <li><span>3</span><b>▲</b><small data-i18n="attackMate">攻め方・詰み</small></li>
         </ol>
+        <aside class="rules-chess-note"><strong data-i18n="chessComparisonTitle">チェス経験者へ</strong><p data-i18n="chessComparisonCopy">チェスの「Mate in 2」は最大3回の着手です。詰将棋では双方の着手を数えるため、同じ長さを「3手詰め」と呼びます。</p></aside>
       </section>
 
       <div class="rules-principles">

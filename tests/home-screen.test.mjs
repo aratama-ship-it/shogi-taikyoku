@@ -44,8 +44,9 @@ test("home progress and copy support all four languages", () => {
 test("the craft-led home styling and refreshed offline cache ship together", () => {
   assert.match(styles, /\.home-hero-mark/);
   assert.match(styles, /\.home-length-rail/);
+  assert.match(styles, /\.home-counting-note/);
   assert.match(styles, /html\[data-theme="washi"\] :is\([\s\S]*\.home-hero/);
-  assert.match(serviceWorker, /tsume-shogi-v30/);
+  assert.match(serviceWorker, /tsume-shogi-v31/);
   assert.match(serviceWorker, /refreshOnVisit/);
   assert.match(styles, /#settings-button > span[^}]*font-size: 20px/s);
   assert.match(html, /一手ずつ、<wbr>詰みが見える。/);
@@ -53,5 +54,6 @@ test("the craft-led home styling and refreshed offline cache ship together", () 
   assert.match(styles, /\.home-hero h1[^}]*word-break: keep-all/s);
   assert.match(html, /短い詰みから、<wbr>少しずつ読む距離を伸ばします。/);
   assert.match(app, /chooseByLengthCopy: "短い詰みから、\\u200B少しずつ読む距離を伸ばします。"/);
+  assert.equal((app.match(/homeCountingCopy:/g) || []).length, 4);
   assert.match(styles, /\.home-section-heading p[^}]*word-break: keep-all/s);
 });

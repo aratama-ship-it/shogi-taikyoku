@@ -127,8 +127,8 @@ export const PUZZLE_TRANSLATIONS = {
   "rook-sacrifice-gold-finish": {
     title: { fr: "Sacrifier la tour", es: "Sacrifica la torre" },
     prompt: {
-      fr: "Tsume en 3 coups. Laissez le roi prendre votre tour, puis concluez avec le général d'or.",
-      es: "Tsume de 3 jugadas. Deja que el rey capture tu torre y remata con el general de oro.",
+      fr: "Tsume en 3 demi-coups. Laissez le roi prendre votre tour, puis concluez avec le général d'or.",
+      es: "Tsume de 3 medias jugadas. Deja que el rey capture tu torre y remata con el general de oro.",
     },
     hints: [
       {
@@ -148,8 +148,8 @@ export const PUZZLE_TRANSLATIONS = {
   "knight-relay": {
     title: { fr: "Le relais des deux cavaliers", es: "El relevo de dos caballos" },
     prompt: {
-      fr: "Tsume en 3 coups. Le premier cavalier chasse le roi ; le second conclut.",
-      es: "Tsume de 3 jugadas. El primer caballo desplaza al rey; el segundo remata.",
+      fr: "Tsume en 3 demi-coups. Le premier cavalier chasse le roi ; le second conclut.",
+      es: "Tsume de 3 medias jugadas. El primer caballo desplaza al rey; el segundo remata.",
     },
     hints: [
       {
@@ -169,8 +169,8 @@ export const PUZZLE_TRANSLATIONS = {
   "silver-then-bishop": {
     title: { fr: "Chasser avec le Général d'argent, mater avec le fou", es: "Empuja con el General de plata, mata con el alfil" },
     prompt: {
-      fr: "Tsume en 3 coups. Utilisez deux pièces différentes de votre main, dans l'ordre.",
-      es: "Tsume de 3 jugadas. Usa dos piezas distintas de tu mano, en orden.",
+      fr: "Tsume en 3 demi-coups. Utilisez deux pièces différentes de votre main, dans l'ordre.",
+      es: "Tsume de 3 medias jugadas. Usa dos piezas distintas de tu mano, en orden.",
     },
     hints: [
       {
@@ -190,8 +190,8 @@ export const PUZZLE_TRANSLATIONS = {
   "silver-lure-gold-pincer": {
     title: { fr: "Attirer avec le Général d'argent, pincer avec le Général d'or", es: "Atrae con el General de plata, atenaza con el General de oro" },
     prompt: {
-      fr: "Tsume en 3 coups. Vos Généraux d'or et d'argent contrôlent les deux côtés.",
-      es: "Tsume de 3 jugadas. Tus generales de oro y de plata controlan ambos lados.",
+      fr: "Tsume en 3 demi-coups. Vos Généraux d'or et d'argent contrôlent les deux côtés.",
+      es: "Tsume de 3 medias jugadas. Tus generales de oro y de plata controlan ambos lados.",
     },
     hints: [
       {
@@ -211,8 +211,8 @@ export const PUZZLE_TRANSLATIONS = {
   "rook-silver-gold-relay": {
     title: { fr: "Sacrifier, chasser, conclure", es: "Sacrifica, persigue y remata" },
     prompt: {
-      fr: "Tsume en 5 coups. Trouvez le bon ordre pour la tour, le général d'argent et le général d'or.",
-      es: "Tsume de 5 jugadas. Encuentra el orden correcto para la torre, el general de plata y el general de oro.",
+      fr: "Tsume en 5 demi-coups. Trouvez le bon ordre pour la tour, le général d'argent et le général d'or.",
+      es: "Tsume de 5 medias jugadas. Encuentra el orden correcto para la torre, el general de plata y el general de oro.",
     },
     hints: [
       {
@@ -236,8 +236,8 @@ export const PUZZLE_TRANSLATIONS = {
   "silver-bishop-gold-relay": {
     title: { fr: "Relais Général d'argent, Fou et Général d'or", es: "Relevo de General de plata, Alfil y General de oro" },
     prompt: {
-      fr: "Tsume en 5 coups. Trois pièces différentes font faire l'aller-retour au roi.",
-      es: "Tsume de 5 jugadas. Tres piezas distintas hacen ir y volver al rey.",
+      fr: "Tsume en 5 demi-coups. Trois pièces différentes font faire l'aller-retour au roi.",
+      es: "Tsume de 5 medias jugadas. Tres piezas distintas hacen ir y volver al rey.",
     },
     hints: [
       {
@@ -261,8 +261,8 @@ export const PUZZLE_TRANSLATIONS = {
   "silver-sacrifice-gold-return": {
     title: { fr: "Donnez le Général d'argent, rappelez le roi", es: "Entrega el General de plata y haz volver al rey" },
     prompt: {
-      fr: "Tsume en 5 coups. Sacrifiez un général d'argent, puis fermez le réseau de mat.",
-      es: "Tsume de 5 jugadas. Sacrifica un general de plata y completa la red de mate.",
+      fr: "Tsume en 5 demi-coups. Sacrifiez un général d'argent, puis fermez le réseau de mat.",
+      es: "Tsume de 5 medias jugadas. Sacrifica un general de plata y completa la red de mate.",
     },
     hints: [
       {
@@ -286,8 +286,8 @@ export const PUZZLE_TRANSLATIONS = {
   "lance-backed-silvers": {
     title: { fr: "Les Généraux d'argent soutenus par la Lance", es: "Generales de plata apoyados por la Lanza" },
     prompt: {
-      fr: "Tsume en 5 coups. Utilisez le soutien à distance de la lance.",
-      es: "Tsume de 5 jugadas. Aprovecha el apoyo a distancia de la lanza.",
+      fr: "Tsume en 5 demi-coups. Utilisez le soutien à distance de la lance.",
+      es: "Tsume de 5 medias jugadas. Aprovecha el apoyo a distancia de la lanza.",
     },
     hints: [
       {
@@ -311,8 +311,8 @@ export const PUZZLE_TRANSLATIONS = {
   "silver-stepping-stone": {
     title: { fr: "Empilez les Généraux d'argent, concluez au Général d'or", es: "Apila los Generales de plata y remata con el General de oro" },
     prompt: {
-      fr: "Tsume en 5 coups. Le premier général d'argent est un sacrifice.",
-      es: "Tsume de 5 jugadas. El primer general de plata es un sacrificio.",
+      fr: "Tsume en 5 demi-coups. Le premier général d'argent est un sacrifice.",
+      es: "Tsume de 5 medias jugadas. El primer general de plata es un sacrificio.",
     },
     hints: [
       {
@@ -336,8 +336,8 @@ export const PUZZLE_TRANSLATIONS = {
   "knight-gold-corner-drive": {
     title: { fr: "Pousser le roi dans le coin", es: "Empuja al rey al rincón" },
     prompt: {
-      fr: "Tsume en 5 coups. Commencez par un échec de cavalier et poussez le roi dans le coin.",
-      es: "Tsume de 5 jugadas. Empieza con un jaque de caballo y lleva al rey al rincón.",
+      fr: "Tsume en 5 demi-coups. Commencez par un échec de cavalier et poussez le roi dans le coin.",
+      es: "Tsume de 5 medias jugadas. Empieza con un jaque de caballo y lleva al rey al rincón.",
     },
     hints: [
       {
@@ -361,8 +361,8 @@ export const PUZZLE_TRANSLATIONS = {
   "knight-silver-bishop-gold-relay": {
     title: { fr: "Sacrifier le cavalier, puis conclure", es: "Sacrifica el caballo y remata" },
     prompt: {
-      fr: "Tsume en 7 coups. Attirez le roi avec le cavalier, puis jouez le général d'argent, le fou et le général d'or dans cet ordre.",
-      es: "Tsume de 7 jugadas. Atrae al rey con el caballo y sigue con el general de plata, el alfil y el general de oro, en ese orden.",
+      fr: "Tsume en 7 demi-coups. Attirez le roi avec le cavalier, puis jouez le général d'argent, le fou et le général d'or dans cet ordre.",
+      es: "Tsume de 7 medias jugadas. Atrae al rey con el caballo y sigue con el general de plata, el alfil y el general de oro, en ese orden.",
     },
     hints: [
       {
@@ -390,8 +390,8 @@ export const PUZZLE_TRANSLATIONS = {
   "wandering-king-two-knights": {
     title: { fr: "Deux cavaliers à la poursuite", es: "Dos caballos a la caza" },
     prompt: {
-      fr: "Tsume en 7 coups. Poursuivez le roi avec deux cavaliers.",
-      es: "Tsume de 7 jugadas. Persigue al rey con dos caballos.",
+      fr: "Tsume en 7 demi-coups. Poursuivez le roi avec deux cavaliers.",
+      es: "Tsume de 7 medias jugadas. Persigue al rey con dos caballos.",
     },
     hints: [
       {
@@ -419,8 +419,8 @@ export const PUZZLE_TRANSLATIONS = {
   "gold-pin-silver-seal": {
     title: { fr: "Bloquez avec le Général d'or, scellez avec le Général d'argent", es: "Fija con el General de oro, sella con el General de plata" },
     prompt: {
-      fr: "Tsume en 7 coups. Poursuivez avec le cavalier et le général d'argent, bloquez la fuite avec le général d'or, puis fermez avec le second général d'argent.",
-      es: "Tsume de 7 jugadas. Persigue con el caballo y el general de plata, corta la huida con el general de oro y cierra con el segundo general de plata.",
+      fr: "Tsume en 7 demi-coups. Poursuivez avec le cavalier et le général d'argent, bloquez la fuite avec le général d'or, puis fermez avec le second général d'argent.",
+      es: "Tsume de 7 medias jugadas. Persigue con el caballo y el general de plata, corta la huida con el general de oro y cierra con el segundo general de plata.",
     },
     hints: [
       {
@@ -448,8 +448,8 @@ export const PUZZLE_TRANSLATIONS = {
   "corner-knight-net": {
     title: { fr: "Un filet de cavaliers dans le coin", es: "Una red de caballos en el rincón" },
     prompt: {
-      fr: "Tsume en 7 coups. Sacrifiez le général d'argent, puis construisez un réseau de mat avec deux cavaliers.",
-      es: "Tsume de 7 jugadas. Sacrifica el general de plata y construye una red de mate con dos caballos.",
+      fr: "Tsume en 7 demi-coups. Sacrifiez le général d'argent, puis construisez un réseau de mat avec deux cavaliers.",
+      es: "Tsume de 7 medias jugadas. Sacrifica el general de plata y construye una red de mate con dos caballos.",
     },
     hints: [
       {
@@ -477,8 +477,8 @@ export const PUZZLE_TRANSLATIONS = {
   "double-knight-silver-bishop-gold-relay": {
     title: { fr: "Sacrifier deux cavaliers, puis conclure", es: "Sacrifica dos caballos y remata" },
     prompt: {
-      fr: "Tsume en 9 coups. Attirez deux fois le roi avec les cavaliers, puis continuez avec le général d'argent, le fou et le général d'or.",
-      es: "Tsume de 9 jugadas. Atrae dos veces al rey con los caballos y sigue con el general de plata, el alfil y el general de oro.",
+      fr: "Tsume en 9 demi-coups. Attirez deux fois le roi avec les cavaliers, puis continuez avec le général d'argent, le fou et le général d'or.",
+      es: "Tsume de 9 medias jugadas. Atrae dos veces al rey con los caballos y sigue con el general de plata, el alfil y el general de oro.",
     },
     hints: [
       {
@@ -510,8 +510,8 @@ export const PUZZLE_TRANSLATIONS = {
   "double-silver-sacrifice-chase": {
     title: { fr: "Deux sacrifices de Généraux d'argent", es: "Dos sacrificios de Generales de plata" },
     prompt: {
-      fr: "Tsume en 9 coups. Sacrifiez les deux Généraux d'argent, puis concluez avec un cavalier.",
-      es: "Tsume de 9 jugadas. Sacrifica los dos generales de plata y remata con un caballo.",
+      fr: "Tsume en 9 demi-coups. Sacrifiez les deux Généraux d'argent, puis concluez avec un cavalier.",
+      es: "Tsume de 9 medias jugadas. Sacrifica los dos generales de plata y remata con un caballo.",
     },
     hints: [
       {
@@ -543,8 +543,8 @@ export const PUZZLE_TRANSLATIONS = {
   "dragon-bishop-board-relay": {
     title: { fr: "Relais du dragon et des deux fous", es: "Relevo del dragón y los dos alfiles" },
     prompt: {
-      fr: "Tsume en 5 coups sans pièce en main. Poursuivez le roi uniquement avec le dragon et les deux fous du plateau.",
-      es: "Tsume de 5 jugadas sin piezas en la mano. Persigue al rey solo con el dragón y los dos alfiles del tablero.",
+      fr: "Tsume en 5 demi-coups sans pièce en main. Poursuivez le roi uniquement avec le dragon et les deux fous du plateau.",
+      es: "Tsume de 5 medias jugadas sin piezas en la mano. Persigue al rey solo con el dragón y los dos alfiles del tablero.",
     },
     hints: [
       {
@@ -568,8 +568,8 @@ export const PUZZLE_TRANSLATIONS = {
   "promoted-lance-dragon-board-relay": {
     title: { fr: "Poursuivre avec la lance promue, conclure avec le dragon", es: "Persigue con la lanza promovida y remata con el dragón" },
     prompt: {
-      fr: "Tsume en 5 coups sans pièce en main. Coordonnez la lance promue et la tour déjà présentes sur le plateau.",
-      es: "Tsume de 5 jugadas sin piezas en la mano. Coordina la lanza promovida y la torre que ya están en el tablero.",
+      fr: "Tsume en 5 demi-coups sans pièce en main. Coordonnez la lance promue et la tour déjà présentes sur le plateau.",
+      es: "Tsume de 5 medias jugadas sin piezas en la mano. Coordina la lanza promovida y la torre que ya están en el tablero.",
     },
     hints: [
       {

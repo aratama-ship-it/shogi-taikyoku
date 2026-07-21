@@ -20,18 +20,29 @@ test("non-Japanese move counts use unambiguous tsume terminology", () => {
   assert.doesNotMatch(localizationSource, /\bMate in [13579]\b/);
   assert.doesNotMatch(localizationSource, /\bMat en [13579]\b/);
   assert.doesNotMatch(localizationSource, /\bMate en [13579]\b/);
-  assert.match(app, /mateInN: "\{n\}-move tsume"/);
-  assert.match(app, /mateInN: "Tsume en \{n\} coups"/);
-  assert.match(app, /mateInN: "Tsume de \{n\} jugadas"/);
-  assert.match(app, /compactMateMany: "\{n\} moves"/);
-  assert.match(app, /compactMateMany: "\{n\} coups"/);
-  assert.match(app, /compactMateMany: "\{n\} jugadas"/);
+  assert.match(app, /mateInN: "\{n\}-ply tsume"/);
+  assert.match(app, /mateInN: "Tsume en \{n\} demi-coups"/);
+  assert.match(app, /mateInN: "Tsume de \{n\} medias jugadas"/);
+  assert.match(app, /compactMateMany: "\{n\} plies"/);
+  assert.match(app, /compactMateMany: "\{n\} demi-coups"/);
+  assert.match(app, /compactMateMany: "\{n\} turnos"/);
 
   for (const puzzle of PUZZLES.filter(({ plies }) => plies > 1)) {
-    assert.ok(puzzle.prompt.en.startsWith(`${puzzle.plies}-move tsume`), puzzle.id);
-    assert.ok(puzzle.prompt.fr.startsWith(`Tsume en ${puzzle.plies} coups`), puzzle.id);
-    assert.ok(puzzle.prompt.es.startsWith(`Tsume de ${puzzle.plies} jugadas`), puzzle.id);
+    assert.ok(puzzle.prompt.en.startsWith(`${puzzle.plies}-ply tsume`), puzzle.id);
+    assert.ok(puzzle.prompt.fr.startsWith(`Tsume en ${puzzle.plies} demi-coups`), puzzle.id);
+    assert.ok(puzzle.prompt.es.startsWith(`Tsume de ${puzzle.plies} medias jugadas`), puzzle.id);
   }
+});
+
+test("move-count explanations connect tsume plies to chess mate counts", () => {
+  assert.match(html, /id="home-counting-button"/);
+  assert.match(html, /class="rules-chess-note"/);
+  assert.match(app, /#home-counting-button"\)\.addEventListener/);
+  assert.equal((app.match(/homeCountingTitle:/g) || []).length, 4);
+  assert.equal((app.match(/chessComparisonTitle:/g) || []).length, 4);
+  assert.match(app, /A 3-ply tsume is the same length as chess “mate in 2”/);
+  assert.match(app, /Un tsume en 3 demi-coups a la même longueur qu'un « mat en 2 »/);
+  assert.match(app, /Un tsume de 3 medias jugadas dura lo mismo que un «mate en 2»/);
 });
 
 test("calculation language replaces literal translations of Japanese reading", () => {

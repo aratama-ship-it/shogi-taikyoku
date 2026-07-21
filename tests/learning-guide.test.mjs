@@ -33,9 +33,11 @@ test("tsume rules are reachable from both home and settings", () => {
 test("rules explain the core loop, move counting, and app convention in four languages", () => {
   assert.match(html, /class="rules-flow"/);
   assert.match(html, /class="rules-count"/);
+  assert.match(html, /class="rules-chess-note"/);
   assert.match(html, /data-i18n="useAllHandPieces"/);
   assert.equal((app.match(/rulesLead:/g) || []).length, 4);
   assert.equal((app.match(/countingMoves:/g) || []).length, 4);
+  assert.equal((app.match(/chessComparisonCopy:/g) || []).length, 4);
   assert.equal((app.match(/officialTsumeRules:/g) || []).length, 4);
   assert.match(html, /https:\/\/www\.shogi\.or\.jp\/tsume_shogi\//);
 });

@@ -504,6 +504,39 @@ html[data-theme="washi"] .play-area {
   white-space: nowrap;
 }
 
+.home-counting-note {
+  width: 100%;
+  min-height: 56px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 22px;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  padding: 8px 10px;
+  border: 1px solid rgba(218, 181, 104, .26);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .045);
+  color: var(--on-background);
+  text-align: left;
+  cursor: pointer;
+}
+
+.home-counting-line {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--gold-soft);
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.home-counting-line b { color: var(--on-background); font-size: 10px; }
+.home-counting-line i { color: color-mix(in srgb, var(--on-background) 45%, transparent); font-style: normal; }
+.home-counting-note > span:nth-child(2) { display: grid; gap: 2px; min-width: 0; }
+.home-counting-note strong { font: 800 11px var(--serif); }
+.home-counting-note small { color: color-mix(in srgb, var(--on-background) 72%, transparent); font-size: 8px; line-height: 1.4; }
+.home-counting-note > span:last-child { color: var(--gold-soft); font: 800 16px var(--serif); text-align: center; }
+
 .home-random {
   width: 100%;
   min-height: 64px;
@@ -2147,6 +2180,16 @@ html[data-theme="washi"] .primary-button:not(:disabled) {
 
 .rules-count li b { font-size: 20px; }
 .rules-count li small { color: var(--muted); font-size: 8px; text-align: center; }
+
+.rules-chess-note {
+  margin-top: 13px;
+  padding: 10px 11px;
+  border-left: 2px solid var(--accent);
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+}
+
+.rules-chess-note strong { color: var(--accent-strong); font-size: 10px; }
+.rules-chess-note p { margin: 3px 0 0; color: var(--muted); font-size: 9px; line-height: 1.55; }
 
 .rules-principles article {
   display: grid;
